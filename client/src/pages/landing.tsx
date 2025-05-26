@@ -16,33 +16,33 @@ export default function Landing() {
   const features = [
     {
       icon: Palette,
-      title: 'Beautiful Customization',
-      description: 'Choose from stunning templates and customize every detail to match your unique style and vision.',
+      titleKey: 'features.customization',
+      descriptionKey: 'features.customizationDesc',
     },
     {
       icon: Calendar,
-      title: 'RSVP Management',
-      description: 'Effortlessly track guest responses with our intuitive RSVP system and real-time analytics.',
+      titleKey: 'features.rsvpManagement',
+      descriptionKey: 'features.rsvpManagementDesc',
     },
     {
       icon: Camera,
-      title: 'Photo Galleries',
-      description: 'Share your love story and wedding photos with beautiful, responsive gallery layouts.',
+      titleKey: 'features.photoGalleries',
+      descriptionKey: 'features.photoGalleriesDesc',
     },
     {
       icon: Globe,
-      title: 'Multi-Language Support',
-      description: 'Reach all your guests with full Uzbek and Russian language support for every feature.',
+      titleKey: 'features.multiLanguage',
+      descriptionKey: 'features.multiLanguageDesc',
     },
     {
       icon: MapPin,
-      title: 'Venue Integration',
-      description: 'Help guests find your venue with integrated maps and detailed location information.',
+      titleKey: 'features.venueIntegration',
+      descriptionKey: 'features.venueIntegrationDesc',
     },
     {
       icon: Music,
-      title: 'Background Music',
-      description: 'Set the perfect mood with customizable background music that plays softly for your guests.',
+      titleKey: 'features.backgroundMusic',
+      descriptionKey: 'features.backgroundMusicDesc',
     },
   ];
 
@@ -368,10 +368,10 @@ export default function Landing() {
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-xl font-playfair font-semibold text-charcoal mb-4">
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </h3>
                   <p className="text-charcoal opacity-70 leading-relaxed">
-                    {feature.description}
+                    {t(feature.descriptionKey)}
                   </p>
                 </CardContent>
               </Card>
@@ -385,10 +385,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-              Simple, Transparent Pricing
+              {t('pricing.title')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
-              Choose the perfect plan for your special day
+              {t('pricing.subtitle')}
             </p>
           </div>
 
