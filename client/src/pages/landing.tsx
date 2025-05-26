@@ -1,0 +1,552 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { LanguageToggle } from '@/components/language-toggle';
+import { 
+  Heart, Palette, Calendar, Camera, Globe, MapPin, Music, 
+  Check, Menu, X, Star, Users, MessageSquare 
+} from 'lucide-react';
+
+export default function Landing() {
+  const { t } = useTranslation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const features = [
+    {
+      icon: Palette,
+      title: 'Beautiful Customization',
+      description: 'Choose from stunning templates and customize every detail to match your unique style and vision.',
+    },
+    {
+      icon: Calendar,
+      title: 'RSVP Management',
+      description: 'Effortlessly track guest responses with our intuitive RSVP system and real-time analytics.',
+    },
+    {
+      icon: Camera,
+      title: 'Photo Galleries',
+      description: 'Share your love story and wedding photos with beautiful, responsive gallery layouts.',
+    },
+    {
+      icon: Globe,
+      title: 'Multi-Language Support',
+      description: 'Reach all your guests with full Uzbek and Russian language support for every feature.',
+    },
+    {
+      icon: MapPin,
+      title: 'Venue Integration',
+      description: 'Help guests find your venue with integrated maps and detailed location information.',
+    },
+    {
+      icon: Music,
+      title: 'Background Music',
+      description: 'Set the perfect mood with customizable background music that plays softly for your guests.',
+    },
+  ];
+
+  const templates = [
+    {
+      name: 'Garden Romance',
+      image: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
+      description: 'Perfect for outdoor and garden weddings with soft, romantic elements',
+    },
+    {
+      name: 'Modern Elegance',
+      image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
+      description: 'Clean, sophisticated design for contemporary couples',
+    },
+    {
+      name: 'Rustic Charm',
+      image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
+      description: 'Warm, cozy design with vintage and rustic elements',
+    },
+    {
+      name: 'Beach Bliss',
+      image: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
+      description: 'Tropical, breezy design perfect for destination weddings',
+    },
+    {
+      name: 'Classic Tradition',
+      image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
+      description: 'Timeless, traditional design for classic ceremonies',
+    },
+    {
+      name: 'Boho Chic',
+      image: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
+      description: 'Free-spirited, artistic design with bohemian elements',
+    },
+  ];
+
+  const pricingPlans = [
+    {
+      name: 'Basic',
+      price: 'Free',
+      features: [
+        'Basic website template',
+        'Up to 50 guests',
+        'RSVP management',
+        'Photo gallery (10 photos)',
+      ],
+      buttonText: 'Get Started',
+      popular: false,
+    },
+    {
+      name: 'Premium',
+      price: '$49',
+      period: '/year',
+      features: [
+        'All Basic features',
+        'Unlimited guests',
+        'Premium templates',
+        'Unlimited photos',
+        'Custom domain',
+        'Background music',
+      ],
+      buttonText: 'Choose Premium',
+      popular: true,
+    },
+    {
+      name: 'Deluxe',
+      price: '$99',
+      period: '/year',
+      features: [
+        'All Premium features',
+        'Advanced customization',
+        'Priority support',
+        'Guest messaging',
+        'Analytics dashboard',
+      ],
+      buttonText: 'Choose Deluxe',
+      popular: false,
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b border-soft-white sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <Heart className="h-8 w-8 text-romantic-gold mr-2" />
+                <h1 className="text-2xl font-playfair font-semibold text-romantic-gold">
+                  LoveStory
+                </h1>
+              </Link>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-4">
+              <a href="#features" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                {t('nav.features')}
+              </a>
+              <a href="#templates" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                {t('nav.templates')}
+              </a>
+              <a href="#pricing" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                {t('nav.pricing')}
+              </a>
+              <LanguageToggle />
+              <Button variant="ghost" className="text-charcoal hover:text-romantic-gold">
+                {t('nav.signIn')}
+              </Button>
+              <Link href="/create-wedding">
+                <Button className="wedding-button">
+                  {t('nav.getStarted')}
+                </Button>
+              </Link>
+            </div>
+
+            <div className="md:hidden flex items-center space-x-2">
+              <LanguageToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-soft-white">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                <a href="#features" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
+                  {t('nav.features')}
+                </a>
+                <a href="#templates" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
+                  {t('nav.templates')}
+                </a>
+                <a href="#pricing" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
+                  {t('nav.pricing')}
+                </a>
+                <Button variant="ghost" className="w-full justify-start text-charcoal hover:text-romantic-gold">
+                  {t('nav.signIn')}
+                </Button>
+                <Link href="/create-wedding" className="block">
+                  <Button className="w-full wedding-button">
+                    {t('nav.getStarted')}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero-section py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-playfair font-bold text-charcoal leading-tight">
+                {t('hero.title')}
+                <span className="text-romantic-gold block">
+                  {t('hero.titleHighlight')}
+                </span>
+              </h1>
+              <p className="mt-6 text-lg text-charcoal opacity-80 font-lato leading-relaxed max-w-xl">
+                {t('hero.subtitle')}
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link href="/create-wedding">
+                  <Button className="wedding-button text-lg px-8 py-4">
+                    {t('hero.startCreating')}
+                  </Button>
+                </Link>
+                <Button variant="outline" className="wedding-button-outline text-lg px-8 py-4">
+                  {t('hero.viewDemo')}
+                </Button>
+              </div>
+              <div className="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-charcoal opacity-70">
+                <div className="flex items-center">
+                  <Check className="h-4 w-4 text-sage-green mr-2" />
+                  <span>{t('hero.freeTrial')}</span>
+                </div>
+                <div className="flex items-center">
+                  <Check className="h-4 w-4 text-sage-green mr-2" />
+                  <span>{t('hero.noCreditCard')}</span>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <img 
+                src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                alt="Beautiful couple in elegant wedding attire" 
+                className="rounded-2xl shadow-2xl w-full h-auto" 
+              />
+              <Card className="absolute -bottom-6 -left-6 wedding-card">
+                <CardContent className="p-6 text-center">
+                  <p className="text-sm text-charcoal opacity-70 font-lato">Join over</p>
+                  <p className="text-2xl font-playfair font-bold text-romantic-gold">50,000+</p>
+                  <p className="text-sm text-charcoal opacity-70 font-lato">happy couples</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Wedding Website Section */}
+      <section className="py-20 bg-soft-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              See Your Wedding Website Come to Life
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+              Preview how your personalized wedding website will look with our interactive demo
+            </p>
+          </div>
+
+          <Card className="wedding-card elegant-shadow overflow-hidden">
+            <div className="bg-gradient-to-r from-romantic-gold to-sage-green p-1">
+              <div className="bg-white rounded-xl">
+                {/* Demo Hero Section */}
+                <div className="relative h-96 overflow-hidden rounded-t-xl">
+                  <img 
+                    src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&h=600" 
+                    alt="Elegant wedding venue with beautiful floral arrangements" 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                  <div className="absolute inset-0 flex items-center justify-center text-center text-white">
+                    <div>
+                      <h3 className="text-3xl lg:text-4xl font-playfair font-bold mb-2 text-shadow">
+                        Sarah & Michael
+                      </h3>
+                      <p className="text-lg font-cormorant mb-4 text-shadow">
+                        September 15, 2024
+                      </p>
+                      {/* Countdown Timer */}
+                      <div className="flex justify-center space-x-4 text-sm">
+                        <div className="bg-white bg-opacity-20 rounded-xl px-3 py-2">
+                          <div className="font-bold text-lg">45</div>
+                          <div>Days</div>
+                        </div>
+                        <div className="bg-white bg-opacity-20 rounded-xl px-3 py-2">
+                          <div className="font-bold text-lg">12</div>
+                          <div>Hours</div>
+                        </div>
+                        <div className="bg-white bg-opacity-20 rounded-xl px-3 py-2">
+                          <div className="font-bold text-lg">30</div>
+                          <div>Min</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Demo Content */}
+                <div className="p-8 space-y-12">
+                  {/* Our Story Section */}
+                  <div className="text-center">
+                    <h4 className="text-2xl font-playfair font-bold text-charcoal mb-6">Our Love Story</h4>
+                    <div className="grid md:grid-cols-2 gap-8 items-center">
+                      <div>
+                        <p className="text-charcoal opacity-80 leading-relaxed">
+                          We met on a rainy Tuesday at our favorite coffee shop. What started as a chance encounter became the most beautiful love story we could have imagined...
+                        </p>
+                      </div>
+                      <div>
+                        <img 
+                          src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=300" 
+                          alt="Couple's romantic engagement photo in natural setting" 
+                          className="rounded-xl shadow-lg w-full h-auto" 
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Demo Photo Gallery */}
+                  <div>
+                    <h4 className="text-2xl font-playfair font-bold text-charcoal text-center mb-6">Our Memories</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[
+                        'https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300',
+                        'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300',
+                        'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300',
+                        'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300'
+                      ].map((src, index) => (
+                        <img 
+                          key={index}
+                          src={src} 
+                          alt={`Wedding photo ${index + 1}`}
+                          className="rounded-xl shadow-md w-full h-32 object-cover photo-hover" 
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              Everything You Need for Your Perfect Day
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+              Comprehensive tools to create, manage, and share your wedding celebration
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="wedding-card text-center">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-romantic-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                    <feature.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-playfair font-semibold text-charcoal mb-4">
+                    {feature.title}
+                  </h3>
+                  <p className="text-charcoal opacity-70 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-soft-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+              Choose the perfect plan for your special day
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card 
+                key={index} 
+                className={`wedding-card text-center relative ${
+                  plan.popular ? 'bg-romantic-gold text-white' : 'bg-white'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-sage-green text-white px-4 py-1 rounded-full text-xs font-medium">
+                    Most Popular
+                  </div>
+                )}
+                <CardContent className="p-8">
+                  <h3 className="text-xl font-playfair font-semibold mb-2">
+                    {plan.name}
+                  </h3>
+                  <div className="mb-6">
+                    <span className="text-3xl font-playfair font-bold">
+                      {plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className="text-sm opacity-90">{plan.period}</span>
+                    )}
+                  </div>
+                  <ul className="space-y-3 mb-8 text-sm">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center justify-center">
+                        <Check className={`h-4 w-4 mr-2 ${plan.popular ? 'text-white' : 'text-sage-green'}`} />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button 
+                    className={
+                      plan.popular 
+                        ? 'w-full bg-white text-romantic-gold hover:bg-gray-50' 
+                        : 'w-full wedding-button-outline'
+                    }
+                  >
+                    {plan.buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Template Gallery */}
+      <section id="templates" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              Beautiful Templates for Every Style
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
+              Start with a professionally designed template and make it uniquely yours
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {templates.map((template, index) => (
+              <Card key={index} className="wedding-card overflow-hidden">
+                <img 
+                  src={template.image} 
+                  alt={template.name}
+                  className="w-full h-48 object-cover" 
+                />
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-playfair font-semibold text-charcoal mb-2">
+                    {template.name}
+                  </h3>
+                  <p className="text-sm text-charcoal opacity-70 mb-4">
+                    {template.description}
+                  </p>
+                  <Button className="w-full wedding-button">
+                    Preview Template
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-20 bg-romantic-gold">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-white mb-6">
+            Ready to Create Your Dream Wedding Website?
+          </h2>
+          <p className="text-lg text-white opacity-90 mb-8 max-w-2xl mx-auto">
+            Join thousands of couples who have shared their special day with LoveStory. Start your free trial today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/create-wedding">
+              <Button className="bg-white text-romantic-gold px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all shadow-lg">
+                Start Free Trial
+              </Button>
+            </Link>
+            <Button variant="outline" className="border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-white hover:text-romantic-gold transition-all">
+              Watch Demo
+            </Button>
+          </div>
+          <p className="mt-6 text-sm text-white opacity-70">
+            No credit card required • 30-day free trial • Cancel anytime
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-charcoal text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center mb-4">
+                <Heart className="h-8 w-8 text-romantic-gold mr-2" />
+                <h3 className="text-2xl font-playfair font-semibold text-romantic-gold">
+                  LoveStory
+                </h3>
+              </div>
+              <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
+                Creating beautiful, personalized wedding websites that help couples share their special day with loved ones around the world.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-white mb-4">Features</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Wedding Websites</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">RSVP Management</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Photo Galleries</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Guest Book</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-white mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-700 mt-12 pt-8 text-center">
+            <p className="text-gray-400">
+              © 2024 LoveStory. All rights reserved. Made with <Heart className="inline h-4 w-4 text-romantic-gold mx-1" /> for couples everywhere.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

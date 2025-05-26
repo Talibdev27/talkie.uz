@@ -1,0 +1,175 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { 
+  insertUserSchema, insertWeddingSchema, insertGuestSchema, 
+  insertPhotoSchema, insertGuestBookEntrySchema, rsvpUpdateSchema 
+} from "@shared/schema";
+import { z } from "zod";
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Wedding routes
+  app.post("/api/weddings", async (req, res) => {
+    try {
+      const weddingData = insertWeddingSchema.parse(req.body);
+      const userId = req.body.userId; // In a real app, this would come from session/JWT
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User ID required" });
+      }
+
+      const wedding = await storage.createWedding(userId, weddingData);
+      res.status(201).json(wedding);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid wedding data" });
+    }
+  });
+
+  app.get("/api/weddings/url/:uniqueUrl", async (req, res) => {
+    try {
+      const { uniqueUrl } = req.params;
+      const wedding = await storage.getWeddingByUrl(uniqueUrl);
+      
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      res.json(wedding);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.get("/api/weddings/user/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const weddings = await storage.getWeddingsByUserId(userId);
+      res.json(weddings);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.put("/api/weddings/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const wedding = await storage.updateWedding(id, updates);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      res.json(wedding);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid update data" });
+    }
+  });
+
+  // Guest routes
+  app.post("/api/guests", async (req, res) => {
+    try {
+      const guestData = insertGuestSchema.parse(req.body);
+      const guest = await storage.createGuest(guestData);
+      res.status(201).json(guest);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid guest data" });
+    }
+  });
+
+  app.get("/api/guests/wedding/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const guests = await storage.getGuestsByWeddingId(weddingId);
+      res.json(guests);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.put("/api/guests/:id/rsvp", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const rsvpData = rsvpUpdateSchema.parse(req.body);
+      
+      const guest = await storage.updateGuestRSVP(id, rsvpData);
+      if (!guest) {
+        return res.status(404).json({ message: "Guest not found" });
+      }
+
+      res.json(guest);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid RSVP data" });
+    }
+  });
+
+  // Photo routes
+  app.post("/api/photos", async (req, res) => {
+    try {
+      const photoData = insertPhotoSchema.parse(req.body);
+      const photo = await storage.createPhoto(photoData);
+      res.status(201).json(photo);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid photo data" });
+    }
+  });
+
+  app.get("/api/photos/wedding/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const photos = await storage.getPhotosByWeddingId(weddingId);
+      res.json(photos);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.delete("/api/photos/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deletePhoto(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Photo not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Guest book routes
+  app.post("/api/guest-book", async (req, res) => {
+    try {
+      const entryData = insertGuestBookEntrySchema.parse(req.body);
+      const entry = await storage.createGuestBookEntry(entryData);
+      res.status(201).json(entry);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid guest book entry" });
+    }
+  });
+
+  app.get("/api/guest-book/wedding/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const entries = await storage.getGuestBookEntriesByWeddingId(weddingId);
+      res.json(entries);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Stats route
+  app.get("/api/weddings/:id/stats", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const stats = await storage.getWeddingStats(id);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
