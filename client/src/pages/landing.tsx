@@ -48,19 +48,19 @@ export default function Landing() {
 
   const templates = [
     {
-      name: 'Garden Romance',
+      nameKey: 'templates.gardenRomance',
       image: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
-      description: 'Perfect for outdoor and garden weddings with soft, romantic elements',
+      descriptionKey: 'templates.gardenRomanceDesc',
     },
     {
-      name: 'Modern Elegance',
+      nameKey: 'templates.modernElegance',
       image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
-      description: 'Clean, sophisticated design for contemporary couples',
+      descriptionKey: 'templates.modernEleganceDesc',
     },
     {
-      name: 'Rustic Charm',
+      nameKey: 'templates.rusticCharm',
       image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
-      description: 'Warm, cozy design with vintage and rustic elements',
+      descriptionKey: 'templates.rusticCharmDesc',
     },
     {
       name: 'Beach Bliss',
@@ -447,13 +447,13 @@ export default function Landing() {
                 />
                 <CardContent className="p-6">
                   <h3 className="text-lg font-playfair font-semibold text-charcoal mb-2">
-                    {template.name}
+                    {template.nameKey ? t(template.nameKey) : template.name}
                   </h3>
                   <p className="text-sm text-charcoal opacity-70 mb-4">
-                    {template.description}
+                    {template.descriptionKey ? t(template.descriptionKey) : template.description}
                   </p>
                   <Button className="w-full wedding-button">
-                    Preview Template
+                    {t('templates.previewTemplate')}
                   </Button>
                 </CardContent>
               </Card>
@@ -466,10 +466,10 @@ export default function Landing() {
       <section className="py-20 bg-romantic-gold">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-white mb-6">
-            Ready to Create Your Dream Wedding Website?
+            {t('cta.title')}
           </h2>
           <p className="text-lg text-white opacity-90 mb-8 max-w-2xl mx-auto">
-            Join thousands of couples who have shared their special day with LoveStory. Start your free trial today.
+            {t('cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/create-wedding">
