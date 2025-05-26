@@ -207,9 +207,9 @@ export default function CreateWedding() {
                     name="venue"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Venue Name</FormLabel>
+                        <FormLabel>{t('createWedding.venueName')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter venue name" {...field} />
+                          <Input placeholder={t('createWedding.enterVenueName')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -221,9 +221,9 @@ export default function CreateWedding() {
                     name="venueAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Venue Address</FormLabel>
+                        <FormLabel>{t('createWedding.venueAddress')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter full venue address" {...field} />
+                          <Input placeholder={t('createWedding.enterVenueAddress')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -388,7 +388,7 @@ export default function CreateWedding() {
                 disabled={currentStep === 1}
                 className="wedding-button-outline"
               >
-                Previous
+                {t('createWedding.previous')}
               </Button>
 
               {currentStep < totalSteps ? (
@@ -397,7 +397,7 @@ export default function CreateWedding() {
                   onClick={nextStep}
                   className="wedding-button"
                 >
-                  Next Step
+                  {t('createWedding.nextStep')}
                 </Button>
               ) : (
                 <Button
@@ -405,7 +405,7 @@ export default function CreateWedding() {
                   disabled={createWedding.isPending}
                   className="wedding-button"
                 >
-                  {createWedding.isPending ? 'Creating...' : 'Create Website'}
+                  {createWedding.isPending ? t('common.loading') : t('createWedding.createWebsite')}
                 </Button>
               )}
             </div>
