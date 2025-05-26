@@ -238,10 +238,10 @@ export default function CreateWedding() {
               <Card className="wedding-card">
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-                    Share Your Love Story
+                    {t('createWedding.shareYourLoveStory')}
                   </CardTitle>
                   <p className="text-charcoal opacity-70">
-                    Tell your guests about your journey together
+                    {t('createWedding.tellGuestsAboutJourney')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
