@@ -95,10 +95,10 @@ export default function CreateWedding() {
   };
 
   const templates = [
-    { id: 'garden-romance', name: 'Garden Romance', preview: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
-    { id: 'modern-elegance', name: 'Modern Elegance', preview: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
-    { id: 'rustic-charm', name: 'Rustic Charm', preview: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=300&h=200' },
-    { id: 'beach-bliss', name: 'Beach Bliss', preview: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
+    { id: 'garden-romance', name: t('createWedding.gardenRomance'), preview: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
+    { id: 'modern-elegance', name: t('createWedding.modernElegance'), preview: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
+    { id: 'rustic-charm', name: t('createWedding.rusticCharm'), preview: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=300&h=200' },
+    { id: 'beach-bliss', name: t('createWedding.beachBliss'), preview: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
   ];
 
   return (
@@ -250,10 +250,10 @@ export default function CreateWedding() {
                     name="story"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Your Love Story</FormLabel>
+                        <FormLabel>{t('createWedding.yourLoveStory')}</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Share how you met, your proposal story, or any special moments you'd like guests to know about..."
+                            placeholder={t('createWedding.shareHowYouMet')}
                             className="min-h-32 resize-none"
                             {...field}
                           />
@@ -268,15 +268,15 @@ export default function CreateWedding() {
                     name="backgroundMusicUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Background Music (Optional)</FormLabel>
+                        <FormLabel>{t('createWedding.backgroundMusic')}</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="Enter YouTube or Spotify URL for your special song" 
+                            placeholder={t('createWedding.enterYouTubeSpotify')} 
                             {...field} 
                           />
                         </FormControl>
                         <p className="text-sm text-charcoal opacity-60">
-                          Add a special song that will play softly in the background
+                          {t('createWedding.addSpecialSong')}
                         </p>
                         <FormMessage />
                       </FormItem>
@@ -291,10 +291,10 @@ export default function CreateWedding() {
               <Card className="wedding-card">
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-                    Choose Your Design
+                    {t('createWedding.chooseYourDesign')}
                   </CardTitle>
                   <p className="text-charcoal opacity-70">
-                    Select a template and customize your colors
+                    {t('createWedding.selectTemplateCustomize')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-8">
@@ -303,7 +303,7 @@ export default function CreateWedding() {
                     name="template"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Website Template</FormLabel>
+                        <FormLabel>{t('createWedding.websiteTemplate')}</FormLabel>
                         <div className="grid md:grid-cols-2 gap-4">
                           {templates.map((template) => (
                             <div
