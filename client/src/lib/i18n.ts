@@ -20,6 +20,15 @@ const resources = {
       'hero.freeTrial': 'Free 30-day trial',
       'hero.noCreditCard': 'No credit card required',
 
+      // Demo Section
+      'demo.title': 'See Your Wedding Website Come to Life',
+      'demo.subtitle': 'Preview how your personalized wedding website will look with our interactive demo',
+      'demo.ourStory': 'Our Love Story',
+      'demo.ourMemories': 'Our Memories',
+      'demo.storyText': 'We met on a rainy Tuesday at our favorite coffee shop. What started as a chance encounter became the most beautiful love story we could have imagined...',
+      'demo.howWeMet': 'How We Met',
+      'demo.howWeMetText': 'Every love story is special, and ours began in the most unexpected way...',
+
       // Wedding Site
       'wedding.ourStory': 'Our Love Story',
       'wedding.rsvp': 'RSVP',
@@ -27,6 +36,17 @@ const resources = {
       'wedding.guestBook': 'Guest Book',
       'wedding.weddingDetails': 'Wedding Details',
       'wedding.countdown': 'Countdown',
+      'wedding.when': 'When',
+      'wedding.where': 'Where',
+      'wedding.ceremonyTime': 'Ceremony begins at 4:00 PM',
+      'wedding.viewOnMap': 'View on Map',
+      'wedding.guestBookSubtitle': 'Leave us a message to make our day even more special',
+      'wedding.messagesFromLovedOnes': 'Messages from our loved ones',
+      'wedding.thankYouGuests': 'Thank you for being part of our special day',
+      'wedding.createdWith': 'Created with',
+      'wedding.using': 'using LoveStory',
+      'wedding.capturingJourney': 'Capturing our journey together',
+      'wedding.cantWaitToCelebrate': 'We can\'t wait to celebrate with you!',
 
       // RSVP Form
       'rsvp.guestName': 'Guest Name',
@@ -39,6 +59,7 @@ const resources = {
       'rsvp.message': 'Message for the couple',
       'rsvp.submit': 'Submit RSVP',
       'rsvp.thankYou': 'Thank you for your RSVP!',
+      'rsvp.thankYouMessage': 'We can\'t wait to celebrate with you!',
 
       // Admin Dashboard
       'admin.dashboard': 'Dashboard',
@@ -52,14 +73,87 @@ const resources = {
       'admin.manageGuests': 'Manage Guests',
       'admin.recentRSVPs': 'Recent RSVPs',
 
-      // Features
+      // Features Section
       'features.title': 'Everything You Need for Your Perfect Day',
+      'features.subtitle': 'Comprehensive tools to create, manage, and share your wedding celebration',
       'features.customization': 'Beautiful Customization',
+      'features.customizationDesc': 'Choose from stunning templates and customize every detail to match your unique style and vision.',
       'features.rsvpManagement': 'RSVP Management',
+      'features.rsvpManagementDesc': 'Effortlessly track guest responses with our intuitive RSVP system and real-time analytics.',
       'features.photoGalleries': 'Photo Galleries',
+      'features.photoGalleriesDesc': 'Share your love story and wedding photos with beautiful, responsive gallery layouts.',
       'features.multiLanguage': 'Multi-Language Support',
+      'features.multiLanguageDesc': 'Reach all your guests with full Uzbek and Russian language support for every feature.',
       'features.venueIntegration': 'Venue Integration',
+      'features.venueIntegrationDesc': 'Help guests find your venue with integrated maps and detailed location information.',
       'features.backgroundMusic': 'Background Music',
+      'features.backgroundMusicDesc': 'Set the perfect mood with customizable background music that plays softly for your guests.',
+
+      // Pricing Section
+      'pricing.title': 'Simple, Transparent Pricing',
+      'pricing.subtitle': 'Choose the perfect plan for your special day',
+      'pricing.mostPopular': 'Most Popular',
+      'pricing.basic': 'Basic',
+      'pricing.premium': 'Premium',
+      'pricing.deluxe': 'Deluxe',
+      'pricing.free': 'Free',
+      'pricing.perYear': '/year',
+      'pricing.basicFeatures': [
+        'Basic website template',
+        'Up to 50 guests',
+        'RSVP management',
+        'Photo gallery (10 photos)'
+      ],
+      'pricing.premiumFeatures': [
+        'All Basic features',
+        'Unlimited guests',
+        'Premium templates',
+        'Unlimited photos',
+        'Custom domain',
+        'Background music'
+      ],
+      'pricing.deluxeFeatures': [
+        'All Premium features',
+        'Advanced customization',
+        'Priority support',
+        'Guest messaging',
+        'Analytics dashboard'
+      ],
+      'pricing.chooseBasic': 'Get Started',
+      'pricing.choosePremium': 'Choose Premium',
+      'pricing.chooseDeluxe': 'Choose Deluxe',
+
+      // Templates Section
+      'templates.title': 'Beautiful Templates for Every Style',
+      'templates.subtitle': 'Start with a professionally designed template and make it uniquely yours',
+      'templates.gardenRomance': 'Garden Romance',
+      'templates.gardenRomanceDesc': 'Perfect for outdoor and garden weddings with soft, romantic elements',
+      'templates.modernElegance': 'Modern Elegance',
+      'templates.modernEleganceDesc': 'Clean, sophisticated design for contemporary couples',
+      'templates.rusticCharm': 'Rustic Charm',
+      'templates.rusticCharmDesc': 'Warm, cozy design with vintage and rustic elements',
+      'templates.previewTemplate': 'Preview Template',
+
+      // CTA Section
+      'cta.title': 'Ready to Create Your Dream Wedding Website?',
+      'cta.subtitle': 'Join thousands of couples who have shared their special day with LoveStory. Start your free trial today.',
+      'cta.startFreeTrial': 'Start Free Trial',
+      'cta.noCreditCard': 'No credit card required',
+      'cta.freeTrial': '30-day free trial',
+      'cta.cancelAnytime': 'Cancel anytime',
+
+      // Footer
+      'footer.features': 'Features',
+      'footer.weddingWebsites': 'Wedding Websites',
+      'footer.rsvpManagement': 'RSVP Management',
+      'footer.photoGalleries': 'Photo Galleries',
+      'footer.guestBook': 'Guest Book',
+      'footer.support': 'Support',
+      'footer.helpCenter': 'Help Center',
+      'footer.contactUs': 'Contact Us',
+      'footer.privacyPolicy': 'Privacy Policy',
+      'footer.termsOfService': 'Terms of Service',
+      'footer.description': 'Creating beautiful, personalized wedding websites that help couples share their special day with loved ones around the world.',
 
       // Common
       'common.save': 'Save',
@@ -95,13 +189,33 @@ const resources = {
       'hero.freeTrial': '30 kunlik bepul sinov',
       'hero.noCreditCard': 'Kredit karta talab qilinmaydi',
 
+      // Demo Section
+      'demo.title': 'To\'y veb-saytingizning jonlanishini ko\'ring',
+      'demo.subtitle': 'Interaktiv demo bilan shaxsiy to\'y veb-saytingiz qanday ko\'rinishini oldindan ko\'ring',
+      'demo.ourStory': 'Bizning sevgi hikoyamiz',
+      'demo.ourMemories': 'Bizning xotiralarimiz',
+      'demo.storyText': 'Biz yomg\'irli seshanba kuni sevimli qahvaxonamizda uchrashdik. Tasodifiy uchrashuvdan boshlanganlar eng go\'zal sevgi hikoyasiga aylandi...',
+      'demo.howWeMet': 'Qanday uchrashganmiz',
+      'demo.howWeMetText': 'Har bir sevgi hikoyasi o\'ziga xos, bizniki esa eng kutilmagan tarzda boshlandi...',
+
       // Wedding Site
       'wedding.ourStory': 'Bizning sevgi hikoyamiz',
       'wedding.rsvp': 'Tasdiq',
-      'wedding.photos': 'Xotiralarimiz',
+      'wedding.photos': 'Bizning xotiralarimiz',
       'wedding.guestBook': 'Mehmonlar kitobi',
       'wedding.weddingDetails': 'To\'y tafsilotlari',
       'wedding.countdown': 'Hisoblash',
+      'wedding.when': 'Qachon',
+      'wedding.where': 'Qayerda',
+      'wedding.ceremonyTime': 'Marosim soat 16:00 da boshlanadi',
+      'wedding.viewOnMap': 'Xaritada ko\'rish',
+      'wedding.guestBookSubtitle': 'Bizning kunimizni yanada o\'ziga xos qilish uchun xabar qoldiring',
+      'wedding.messagesFromLovedOnes': 'Yaqinlarimizdan xabarlar',
+      'wedding.thankYouGuests': 'Bizning maxsus kunimizda ishtirok etganingiz uchun rahmat',
+      'wedding.createdWith': 'Yaratilgan',
+      'wedding.using': 'LoveStory yordamida',
+      'wedding.capturingJourney': 'Bizning sayohatimizni suratga olish',
+      'wedding.cantWaitToCelebrate': 'Siz bilan nishonlashimizni kutib turibmiz!',
 
       // RSVP Form
       'rsvp.guestName': 'Mehmon ismi',
@@ -114,6 +228,7 @@ const resources = {
       'rsvp.message': 'Er-xotin uchun xabar',
       'rsvp.submit': 'Tasdiqlash yuborish',
       'rsvp.thankYou': 'Tasdiqlashingiz uchun rahmat!',
+      'rsvp.thankYouMessage': 'Siz bilan nishonlashimizni kutib turibmiz!',
 
       // Admin Dashboard
       'admin.dashboard': 'Boshqaruv paneli',
@@ -126,6 +241,97 @@ const resources = {
       'admin.uploadPhotos': 'Rasmlarni yuklash',
       'admin.manageGuests': 'Mehmonlarni boshqarish',
       'admin.recentRSVPs': 'So\'nggi tasdiqlar',
+
+      // Features Section
+      'features.title': 'Mukammal kuningiz uchun kerak bo\'lgan hamma narsa',
+      'features.subtitle': 'To\'y bayramingizni yaratish, boshqarish va baham ko\'rish uchun keng qamrovli vositalar',
+      'features.customization': 'Chiroyli moslash',
+      'features.customizationDesc': 'Ajoyib shablonlardan tanlang va o\'ziga xos uslub va tasavvuringizga mos ravishda har bir tafsilotni moslashtiring.',
+      'features.rsvpManagement': 'RSVP boshqaruvi',
+      'features.rsvpManagementDesc': 'Intuitiv RSVP tizimi va real vaqt tahlillari bilan mehmon javoblarini osonlikcha kuzating.',
+      'features.photoGalleries': 'Foto galereyalar',
+      'features.photoGalleriesDesc': 'Sevgi hikoyangiz va to\'y rasmlaringizni chiroyli, moslashuvchan galereyalar bilan baham ko\'ring.',
+      'features.multiLanguage': 'Ko\'p tilli qo\'llab-quvvatlash',
+      'features.multiLanguageDesc': 'Barcha xususiyatlar uchun to\'liq o\'zbek va rus tili qo\'llab-quvvatlash bilan barcha mehmonlaringizga yeting.',
+      'features.venueIntegration': 'Joy integratsiyasi',
+      'features.venueIntegrationDesc': 'Mehmonlarga integrasiya qilingan xaritalar va batafsil joy ma\'lumotlari bilan joyingizni topishga yordam bering.',
+      'features.backgroundMusic': 'Orqa fon musiqasi',
+      'features.backgroundMusicDesc': 'Mehmonlaringiz uchun ohista chaladigan moslashuvchan orqa fon musiqasi bilan mukammal kayfiyat yarating.',
+
+      // Pricing Section
+      'pricing.title': 'Oddiy, shaffof narxlar',
+      'pricing.subtitle': 'Maxsus kuningiz uchun mukammal rejani tanlang',
+      'pricing.mostPopular': 'Eng mashhur',
+      'pricing.basic': 'Asosiy',
+      'pricing.premium': 'Premium',
+      'pricing.deluxe': 'Hashamatli',
+      'pricing.free': 'Bepul',
+      'pricing.perYear': '/yil',
+      'pricing.basicFeatures': [
+        'Asosiy veb-sayt shabloni',
+        '50 tagacha mehmon',
+        'RSVP boshqaruvi',
+        'Foto galereyasi (10 ta rasm)'
+      ],
+      'pricing.premiumFeatures': [
+        'Barcha asosiy xususiyatlar',
+        'Cheksiz mehmonlar',
+        'Premium shablonlar',
+        'Cheksiz rasmlar',
+        'Maxsus domen',
+        'Orqa fon musiqasi'
+      ],
+      'pricing.deluxeFeatures': [
+        'Barcha premium xususiyatlar',
+        'Ilg\'or moslash',
+        'Ustuvor qo\'llab-quvvatlash',
+        'Mehmon xabarlashuvi',
+        'Tahlil paneli'
+      ],
+      'pricing.chooseBasic': 'Boshlash',
+      'pricing.choosePremium': 'Premium tanlash',
+      'pricing.chooseDeluxe': 'Hashamatli tanlash',
+
+      // Templates Section
+      'templates.title': 'Har bir uslub uchun chiroyli shablonlar',
+      'templates.subtitle': 'Professional loyihalangan shablon bilan boshlang va uni o\'zingizga xos qiling',
+      'templates.gardenRomance': 'Bog\' romantikasi',
+      'templates.gardenRomanceDesc': 'Yumshoq, romantik elementlar bilan ochiq havo va bog\' to\'ylari uchun mukammal',
+      'templates.modernElegance': 'Zamonaviy nafislik',
+      'templates.modernEleganceDesc': 'Zamonaviy juftliklar uchun toza, murakkab dizayn',
+      'templates.rusticCharm': 'Qishloq jozibasiz',
+      'templates.rusticCharmDesc': 'Vintage va qishloq elementlari bilan iliq, qulay dizayn',
+      'templates.previewTemplate': 'Shablonni ko\'rish',
+
+      // CTA Section
+      'cta.title': 'Orzular to\'y veb-saytingizni yaratishga tayyormisiz?',
+      'cta.subtitle': 'LoveStory bilan maxsus kunlarini baham ko\'rgan minglab juftliklarga qo\'shiling. Bugun bepul sinovingizni boshlang.',
+      'cta.startFreeTrial': 'Bepul sinovni boshlash',
+      'cta.noCreditCard': 'Kredit karta talab qilinmaydi',
+      'cta.freeTrial': '30 kunlik bepul sinov',
+      'cta.cancelAnytime': 'Istalgan vaqtda bekor qiling',
+
+      // Footer
+      'footer.features': 'Xususiyatlar',
+      'footer.weddingWebsites': 'To\'y veb-saytlari',
+      'footer.rsvpManagement': 'RSVP boshqaruvi',
+      'footer.photoGalleries': 'Foto galereyalar',
+      'footer.guestBook': 'Mehmonlar kitobi',
+      'footer.support': 'Qo\'llab-quvvatlash',
+      'footer.helpCenter': 'Yordam markazi',
+      'footer.contactUs': 'Biz bilan bog\'laning',
+      'footer.privacyPolicy': 'Maxfiylik siyosati',
+      'footer.termsOfService': 'Xizmat shartlari',
+      'footer.description': 'Juftliklarga butun dunyo bo\'ylab yaqinlari bilan maxsus kunlarini baham ko\'rishga yordam beradigan chiroyli, shaxsiy to\'y veb-saytlarini yaratish.',
+
+      // Common
+      'common.save': 'Saqlash',
+      'common.cancel': 'Bekor qilish',
+      'common.edit': 'Tahrirlash',
+      'common.delete': 'O\'chirish',
+      'common.loading': 'Yuklanmoqda...',
+      'common.error': 'Xato',
+      'common.success': 'Muvaffaqiyat',
 
       // Time units
       'time.days': 'Kunlar',
@@ -152,6 +358,15 @@ const resources = {
       'hero.freeTrial': '30-дневная бесплатная версия',
       'hero.noCreditCard': 'Кредитная карта не требуется',
 
+      // Demo Section
+      'demo.title': 'Посмотрите, как ваш свадебный сайт оживает',
+      'demo.subtitle': 'Предварительный просмотр того, как будет выглядеть ваш персональный свадебный сайт с нашей интерактивной демо',
+      'demo.ourStory': 'Наша история любви',
+      'demo.ourMemories': 'Наши воспоминания',
+      'demo.storyText': 'Мы встретились в дождливый вторник в нашем любимом кафе. То, что началось как случайная встреча, стало самой прекрасной историей любви, которую мы могли себе представить...',
+      'demo.howWeMet': 'Как мы познакомились',
+      'demo.howWeMetText': 'Каждая история любви особенная, а наша началась самым неожиданным образом...',
+
       // Wedding Site
       'wedding.ourStory': 'Наша история любви',
       'wedding.rsvp': 'Подтверждение',
@@ -159,6 +374,17 @@ const resources = {
       'wedding.guestBook': 'Книга гостей',
       'wedding.weddingDetails': 'Детали свадьбы',
       'wedding.countdown': 'Обратный отсчет',
+      'wedding.when': 'Когда',
+      'wedding.where': 'Где',
+      'wedding.ceremonyTime': 'Церемония начинается в 16:00',
+      'wedding.viewOnMap': 'Посмотреть на карте',
+      'wedding.guestBookSubtitle': 'Оставьте нам сообщение, чтобы сделать наш день еще более особенным',
+      'wedding.messagesFromLovedOnes': 'Сообщения от наших близких',
+      'wedding.thankYouGuests': 'Спасибо за участие в нашем особенном дне',
+      'wedding.createdWith': 'Создано с',
+      'wedding.using': 'использованием LoveStory',
+      'wedding.capturingJourney': 'Запечатлеваем наше путешествие вместе',
+      'wedding.cantWaitToCelebrate': 'Мы не можем дождаться празднования с вами!',
 
       // RSVP Form
       'rsvp.guestName': 'Имя гостя',
@@ -171,6 +397,7 @@ const resources = {
       'rsvp.message': 'Сообщение для пары',
       'rsvp.submit': 'Отправить подтверждение',
       'rsvp.thankYou': 'Спасибо за ваше подтверждение!',
+      'rsvp.thankYouMessage': 'Мы не можем дождаться празднования с вами!',
 
       // Admin Dashboard
       'admin.dashboard': 'Панель управления',
@@ -183,6 +410,97 @@ const resources = {
       'admin.uploadPhotos': 'Загрузить фото',
       'admin.manageGuests': 'Управление гостями',
       'admin.recentRSVPs': 'Последние подтверждения',
+
+      // Features Section
+      'features.title': 'Все, что нужно для вашего идеального дня',
+      'features.subtitle': 'Комплексные инструменты для создания, управления и обмена вашим свадебным торжеством',
+      'features.customization': 'Красивая настройка',
+      'features.customizationDesc': 'Выберите из потрясающих шаблонов и настройте каждую деталь в соответствии с вашим уникальным стилем и видением.',
+      'features.rsvpManagement': 'Управление RSVP',
+      'features.rsvpManagementDesc': 'Легко отслеживайте ответы гостей с помощью нашей интуитивной системы RSVP и аналитики в реальном времени.',
+      'features.photoGalleries': 'Фотогалереи',
+      'features.photoGalleriesDesc': 'Поделитесь своей историей любви и свадебными фотографиями с красивыми, адаптивными макетами галереи.',
+      'features.multiLanguage': 'Многоязычная поддержка',
+      'features.multiLanguageDesc': 'Охватите всех своих гостей с полной поддержкой узбекского и русского языков для каждой функции.',
+      'features.venueIntegration': 'Интеграция места проведения',
+      'features.venueIntegrationDesc': 'Помогите гостям найти ваше место с интегрированными картами и подробной информацией о местоположении.',
+      'features.backgroundMusic': 'Фоновая музыка',
+      'features.backgroundMusicDesc': 'Создайте идеальное настроение с настраиваемой фоновой музыкой, которая тихо играет для ваших гостей.',
+
+      // Pricing Section
+      'pricing.title': 'Простое, прозрачное ценообразование',
+      'pricing.subtitle': 'Выберите идеальный план для вашего особенного дня',
+      'pricing.mostPopular': 'Самый популярный',
+      'pricing.basic': 'Базовый',
+      'pricing.premium': 'Премиум',
+      'pricing.deluxe': 'Люкс',
+      'pricing.free': 'Бесплатно',
+      'pricing.perYear': '/год',
+      'pricing.basicFeatures': [
+        'Базовый шаблон сайта',
+        'До 50 гостей',
+        'Управление RSVP',
+        'Фотогалерея (10 фотографий)'
+      ],
+      'pricing.premiumFeatures': [
+        'Все базовые функции',
+        'Неограниченное количество гостей',
+        'Премиум шаблоны',
+        'Неограниченное количество фото',
+        'Пользовательский домен',
+        'Фоновая музыка'
+      ],
+      'pricing.deluxeFeatures': [
+        'Все премиум функции',
+        'Расширенная настройка',
+        'Приоритетная поддержка',
+        'Сообщения гостей',
+        'Панель аналитики'
+      ],
+      'pricing.chooseBasic': 'Начать',
+      'pricing.choosePremium': 'Выбрать Премиум',
+      'pricing.chooseDeluxe': 'Выбрать Люкс',
+
+      // Templates Section
+      'templates.title': 'Красивые шаблоны для каждого стиля',
+      'templates.subtitle': 'Начните с профессионально разработанного шаблона и сделайте его уникально вашим',
+      'templates.gardenRomance': 'Садовая романтика',
+      'templates.gardenRomanceDesc': 'Идеально подходит для свадеб на открытом воздухе и в саду с мягкими, романтичными элементами',
+      'templates.modernElegance': 'Современная элегантность',
+      'templates.modernEleganceDesc': 'Чистый, сложный дизайн для современных пар',
+      'templates.rusticCharm': 'Деревенский шарм',
+      'templates.rusticCharmDesc': 'Теплый, уютный дизайн с винтажными и деревенскими элементами',
+      'templates.previewTemplate': 'Предварительный просмотр шаблона',
+
+      // CTA Section
+      'cta.title': 'Готовы создать свадебный сайт мечты?',
+      'cta.subtitle': 'Присоединяйтесь к тысячам пар, которые поделились своим особенным днем с LoveStory. Начните бесплатную пробную версию сегодня.',
+      'cta.startFreeTrial': 'Начать бесплатную пробную версию',
+      'cta.noCreditCard': 'Кредитная карта не требуется',
+      'cta.freeTrial': '30-дневная бесплатная пробная версия',
+      'cta.cancelAnytime': 'Отмените в любое время',
+
+      // Footer
+      'footer.features': 'Возможности',
+      'footer.weddingWebsites': 'Свадебные сайты',
+      'footer.rsvpManagement': 'Управление RSVP',
+      'footer.photoGalleries': 'Фотогалереи',
+      'footer.guestBook': 'Книга гостей',
+      'footer.support': 'Поддержка',
+      'footer.helpCenter': 'Центр помощи',
+      'footer.contactUs': 'Связаться с нами',
+      'footer.privacyPolicy': 'Политика конфиденциальности',
+      'footer.termsOfService': 'Условия обслуживания',
+      'footer.description': 'Создание красивых, персонализированных свадебных сайтов, которые помогают парам делиться своим особенным днем с близкими по всему миру.',
+
+      // Common
+      'common.save': 'Сохранить',
+      'common.cancel': 'Отмена',
+      'common.edit': 'Редактировать',
+      'common.delete': 'Удалить',
+      'common.loading': 'Загрузка...',
+      'common.error': 'Ошибка',
+      'common.success': 'Успех',
 
       // Time units
       'time.days': 'Дни',

@@ -256,10 +256,10 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-              See Your Wedding Website Come to Life
+              {t('demo.title')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
-              Preview how your personalized wedding website will look with our interactive demo
+              {t('demo.subtitle')}
             </p>
           </div>
 
@@ -305,11 +305,11 @@ export default function Landing() {
                 <div className="p-8 space-y-12">
                   {/* Our Story Section */}
                   <div className="text-center">
-                    <h4 className="text-2xl font-playfair font-bold text-charcoal mb-6">Our Love Story</h4>
+                    <h4 className="text-2xl font-playfair font-bold text-charcoal mb-6">{t('demo.ourStory')}</h4>
                     <div className="grid md:grid-cols-2 gap-8 items-center">
                       <div>
                         <p className="text-charcoal opacity-80 leading-relaxed">
-                          We met on a rainy Tuesday at our favorite coffee shop. What started as a chance encounter became the most beautiful love story we could have imagined...
+                          {t('demo.storyText')}
                         </p>
                       </div>
                       <div>
@@ -324,7 +324,7 @@ export default function Landing() {
 
                   {/* Demo Photo Gallery */}
                   <div>
-                    <h4 className="text-2xl font-playfair font-bold text-charcoal text-center mb-6">Our Memories</h4>
+                    <h4 className="text-2xl font-playfair font-bold text-charcoal text-center mb-6">{t('demo.ourMemories')}</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {[
                         'https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300',
@@ -353,10 +353,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-              Everything You Need for Your Perfect Day
+              {t('features.title')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
-              Comprehensive tools to create, manage, and share your wedding celebration
+              {t('features.subtitle')}
             </p>
           </div>
 
