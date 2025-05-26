@@ -113,7 +113,7 @@ export default function CreateWedding() {
               <span className="font-playfair font-semibold text-lg">LoveStory</span>
             </Link>
             <div className="text-sm text-charcoal opacity-70">
-              Step {currentStep} of {totalSteps}
+              {t('createWedding.step')} {currentStep} {t('createWedding.of')} {totalSteps}
             </div>
           </div>
         </div>
@@ -151,10 +151,10 @@ export default function CreateWedding() {
               <Card className="wedding-card">
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-                    Tell Us About Your Special Day
+                    {t('createWedding.tellUsAboutDay')}
                   </CardTitle>
                   <p className="text-charcoal opacity-70">
-                    Let's start with the basic details about your wedding
+                    {t('createWedding.basicDetails')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -164,9 +164,9 @@ export default function CreateWedding() {
                       name="bride"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Bride's Name</FormLabel>
+                          <FormLabel>{t('createWedding.brideName')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter bride's full name" {...field} />
+                            <Input placeholder={t('createWedding.enterBrideName')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -178,9 +178,9 @@ export default function CreateWedding() {
                       name="groom"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Groom's Name</FormLabel>
+                          <FormLabel>{t('createWedding.groomName')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter groom's full name" {...field} />
+                            <Input placeholder={t('createWedding.enterGroomName')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -193,7 +193,7 @@ export default function CreateWedding() {
                     name="weddingDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Wedding Date</FormLabel>
+                        <FormLabel>{t('createWedding.weddingDate')}</FormLabel>
                         <FormControl>
                           <Input type="date" {...field} />
                         </FormControl>

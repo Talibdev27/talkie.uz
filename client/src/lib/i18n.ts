@@ -164,6 +164,24 @@ const resources = {
       'common.error': 'Error',
       'common.success': 'Success',
 
+      // Create Wedding Page
+      'createWedding.step': 'Step',
+      'createWedding.of': 'of',
+      'createWedding.tellUsAboutDay': 'Tell Us About Your Special Day',
+      'createWedding.basicDetails': 'Let\'s start with the basic details about your wedding',
+      'createWedding.brideName': 'Bride\'s Name',
+      'createWedding.groomName': 'Groom\'s Name',
+      'createWedding.weddingDate': 'Wedding Date',
+      'createWedding.venueName': 'Venue Name',
+      'createWedding.venueAddress': 'Venue Address',
+      'createWedding.enterBrideName': 'Enter bride\'s full name',
+      'createWedding.enterGroomName': 'Enter groom\'s full name',
+      'createWedding.enterVenueName': 'Enter venue name',
+      'createWedding.enterVenueAddress': 'Enter full venue address',
+      'createWedding.previous': 'Previous',
+      'createWedding.nextStep': 'Next Step',
+      'createWedding.createWebsite': 'Create Website',
+
       // Time units
       'time.days': 'Days',
       'time.hours': 'Hours',
@@ -333,6 +351,24 @@ const resources = {
       'common.error': 'Xato',
       'common.success': 'Muvaffaqiyat',
 
+      // Create Wedding Page
+      'createWedding.step': 'Qadam',
+      'createWedding.of': 'dan',
+      'createWedding.tellUsAboutDay': 'Maxsus kuningiz haqida bizga ayting',
+      'createWedding.basicDetails': 'To\'yingiz haqida asosiy ma\'lumotlardan boshlaylik',
+      'createWedding.brideName': 'Kelin ismi',
+      'createWedding.groomName': 'Kuyov ismi',
+      'createWedding.weddingDate': 'To\'y sanasi',
+      'createWedding.venueName': 'Joy nomi',
+      'createWedding.venueAddress': 'Joy manzili',
+      'createWedding.enterBrideName': 'Kelinning to\'liq ismini kiriting',
+      'createWedding.enterGroomName': 'Kuyovning to\'liq ismini kiriting',
+      'createWedding.enterVenueName': 'Joy nomini kiriting',
+      'createWedding.enterVenueAddress': 'To\'liq joy manzilini kiriting',
+      'createWedding.previous': 'Oldingi',
+      'createWedding.nextStep': 'Keyingi qadam',
+      'createWedding.createWebsite': 'Veb-sayt yaratish',
+
       // Time units
       'time.days': 'Kunlar',
       'time.hours': 'Soatlar',
@@ -501,6 +537,24 @@ const resources = {
       'common.loading': 'Загрузка...',
       'common.error': 'Ошибка',
       'common.success': 'Успех',
+
+      // Create Wedding Page
+      'createWedding.step': 'Шаг',
+      'createWedding.of': 'из',
+      'createWedding.tellUsAboutDay': 'Расскажите нам о своем особенном дне',
+      'createWedding.basicDetails': 'Давайте начнем с основных деталей вашей свадьбы',
+      'createWedding.brideName': 'Имя невесты',
+      'createWedding.groomName': 'Имя жениха',
+      'createWedding.weddingDate': 'Дата свадьбы',
+      'createWedding.venueName': 'Название места',
+      'createWedding.venueAddress': 'Адрес места',
+      'createWedding.enterBrideName': 'Введите полное имя невесты',
+      'createWedding.enterGroomName': 'Введите полное имя жениха',
+      'createWedding.enterVenueName': 'Введите название места',
+      'createWedding.enterVenueAddress': 'Введите полный адрес места',
+      'createWedding.previous': 'Назад',
+      'createWedding.nextStep': 'Следующий шаг',
+      'createWedding.createWebsite': 'Создать сайт',
 
       // Time units
       'time.days': 'Дни',
