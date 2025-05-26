@@ -18,6 +18,7 @@ import {
   Upload, Edit, Trash2, MessageSquare, BarChart3, ExternalLink,
   Download, Plus, ArrowLeft
 } from 'lucide-react';
+import { GuestListManager } from '@/components/guest-list-manager';
 import type { Wedding, Guest, Photo, GuestBookEntry } from '@shared/schema';
 
 export default function AdminDashboard() {
@@ -347,15 +348,20 @@ export default function AdminDashboard() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <Tabs defaultValue="rsvps" className="space-y-6">
+            <Tabs defaultValue="guests" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="rsvps">RSVPs</TabsTrigger>
+                <TabsTrigger value="guests">{t('guestList.guestList')}</TabsTrigger>
                 <TabsTrigger value="photos">Photos</TabsTrigger>
                 <TabsTrigger value="guestbook">Guest Book</TabsTrigger>
                 <TabsTrigger value="analytics">Analytics</TabsTrigger>
               </TabsList>
 
-              {/* RSVPs Tab */}
+              {/* Guest List Tab with RSVP Tracking */}
+              <TabsContent value="guests" className="space-y-6">
+                <GuestListManager weddingId={wedding.id} />
+              </TabsContent>
+
+              {/* Legacy RSVPs Tab (kept for transition) */}
               <TabsContent value="rsvps" className="space-y-6">
                 <Card className="wedding-card">
                   <CardHeader>

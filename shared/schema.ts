@@ -37,7 +37,16 @@ export const guests = pgTable("guests", {
   phone: text("phone"),
   rsvpStatus: text("rsvp_status").$type<"pending" | "confirmed" | "declined" | "maybe">().notNull().default("pending"),
   plusOne: boolean("plus_one").notNull().default(false),
+  plusOneName: text("plus_one_name"),
   message: text("message"),
+  category: text("category").notNull().default("family"), // family, friends, colleagues, etc.
+  side: text("side").$type<"bride" | "groom" | "both">().notNull().default("both"),
+  dietaryRestrictions: text("dietary_restrictions"),
+  address: text("address"),
+  invitationSent: boolean("invitation_sent").notNull().default(false),
+  invitationSentAt: timestamp("invitation_sent_at"),
+  addedBy: text("added_by").notNull().default("couple"), // couple, family, friend
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   respondedAt: timestamp("responded_at"),
 });
