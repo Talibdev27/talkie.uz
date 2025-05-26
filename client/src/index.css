@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%; /* #FFFFFF */
-  --foreground: 20 14% 20%; /* #2C3338 */
-  --muted: 42 25% 96%; /* #F8F1F1 */
+  --background: 0 0% 100%;
+  --foreground: 20 14% 20%;
+  --muted: 42 25% 96%;
   --muted-foreground: 25 5% 45%;
   --popover: 0 0% 100%;
   --popover-foreground: 20 14% 20%;
@@ -15,11 +15,11 @@
   --card-foreground: 20 14% 20%;
   --border: 20 6% 90%;
   --input: 20 6% 90%;
-  --primary: 35 32% 70%; /* #D4B08C */
+  --primary: 35 32% 70%;
   --primary-foreground: 211 100% 99%;
-  --secondary: 42 25% 96%; /* #F8F1F1 */
+  --secondary: 42 25% 96%;
   --secondary-foreground: 20 14% 20%;
-  --accent: 72 17% 57%; /* #89916B */
+  --accent: 72 17% 57%;
   --accent-foreground: 211 100% 99%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 60 9% 98%;
@@ -27,10 +27,10 @@
   --radius: 0.75rem;
 
   /* Custom wedding colors */
-  --romantic-gold: 35 32% 70%; /* #D4B08C */
-  --soft-white: 42 25% 96%; /* #F8F1F1 */
-  --sage-green: 72 17% 57%; /* #89916B */
-  --charcoal: 20 14% 20%; /* #2C3338 */
+  --romantic-gold: 35 32% 70%;
+  --soft-white: 42 25% 96%;
+  --sage-green: 72 17% 57%;
+  --charcoal: 20 14% 20%;
 }
 
 .dark {
@@ -68,102 +68,77 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
   }
-
-  .font-playfair {
-    font-family: 'Playfair Display', serif;
-  }
-
-  .font-lato {
-    font-family: 'Lato', sans-serif;
-  }
-
-  .font-cormorant {
-    font-family: 'Cormorant Garamond', serif;
-  }
-
-  .text-romantic-gold {
-    color: hsl(var(--romantic-gold));
-  }
-
-  .bg-romantic-gold {
-    background-color: hsl(var(--romantic-gold));
-  }
-
-  .text-soft-white {
-    color: hsl(var(--soft-white));
-  }
-
-  .bg-soft-white {
-    background-color: hsl(var(--soft-white));
-  }
-
-  .text-sage-green {
-    color: hsl(var(--sage-green));
-  }
-
-  .bg-sage-green {
-    background-color: hsl(var(--sage-green));
-  }
-
-  .text-charcoal {
-    color: hsl(var(--charcoal));
-  }
-
-  .bg-charcoal {
-    background-color: hsl(var(--charcoal));
-  }
-
-  .border-romantic-gold {
-    border-color: hsl(var(--romantic-gold));
-  }
-
-  .border-sage-green {
-    border-color: hsl(var(--sage-green));
-  }
-
-  .hover\:bg-romantic-gold:hover {
-    background-color: hsl(var(--romantic-gold));
-  }
-
-  .hover\:text-romantic-gold:hover {
-    color: hsl(var(--romantic-gold));
-  }
-
-  .focus\:ring-romantic-gold:focus {
-    --tw-ring-color: hsl(var(--romantic-gold));
-  }
-
-  .gradient-romantic {
-    background: linear-gradient(135deg, hsl(var(--romantic-gold)), hsl(var(--sage-green)));
-  }
 }
 
-@layer components {
-  .wedding-card {
-    @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300;
-  }
+/* Wedding-specific utility classes */
+.text-romantic-gold {
+  color: hsl(var(--romantic-gold));
+}
 
-  .wedding-button {
-    @apply bg-romantic-gold text-white px-6 py-3 rounded-xl font-medium hover:bg-opacity-90 transition-all duration-200 shadow-sm hover:shadow-md;
-  }
+.bg-romantic-gold {
+  background-color: hsl(var(--romantic-gold));
+}
 
-  .wedding-button-outline {
-    @apply border-2 border-romantic-gold text-romantic-gold px-6 py-3 rounded-xl font-medium hover:bg-romantic-gold hover:text-white transition-all duration-200;
-  }
+.text-sage-green {
+  color: hsl(var(--sage-green));
+}
 
-  .hero-section {
-    background: linear-gradient(to bottom right, hsl(var(--soft-white)), #ffffff);
-  }
+.bg-sage-green {
+  background-color: hsl(var(--sage-green));
+}
 
-  .elegant-shadow {
-    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  }
+.text-charcoal {
+  color: hsl(var(--charcoal));
+}
 
-  .text-shadow {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.bg-charcoal {
+  background-color: hsl(var(--charcoal));
+}
 
-  .photo-hover {
-    @apply hover:scale-105 transition-transform duration-300 cursor-pointer;
-  }
+.bg-soft-white {
+  background-color: hsl(var(--soft-white));
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-lato {
+  font-family: 'Lato', sans-serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Wedding component styles */
+.wedding-card {
+  @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+}
+
+.wedding-button {
+  background-color: hsl(var(--romantic-gold));
+  @apply text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.wedding-button-outline {
+  border: 2px solid hsl(var(--romantic-gold));
+  color: hsl(var(--romantic-gold));
+  @apply px-6 py-3 rounded-xl font-medium hover:text-white transition-all duration-200;
+}
+
+.wedding-button-outline:hover {
+  background-color: hsl(var(--romantic-gold));
+}
+
+.hero-section {
+  @apply bg-gradient-to-br from-gray-50 to-white;
+}
+
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.photo-hover {
+  @apply hover:scale-105 transition-transform duration-300 cursor-pointer;
 }
