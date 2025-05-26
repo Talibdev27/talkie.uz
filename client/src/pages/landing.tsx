@@ -81,44 +81,28 @@ export default function Landing() {
 
   const pricingPlans = [
     {
-      name: 'Basic',
-      price: 'Free',
-      features: [
-        'Basic website template',
-        'Up to 50 guests',
-        'RSVP management',
-        'Photo gallery (10 photos)',
-      ],
-      buttonText: 'Get Started',
+      nameKey: 'pricing.basic',
+      priceKey: 'pricing.free',
+      featuresKey: 'pricing.basicFeatures',
+      buttonKey: 'pricing.chooseBasic',
       popular: false,
     },
     {
-      name: 'Premium',
-      price: '$49',
-      period: '/year',
-      features: [
-        'All Basic features',
-        'Unlimited guests',
-        'Premium templates',
-        'Unlimited photos',
-        'Custom domain',
-        'Background music',
-      ],
-      buttonText: 'Choose Premium',
+      nameKey: 'pricing.premium',
+      price: '100,000',
+      currency: 'som',
+      periodKey: 'pricing.perYear',
+      featuresKey: 'pricing.premiumFeatures',
+      buttonKey: 'pricing.choosePremium',
       popular: true,
     },
     {
-      name: 'Deluxe',
-      price: '$99',
-      period: '/year',
-      features: [
-        'All Premium features',
-        'Advanced customization',
-        'Priority support',
-        'Guest messaging',
-        'Analytics dashboard',
-      ],
-      buttonText: 'Choose Deluxe',
+      nameKey: 'pricing.deluxe',
+      price: '300,000',
+      currency: 'som',
+      periodKey: 'pricing.perYear',
+      featuresKey: 'pricing.deluxeFeatures',
+      buttonKey: 'pricing.chooseDeluxe',
       popular: false,
     },
   ];
@@ -402,23 +386,23 @@ export default function Landing() {
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-sage-green text-white px-4 py-1 rounded-full text-xs font-medium">
-                    Most Popular
+                    {t('pricing.mostPopular')}
                   </div>
                 )}
                 <CardContent className="p-8">
                   <h3 className="text-xl font-playfair font-semibold mb-2">
-                    {plan.name}
+                    {t(plan.nameKey)}
                   </h3>
                   <div className="mb-6">
                     <span className="text-3xl font-playfair font-bold">
-                      {plan.price}
+                      {plan.priceKey ? t(plan.priceKey) : `${plan.price} ${plan.currency === 'som' ? 'сўм' : plan.currency}`}
                     </span>
-                    {plan.period && (
-                      <span className="text-sm opacity-90">{plan.period}</span>
+                    {plan.periodKey && (
+                      <span className="text-sm opacity-90">{t(plan.periodKey)}</span>
                     )}
                   </div>
                   <ul className="space-y-3 mb-8 text-sm">
-                    {plan.features.map((feature, featureIndex) => (
+                    {(t(plan.featuresKey, { returnObjects: true }) as string[]).map((feature: string, featureIndex: number) => (
                       <li key={featureIndex} className="flex items-center justify-center">
                         <Check className={`h-4 w-4 mr-2 ${plan.popular ? 'text-white' : 'text-sage-green'}`} />
                         {feature}
@@ -432,7 +416,7 @@ export default function Landing() {
                         : 'w-full wedding-button-outline'
                     }
                   >
-                    {plan.buttonText}
+                    {t(plan.buttonKey)}
                   </Button>
                 </CardContent>
               </Card>
@@ -446,10 +430,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-              Beautiful Templates for Every Style
+              {t('templates.title')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
-              Start with a professionally designed template and make it uniquely yours
+              {t('templates.subtitle')}
             </p>
           </div>
 
