@@ -8,6 +8,8 @@ import {
   type RSVPUpdate
 } from "@shared/schema";
 import { nanoid } from "nanoid";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -209,4 +211,127 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserById(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
+    const [wedding] = await db
+      .insert(weddings)
+      .values({ ...insertWedding, userId })
+      .returning();
+    return wedding;
+  }
+
+  async getWeddingByUrl(uniqueUrl: string): Promise<Wedding | undefined> {
+    const [wedding] = await db.select().from(weddings).where(eq(weddings.uniqueUrl, uniqueUrl));
+    return wedding || undefined;
+  }
+
+  async getWeddingsByUserId(userId: number): Promise<Wedding[]> {
+    return await db.select().from(weddings).where(eq(weddings.userId, userId));
+  }
+
+  async updateWedding(id: number, updates: Partial<InsertWedding>): Promise<Wedding | undefined> {
+    const [wedding] = await db
+      .update(weddings)
+      .set(updates)
+      .where(eq(weddings.id, id))
+      .returning();
+    return wedding || undefined;
+  }
+
+  async createGuest(insertGuest: InsertGuest): Promise<Guest> {
+    const [guest] = await db
+      .insert(guests)
+      .values(insertGuest)
+      .returning();
+    return guest;
+  }
+
+  async getGuestsByWeddingId(weddingId: number): Promise<Guest[]> {
+    return await db.select().from(guests).where(eq(guests.weddingId, weddingId));
+  }
+
+  async updateGuestRSVP(guestId: number, update: RSVPUpdate): Promise<Guest | undefined> {
+    const [guest] = await db
+      .update(guests)
+      .set(update)
+      .where(eq(guests.id, guestId))
+      .returning();
+    return guest || undefined;
+  }
+
+  async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
+    const [photo] = await db
+      .insert(photos)
+      .values(insertPhoto)
+      .returning();
+    return photo;
+  }
+
+  async getPhotosByWeddingId(weddingId: number): Promise<Photo[]> {
+    return await db.select().from(photos).where(eq(photos.weddingId, weddingId));
+  }
+
+  async deletePhoto(id: number): Promise<boolean> {
+    const result = await db.delete(photos).where(eq(photos.id, id));
+    return result.rowCount > 0;
+  }
+
+  async createGuestBookEntry(insertEntry: InsertGuestBookEntry): Promise<GuestBookEntry> {
+    const [entry] = await db
+      .insert(guestBookEntries)
+      .values(insertEntry)
+      .returning();
+    return entry;
+  }
+
+  async getGuestBookEntriesByWeddingId(weddingId: number): Promise<GuestBookEntry[]> {
+    return await db.select().from(guestBookEntries).where(eq(guestBookEntries.weddingId, weddingId));
+  }
+
+  async getWeddingStats(weddingId: number): Promise<{
+    totalGuests: number;
+    confirmedGuests: number;
+    pendingGuests: number;
+    declinedGuests: number;
+    totalPhotos: number;
+    guestBookEntries: number;
+  }> {
+    const guestsList = await db.select().from(guests).where(eq(guests.weddingId, weddingId));
+    const photoCount = await db.select().from(photos).where(eq(photos.weddingId, weddingId));
+    const guestBookCount = await db.select().from(guestBookEntries).where(eq(guestBookEntries.weddingId, weddingId));
+
+    const totalGuests = guestsList.length;
+    const confirmedGuests = guestsList.filter(g => g.rsvpStatus === 'confirmed').length;
+    const pendingGuests = guestsList.filter(g => g.rsvpStatus === 'pending').length;
+    const declinedGuests = guestsList.filter(g => g.rsvpStatus === 'declined').length;
+
+    return {
+      totalGuests,
+      confirmedGuests,
+      pendingGuests,
+      declinedGuests,
+      totalPhotos: photoCount.length,
+      guestBookEntries: guestBookCount.length,
+    };
+  }
+}
+
+export const storage = new DatabaseStorage();
