@@ -33,7 +33,7 @@ export default function AdminLogin() {
           description: "Welcome to the admin dashboard!",
         });
         
-        setLocation('/admin/dashboard');
+        setLocation('/system/dashboard');
       } else {
         toast({
           title: "Login Failed",
@@ -122,13 +122,7 @@ export default function AdminLogin() {
             </Button>
           </form>
 
-          <div className="mt-6 p-4 bg-[#89916B]/10 rounded-lg">
-            <p className="text-sm text-[#2C3338]/70 text-center">
-              <strong>Demo Credentials:</strong><br />
-              Username: admin<br />
-              Password: wedding2024
-            </p>
-          </div>
+
         </CardContent>
       </Card>
     </div>

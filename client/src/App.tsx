@@ -11,6 +11,7 @@ import CreateWedding from "@/pages/create-wedding";
 import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
+import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
 
 function Router() {
@@ -18,6 +19,10 @@ function Router() {
     <Switch>
       {/* Landing page */}
       <Route path="/" component={Landing} />
+      
+      {/* User authentication */}
+      <Route path="/login" component={UserLogin} />
+      <Route path="/register" component={UserLogin} />
       
       {/* Wedding creation flow */}
       <Route path="/create-wedding" component={CreateWedding} />
@@ -28,11 +33,10 @@ function Router() {
       {/* Individual wedding sites */}
       <Route path="/wedding/:uniqueUrl" component={WeddingSite} />
       
-      {/* Admin login and dashboard */}
-      <Route path="/admin" component={AdminLogin} />
-      <Route path="/admin/login" component={AdminLogin} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/:uniqueUrl" component={AdminDashboard} />
+      {/* Admin login and dashboard - hidden/secure routes */}
+      <Route path="/system/auth" component={AdminLogin} />
+      <Route path="/system/dashboard" component={AdminDashboard} />
+      <Route path="/system/:uniqueUrl" component={AdminDashboard} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />

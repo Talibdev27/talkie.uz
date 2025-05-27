@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const adminStatus = localStorage.getItem('isAdmin');
     if (adminStatus !== 'true') {
-      setLocation('/admin/login');
+      setLocation('/system/auth');
       return;
     }
     setIsAdmin(true);
