@@ -19,7 +19,7 @@ export default function WeddingSite() {
   const uniqueUrl = params.uniqueUrl as string;
 
   const { data: wedding, isLoading, error } = useQuery<Wedding>({
-    queryKey: ['/api/weddings/url', uniqueUrl],
+    queryKey: [`/api/weddings/url/${uniqueUrl}`],
     enabled: !!uniqueUrl,
   });
 
