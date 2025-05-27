@@ -105,6 +105,33 @@ export const milestones = pgTable("milestones", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const invitations = pgTable("invitations", {
+  id: serial("id").primaryKey(),
+  guestId: integer("guest_id").references(() => guests.id).notNull(),
+  weddingId: integer("wedding_id").references(() => weddings.id).notNull(),
+  invitationType: text("invitation_type").notNull().default("email"), // email, sms, whatsapp
+  invitationTemplate: text("invitation_template").notNull().default("classic"),
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  openedAt: timestamp("opened_at"),
+  status: text("status").notNull().default("pending"), // pending, sent, delivered, opened, failed
+  errorMessage: text("error_message"),
+  reminderSentAt: timestamp("reminder_sent_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const guestCollaborators = pgTable("guest_collaborators", {
+  id: serial("id").primaryKey(),
+  weddingId: integer("wedding_id").references(() => weddings.id).notNull(),
+  email: text("email").notNull(),
+  name: text("name").notNull(),
+  role: text("role").notNull().default("editor"), // viewer, editor, admin
+  invitedAt: timestamp("invited_at").defaultNow().notNull(),
+  acceptedAt: timestamp("accepted_at"),
+  lastActiveAt: timestamp("last_active_at"),
+  status: text("status").notNull().default("pending"), // pending, active, inactive
+});
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -150,6 +177,16 @@ export const insertMilestoneSchema = createInsertSchema(milestones).omit({
   completedAt: true,
 });
 
+export const insertInvitationSchema = createInsertSchema(invitations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertGuestCollaboratorSchema = createInsertSchema(guestCollaborators).omit({
+  id: true,
+  invitedAt: true,
+});
+
 export const rsvpUpdateSchema = z.object({
   rsvpStatus: z.enum(["confirmed", "declined", "maybe"]),
   message: z.string().optional(),
@@ -179,5 +216,11 @@ export type InsertBudgetItem = z.infer<typeof insertBudgetItemSchema>;
 
 export type Milestone = typeof milestones.$inferSelect;
 export type InsertMilestone = z.infer<typeof insertMilestoneSchema>;
+
+export type Invitation = typeof invitations.$inferSelect;
+export type InsertInvitation = z.infer<typeof insertInvitationSchema>;
+
+export type GuestCollaborator = typeof guestCollaborators.$inferSelect;
+export type InsertGuestCollaborator = z.infer<typeof insertGuestCollaboratorSchema>;
 
 export type RSVPUpdate = z.infer<typeof rsvpUpdateSchema>;

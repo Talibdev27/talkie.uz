@@ -1,10 +1,12 @@
 import { 
-  users, weddings, guests, photos, guestBookEntries,
+  users, weddings, guests, photos, guestBookEntries, invitations, guestCollaborators,
   type User, type InsertUser,
   type Wedding, type InsertWedding,
   type Guest, type InsertGuest,
   type Photo, type InsertPhoto,
   type GuestBookEntry, type InsertGuestBookEntry,
+  type Invitation, type InsertInvitation,
+  type GuestCollaborator, type InsertGuestCollaborator,
   type RSVPUpdate
 } from "@shared/schema";
 import { nanoid } from "nanoid";
