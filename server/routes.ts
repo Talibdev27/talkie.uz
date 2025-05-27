@@ -45,10 +45,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "User ID required" });
       }
 
+      // Validate required fields
+      if (!weddingFields.bride || !weddingFields.groom || !weddingFields.weddingDate || !weddingFields.venue || !weddingFields.venueAddress) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
       // Generate unique URL
       const uniqueUrl = Math.random().toString(36).substring(2, 15);
       
-      // Create wedding data with required fields
+      // Create wedding data with all required fields
       const weddingData = {
         bride: weddingFields.bride,
         groom: weddingFields.groom,
@@ -59,15 +64,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         template: weddingFields.template || "modernElegance",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
-        backgroundMusicUrl: null,
-        venueCoordinates: null,
-        isPublic: weddingFields.isPublic ?? true,
+        backgroundMusicUrl: weddingFields.backgroundMusicUrl || null,
+        venueCoordinates: weddingFields.venueCoordinates || null,
+        isPublic: weddingFields.isPublic !== undefined ? weddingFields.isPublic : true,
         uniqueUrl
       };
 
       console.log("Processed wedding data:", weddingData);
       
       const wedding = await storage.createWedding(userId, weddingData);
+      console.log("Wedding created successfully:", wedding);
       res.status(201).json(wedding);
     } catch (error) {
       console.error("Wedding creation error:", error);

@@ -86,20 +86,54 @@ export default function CreateWedding() {
 
   const createWedding = useMutation({
     mutationFn: async (data: CreateWeddingFormData) => {
-      // Create or get guest user first
-      const guestUserResponse = await apiRequest('POST', '/api/users/guest', {
-        email: `guest_${Date.now()}@example.com`,
-        name: `${data.bride} & ${data.groom}`
-      });
-      const guestUser = await guestUserResponse.json();
-      
-      const weddingData = { 
-        ...data, 
-        userId: guestUser.id,
-        weddingDate: data.weddingDate.toISOString()
-      };
-      const response = await apiRequest('POST', '/api/weddings', weddingData);
-      return response.json();
+      try {
+        // Create guest user first
+        const guestUserResponse = await fetch('/api/users/guest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: `guest_${Date.now()}@example.com`,
+            name: `${data.bride} & ${data.groom}`
+          })
+        });
+        
+        if (!guestUserResponse.ok) {
+          throw new Error('Failed to create guest user');
+        }
+        
+        const guestUser = await guestUserResponse.json();
+        
+        // Create wedding
+        const weddingData = { 
+          userId: guestUser.id,
+          bride: data.bride,
+          groom: data.groom,
+          weddingDate: data.weddingDate.toISOString(),
+          venue: data.venue,
+          venueAddress: data.venueAddress,
+          story: data.story || "",
+          template: data.template,
+          primaryColor: data.primaryColor,
+          accentColor: data.accentColor,
+          isPublic: data.isPublic
+        };
+        
+        const weddingResponse = await fetch('/api/weddings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(weddingData)
+        });
+        
+        if (!weddingResponse.ok) {
+          const errorText = await weddingResponse.text();
+          throw new Error(`Failed to create wedding: ${errorText}`);
+        }
+        
+        return await weddingResponse.json();
+      } catch (error) {
+        console.error('Wedding creation error:', error);
+        throw error;
+      }
     },
     onSuccess: (wedding) => {
       toast({
