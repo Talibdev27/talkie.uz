@@ -48,31 +48,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate unique URL
       const uniqueUrl = Math.random().toString(36).substring(2, 15);
       
+      // Create wedding data with required fields
       const weddingData = {
-        ...weddingFields,
-        uniqueUrl,
-        template: weddingFields.template || "gardenRomance",
+        bride: weddingFields.bride,
+        groom: weddingFields.groom,
+        weddingDate: new Date(weddingFields.weddingDate),
+        venue: weddingFields.venue,
+        venueAddress: weddingFields.venueAddress,
+        story: weddingFields.story || "",
+        template: weddingFields.template || "modernElegance",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
-        isPublic: weddingFields.isPublic ?? true
+        backgroundMusicUrl: null,
+        venueCoordinates: null,
+        isPublic: weddingFields.isPublic ?? true,
+        uniqueUrl
       };
 
       console.log("Processed wedding data:", weddingData);
       
-      // Separate userId and uniqueUrl from wedding data for validation
-      const { userId: _, uniqueUrl: __, ...dataToValidate } = weddingData;
-      console.log("Data to validate:", dataToValidate);
-      
-      const validatedData = insertWeddingSchema.parse(dataToValidate);
-      console.log("Validation successful:", validatedData);
-      const finalWeddingData = { ...validatedData, uniqueUrl };
-      
-      const wedding = await storage.createWedding(userId, finalWeddingData);
+      const wedding = await storage.createWedding(userId, weddingData);
       res.status(201).json(wedding);
     } catch (error) {
       console.error("Wedding creation error:", error);
-      res.status(400).json({ 
-        message: "Invalid wedding data", 
+      if (error instanceof Error) {
+        console.error("Error details:", error.message);
+        console.error("Error stack:", error.stack);
+      }
+      res.status(500).json({ 
+        message: "Failed to create wedding", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
     }

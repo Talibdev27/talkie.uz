@@ -230,12 +230,18 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
-    const [wedding] = await db
-      .insert(weddings)
-      .values({ ...insertWedding, userId })
-      .returning();
-    return wedding;
+  async createWedding(userId: number, insertWedding: any): Promise<Wedding> {
+    try {
+      console.log("Creating wedding with data:", { ...insertWedding, userId });
+      const [wedding] = await db
+        .insert(weddings)
+        .values({ ...insertWedding, userId })
+        .returning();
+      return wedding;
+    } catch (error) {
+      console.error("Database wedding creation error:", error);
+      throw error;
+    }
   }
 
   async getWeddingByUrl(uniqueUrl: string): Promise<Wedding | undefined> {
