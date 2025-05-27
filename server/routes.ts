@@ -59,8 +59,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("Processed wedding data:", weddingData);
       
-      const validatedData = insertWeddingSchema.parse(weddingData);
-      const wedding = await storage.createWedding(userId, validatedData);
+      // Separate userId and uniqueUrl from wedding data for validation
+      const { userId: _, uniqueUrl: __, ...dataToValidate } = weddingData;
+      console.log("Data to validate:", dataToValidate);
+      
+      const validatedData = insertWeddingSchema.parse(dataToValidate);
+      console.log("Validation successful:", validatedData);
+      const finalWeddingData = { ...validatedData, uniqueUrl };
+      
+      const wedding = await storage.createWedding(userId, finalWeddingData);
       res.status(201).json(wedding);
     } catch (error) {
       console.error("Wedding creation error:", error);
