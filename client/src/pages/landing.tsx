@@ -8,6 +8,7 @@ import {
   Heart, Palette, Calendar, Camera, Globe, MapPin, Music, 
   Check, Menu, X, Star, Users, MessageSquare 
 } from 'lucide-react';
+import { PricingSection } from '@/components/pricing-section';
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -121,7 +122,7 @@ export default function Landing() {
                 </h1>
               </Link>
             </div>
-            
+
             <div className="hidden md:flex items-center space-x-4">
               <a href="#features" className="text-charcoal hover:text-romantic-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('nav.features')}
@@ -369,65 +370,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-soft-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-              {t('pricing.title')}
-            </h2>
-            <p className="mt-4 text-lg text-charcoal opacity-70 max-w-2xl mx-auto">
-              {t('pricing.subtitle')}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {pricingPlans.map((plan, index) => (
-              <Card 
-                key={index} 
-                className={`wedding-card text-center relative ${
-                  plan.popular ? 'bg-romantic-gold text-white' : 'bg-white'
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-sage-green text-white px-4 py-1 rounded-full text-xs font-medium">
-                    {t('pricing.mostPopular')}
-                  </div>
-                )}
-                <CardContent className="p-8">
-                  <h3 className="text-xl font-playfair font-semibold mb-2">
-                    {t(plan.nameKey)}
-                  </h3>
-                  <div className="mb-6">
-                    <span className="text-3xl font-playfair font-bold">
-                      {plan.priceKey ? t(plan.priceKey) : `${plan.price} ${plan.currency === 'som' ? 'сўм' : plan.currency}`}
-                    </span>
-                    {plan.periodKey && (
-                      <span className="text-sm opacity-90">{t(plan.periodKey)}</span>
-                    )}
-                  </div>
-                  <ul className="space-y-3 mb-8 text-sm">
-                    {(t(plan.featuresKey, { returnObjects: true }) as string[]).map((feature: string, featureIndex: number) => (
-                      <li key={featureIndex} className="flex items-center justify-center">
-                        <Check className={`h-4 w-4 mr-2 ${plan.popular ? 'text-white' : 'text-sage-green'}`} />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button 
-                    className={
-                      plan.popular 
-                        ? 'w-full bg-white text-romantic-gold hover:bg-gray-50' 
-                        : 'w-full wedding-button-outline'
-                    }
-                  >
-                    {t(plan.buttonKey)}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* Template Gallery */}
       <section id="templates" className="py-20 bg-white">

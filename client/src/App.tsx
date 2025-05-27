@@ -19,25 +19,25 @@ function Router() {
     <Switch>
       {/* Landing page */}
       <Route path="/" component={Landing} />
-      
+
       {/* User authentication */}
       <Route path="/login" component={UserLogin} />
       <Route path="/register" component={UserLogin} />
-      
+
       {/* Wedding creation flow */}
       <Route path="/create-wedding" component={CreateWedding} />
-      
+
       {/* Demo wedding site */}
       <Route path="/demo" component={DemoWedding} />
-      
+
       {/* Individual wedding sites */}
       <Route path="/wedding/:uniqueUrl" component={WeddingSite} />
-      
+
       {/* Admin login and dashboard - hidden/secure routes */}
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />
       <Route path="/system/:uniqueUrl" component={AdminDashboard} />
-      
+
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

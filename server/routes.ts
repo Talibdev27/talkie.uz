@@ -6,15 +6,16 @@ import {
   insertPhotoSchema, insertGuestBookEntrySchema, rsvpUpdateSchema 
 } from "@shared/schema";
 import { z } from "zod";
+import paymentsRouter from './payments';
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
   app.post("/api/users/guest", async (req, res) => {
     try {
       const { email, name } = req.body;
-      
+
       // Check if guest user already exists
       let user = await storage.getUserByEmail(email);
-      
+
       if (!user) {
         // Create new guest user
         user = await storage.createUser({
@@ -23,7 +24,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           password: 'guest_user'
         });
       }
-      
+
       res.json(user);
     } catch (error) {
       console.error("Guest user creation error:", error);
@@ -38,9 +39,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weddings", async (req, res) => {
     try {
       console.log("Wedding creation request:", JSON.stringify(req.body, null, 2));
-      
+
       const { userId, ...weddingFields } = req.body;
-      
+
       if (!userId) {
         console.log("Missing userId in request");
         return res.status(400).json({ message: "User ID required" });
@@ -60,7 +61,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate unique URL
       const uniqueUrl = Math.random().toString(36).substring(2, 15);
-      
+
       // Create wedding data with all required fields
       const weddingData = {
         bride: weddingFields.bride,
@@ -79,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       console.log("Processed wedding data:", weddingData);
-      
+
       const wedding = await storage.createWedding(userId, weddingData);
       console.log("Wedding created successfully:", wedding);
       res.status(201).json(wedding);
@@ -100,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { uniqueUrl } = req.params;
       const wedding = await storage.getWeddingByUrl(uniqueUrl);
-      
+
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
       }
@@ -125,7 +126,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const updates = req.body;
-      
+
       const wedding = await storage.updateWedding(id, updates);
       if (!wedding) {
         return res.status(404).json({ message: "Wedding not found" });
@@ -162,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const rsvpData = rsvpUpdateSchema.parse(req.body);
-      
+
       const guest = await storage.updateGuestRSVP(id, rsvpData);
       if (!guest) {
         return res.status(404).json({ message: "Guest not found" });
@@ -199,7 +200,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const deleted = await storage.deletePhoto(id);
-      
+
       if (!deleted) {
         return res.status(404).json({ message: "Photo not found" });
       }
@@ -241,6 +242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error" });
     }
   });
+  app.use('/api/payments', paymentsRouter);
 
   const httpServer = createServer(app);
   return httpServer;
