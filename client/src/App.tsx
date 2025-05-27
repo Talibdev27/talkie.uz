@@ -29,6 +29,7 @@ function Router() {
       <Route path="/wedding/:uniqueUrl" component={WeddingSite} />
       
       {/* Admin login and dashboard */}
+      <Route path="/admin" component={AdminLogin} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/:uniqueUrl" component={AdminDashboard} />
