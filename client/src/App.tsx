@@ -13,6 +13,7 @@ import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
 import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
+import PaymentPage from "@/pages/payment";
 
 function Router() {
   return (
@@ -37,6 +38,9 @@ function Router() {
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />
       <Route path="/system/:uniqueUrl" component={AdminDashboard} />
+
+      {/* Payment Route */}
+      <Route path="/payment" component={PaymentPage} />
 
       {/* Fallback to 404 */}
       <Route component={NotFound} />
