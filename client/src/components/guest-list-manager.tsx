@@ -18,7 +18,13 @@ import {
   Edit,
   Trash2,
   Download,
-  Send
+  Send,
+  UserPlus,
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
+  Calendar,
+  Share2
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';

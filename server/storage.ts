@@ -40,6 +40,19 @@ export interface IStorage {
   createGuestBookEntry(entry: InsertGuestBookEntry): Promise<GuestBookEntry>;
   getGuestBookEntriesByWeddingId(weddingId: number): Promise<GuestBookEntry[]>;
 
+  // Invitations
+  createInvitation(invitation: InsertInvitation): Promise<Invitation>;
+  getInvitationsByWeddingId(weddingId: number): Promise<Invitation[]>;
+  getInvitationsByGuestId(guestId: number): Promise<Invitation[]>;
+  updateInvitationStatus(id: number, status: string, errorMessage?: string): Promise<Invitation | undefined>;
+  sendInvitationReminder(id: number): Promise<boolean>;
+
+  // Guest Collaborators
+  createGuestCollaborator(collaborator: InsertGuestCollaborator): Promise<GuestCollaborator>;
+  getCollaboratorsByWeddingId(weddingId: number): Promise<GuestCollaborator[]>;
+  updateCollaboratorStatus(id: number, status: string): Promise<GuestCollaborator | undefined>;
+  acceptCollaboratorInvite(email: string, weddingId: number): Promise<GuestCollaborator | undefined>;
+
   // Stats
   getWeddingStats(weddingId: number): Promise<{
     totalGuests: number;
@@ -48,6 +61,9 @@ export interface IStorage {
     declinedGuests: number;
     totalPhotos: number;
     guestBookEntries: number;
+    pendingInvitations: number;
+    sentInvitations: number;
+    activeCollaborators: number;
   }>;
 }
 
@@ -237,6 +253,10 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
   async createWedding(userId: number, insertWedding: any): Promise<Wedding> {
     try {
       console.log("Creating wedding with data:", { ...insertWedding, userId });
@@ -319,6 +339,88 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(guestBookEntries).where(eq(guestBookEntries.weddingId, weddingId));
   }
 
+  // Invitations
+  async createInvitation(invitation: InsertInvitation): Promise<Invitation> {
+    const [newInvitation] = await db
+      .insert(invitations)
+      .values(invitation)
+      .returning();
+    return newInvitation;
+  }
+
+  async getInvitationsByWeddingId(weddingId: number): Promise<Invitation[]> {
+    return await db.select().from(invitations).where(eq(invitations.weddingId, weddingId));
+  }
+
+  async getInvitationsByGuestId(guestId: number): Promise<Invitation[]> {
+    return await db.select().from(invitations).where(eq(invitations.guestId, guestId));
+  }
+
+  async updateInvitationStatus(id: number, status: string, errorMessage?: string): Promise<Invitation | undefined> {
+    const updateData: any = { status };
+    if (status === 'sent') updateData.sentAt = new Date();
+    if (status === 'delivered') updateData.deliveredAt = new Date();
+    if (status === 'opened') updateData.openedAt = new Date();
+    if (errorMessage) updateData.errorMessage = errorMessage;
+
+    const [invitation] = await db
+      .update(invitations)
+      .set(updateData)
+      .where(eq(invitations.id, id))
+      .returning();
+    return invitation || undefined;
+  }
+
+  async sendInvitationReminder(id: number): Promise<boolean> {
+    const [invitation] = await db
+      .update(invitations)
+      .set({ reminderSentAt: new Date() })
+      .where(eq(invitations.id, id))
+      .returning();
+    return !!invitation;
+  }
+
+  // Guest Collaborators
+  async createGuestCollaborator(collaborator: InsertGuestCollaborator): Promise<GuestCollaborator> {
+    const [newCollaborator] = await db
+      .insert(guestCollaborators)
+      .values(collaborator)
+      .returning();
+    return newCollaborator;
+  }
+
+  async getCollaboratorsByWeddingId(weddingId: number): Promise<GuestCollaborator[]> {
+    return await db.select().from(guestCollaborators).where(eq(guestCollaborators.weddingId, weddingId));
+  }
+
+  async updateCollaboratorStatus(id: number, status: string): Promise<GuestCollaborator | undefined> {
+    const updateData: any = { status };
+    if (status === 'active') {
+      updateData.acceptedAt = new Date();
+      updateData.lastActiveAt = new Date();
+    }
+
+    const [collaborator] = await db
+      .update(guestCollaborators)
+      .set(updateData)
+      .where(eq(guestCollaborators.id, id))
+      .returning();
+    return collaborator || undefined;
+  }
+
+  async acceptCollaboratorInvite(email: string, weddingId: number): Promise<GuestCollaborator | undefined> {
+    const [collaborator] = await db
+      .update(guestCollaborators)
+      .set({ 
+        status: 'active',
+        acceptedAt: new Date(),
+        lastActiveAt: new Date()
+      })
+      .where(and(eq(guestCollaborators.email, email), eq(guestCollaborators.weddingId, weddingId)))
+      .returning();
+    return collaborator || undefined;
+  }
+
   async getWeddingStats(weddingId: number): Promise<{
     totalGuests: number;
     confirmedGuests: number;
@@ -326,15 +428,23 @@ export class DatabaseStorage implements IStorage {
     declinedGuests: number;
     totalPhotos: number;
     guestBookEntries: number;
+    pendingInvitations: number;
+    sentInvitations: number;
+    activeCollaborators: number;
   }> {
     const guestsList = await db.select().from(guests).where(eq(guests.weddingId, weddingId));
     const photoCount = await db.select().from(photos).where(eq(photos.weddingId, weddingId));
     const guestBookCount = await db.select().from(guestBookEntries).where(eq(guestBookEntries.weddingId, weddingId));
+    const invitationsList = await db.select().from(invitations).where(eq(invitations.weddingId, weddingId));
+    const collaboratorsList = await db.select().from(guestCollaborators).where(eq(guestCollaborators.weddingId, weddingId));
 
     const totalGuests = guestsList.length;
     const confirmedGuests = guestsList.filter(g => g.rsvpStatus === 'confirmed').length;
     const pendingGuests = guestsList.filter(g => g.rsvpStatus === 'pending').length;
     const declinedGuests = guestsList.filter(g => g.rsvpStatus === 'declined').length;
+    const pendingInvitations = invitationsList.filter(i => i.status === 'pending').length;
+    const sentInvitations = invitationsList.filter(i => i.status === 'sent' || i.status === 'delivered').length;
+    const activeCollaborators = collaboratorsList.filter(c => c.status === 'active').length;
 
     return {
       totalGuests,
@@ -343,6 +453,9 @@ export class DatabaseStorage implements IStorage {
       declinedGuests,
       totalPhotos: photoCount.length,
       guestBookEntries: guestBookCount.length,
+      pendingInvitations,
+      sentInvitations,
+      activeCollaborators,
     };
   }
 }

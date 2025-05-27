@@ -3,7 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
   insertUserSchema, insertWeddingSchema, insertGuestSchema, 
-  insertPhotoSchema, insertGuestBookEntrySchema, rsvpUpdateSchema 
+  insertPhotoSchema, insertGuestBookEntrySchema, rsvpUpdateSchema,
+  insertInvitationSchema, insertGuestCollaboratorSchema
 } from "@shared/schema";
 import { z } from "zod";
 import paymentsRouter from './payments';
@@ -242,6 +243,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error" });
     }
   });
+
+  // Invitation routes for collaborative guest management
+  app.post("/api/invitations", async (req, res) => {
+    try {
+      const invitationData = insertInvitationSchema.parse(req.body);
+      const invitation = await storage.createInvitation(invitationData);
+      res.status(201).json(invitation);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid invitation data" });
+    }
+  });
+
+  app.get("/api/invitations/wedding/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const invitations = await storage.getInvitationsByWeddingId(weddingId);
+      res.json(invitations);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.get("/api/invitations/guest/:guestId", async (req, res) => {
+    try {
+      const guestId = parseInt(req.params.guestId);
+      const invitations = await storage.getInvitationsByGuestId(guestId);
+      res.json(invitations);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.patch("/api/invitations/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status, errorMessage } = req.body;
+      const invitation = await storage.updateInvitationStatus(id, status, errorMessage);
+      
+      if (!invitation) {
+        return res.status(404).json({ message: "Invitation not found" });
+      }
+      
+      res.json(invitation);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.post("/api/invitations/:id/reminder", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const sent = await storage.sendInvitationReminder(id);
+      
+      if (!sent) {
+        return res.status(404).json({ message: "Invitation not found" });
+      }
+      
+      res.json({ message: "Reminder sent successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Guest collaborator routes for team management
+  app.post("/api/collaborators", async (req, res) => {
+    try {
+      const collaboratorData = insertGuestCollaboratorSchema.parse(req.body);
+      const collaborator = await storage.createGuestCollaborator(collaboratorData);
+      res.status(201).json(collaborator);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid collaborator data" });
+    }
+  });
+
+  app.get("/api/collaborators/wedding/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const collaborators = await storage.getCollaboratorsByWeddingId(weddingId);
+      res.json(collaborators);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.patch("/api/collaborators/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      const collaborator = await storage.updateCollaboratorStatus(id, status);
+      
+      if (!collaborator) {
+        return res.status(404).json({ message: "Collaborator not found" });
+      }
+      
+      res.json(collaborator);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.post("/api/collaborators/accept", async (req, res) => {
+    try {
+      const { email, weddingId } = req.body;
+      const collaborator = await storage.acceptCollaboratorInvite(email, weddingId);
+      
+      if (!collaborator) {
+        return res.status(404).json({ message: "Collaborator invitation not found" });
+      }
+      
+      res.json(collaborator);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.use('/api/payments', paymentsRouter);
 
   const httpServer = createServer(app);
