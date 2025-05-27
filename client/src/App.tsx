@@ -13,7 +13,7 @@ import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
 import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
-import PaymentPage from "@/pages/payment";
+import { PaymentPage } from "@/pages/payment";
 
 function Router() {
   return (

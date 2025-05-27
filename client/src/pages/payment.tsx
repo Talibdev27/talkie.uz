@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useLocation, useRouter } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,8 +19,11 @@ interface PaymentMethod {
 
 export function PaymentPage() {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [location] = useLocation();
+  const router = useRouter();
+  
+  // Parse URL parameters manually since wouter doesn't have useSearchParams
+  const searchParams = new URLSearchParams(location.split('?')[1] || '');
   const [selectedMethod, setSelectedMethod] = useState<string>('uzcard');
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
@@ -102,7 +105,7 @@ export function PaymentPage() {
           window.location.href = result.redirectUrl;
         } else {
           // Handle success
-          navigate(`/payment-success?order=${result.orderId}`);
+          router.push(`/payment-success?order=${result.orderId}`);
         }
       } else {
         alert('To\'lovda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
@@ -119,7 +122,7 @@ export function PaymentPage() {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-2xl font-bold mb-4">Noto'g'ri so'rov</h1>
-        <Button onClick={() => navigate('/')}>Bosh sahifaga qaytish</Button>
+        <Button onClick={() => router.push('/')}>Bosh sahifaga qaytish</Button>
       </div>
     );
   }
@@ -130,7 +133,7 @@ export function PaymentPage() {
         <Button 
           variant="ghost" 
           className="mb-6"
-          onClick={() => navigate('/')}
+          onClick={() => router.push('/')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Orqaga
