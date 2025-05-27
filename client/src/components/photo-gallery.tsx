@@ -4,6 +4,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { PhotoLoading } from '@/components/ui/loading';
 import type { Photo } from '@shared/schema';
 
 interface PhotoGalleryProps {
@@ -39,11 +40,7 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
   if (isLoading) {
     return (
       <div className={className}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(8)].map((_, i) => (
-            <Skeleton key={i} className="aspect-square rounded-xl" />
-          ))}
-        </div>
+        <PhotoLoading count={8} />
       </div>
     );
   }

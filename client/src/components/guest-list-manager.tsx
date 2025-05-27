@@ -568,7 +568,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8">{t('common.loading')}</div>
+            <GuestListLoading />
           ) : filteredGuests.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               {t('guestList.noGuestsFound')}

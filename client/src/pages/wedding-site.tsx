@@ -8,6 +8,7 @@ import { CountdownTimer } from '@/components/countdown-timer';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { RSVPForm } from '@/components/rsvp-form';
 import { LanguageToggle } from '@/components/language-toggle';
+import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -28,16 +29,7 @@ export default function WeddingSite() {
   });
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-soft-white">
-        <Skeleton className="h-96 w-full" />
-        <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      </div>
-    );
+    return <WeddingPageLoading message={t('common.loading')} />;
   }
 
   if (error || !wedding) {
