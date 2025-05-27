@@ -10,17 +10,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Wedding routes
   app.post("/api/weddings", async (req, res) => {
     try {
-      const weddingData = insertWeddingSchema.parse(req.body);
-      const userId = req.body.userId; // In a real app, this would come from session/JWT
+      console.log("Wedding creation request:", req.body);
+      
+      const { userId, ...weddingFields } = req.body;
       
       if (!userId) {
         return res.status(401).json({ message: "User ID required" });
       }
 
-      const wedding = await storage.createWedding(userId, weddingData);
+      // Generate unique URL
+      const uniqueUrl = Math.random().toString(36).substring(2, 15);
+      
+      const weddingData = {
+        ...weddingFields,
+        uniqueUrl,
+        template: weddingFields.template || "gardenRomance",
+        primaryColor: weddingFields.primaryColor || "#D4B08C",
+        accentColor: weddingFields.accentColor || "#89916B",
+        isPublic: weddingFields.isPublic ?? true
+      };
+
+      console.log("Processed wedding data:", weddingData);
+      
+      const validatedData = insertWeddingSchema.parse(weddingData);
+      const wedding = await storage.createWedding(userId, validatedData);
       res.status(201).json(wedding);
     } catch (error) {
-      res.status(400).json({ message: "Invalid wedding data" });
+      console.error("Wedding creation error:", error);
+      res.status(400).json({ 
+        message: "Invalid wedding data", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
   });
 
