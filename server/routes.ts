@@ -48,14 +48,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "User ID required" });
       }
 
-      // Validate required fields
-      if (!weddingFields.bride || !weddingFields.groom || !weddingFields.weddingDate || !weddingFields.venue || !weddingFields.venueAddress) {
+      // Validate required fields - only bride, groom, and weddingDate are required
+      if (!weddingFields.bride || !weddingFields.groom || !weddingFields.weddingDate) {
         console.log("Missing required fields:", {
           bride: !!weddingFields.bride,
           groom: !!weddingFields.groom,
-          weddingDate: !!weddingFields.weddingDate,
-          venue: !!weddingFields.venue,
-          venueAddress: !!weddingFields.venueAddress
+          weddingDate: !!weddingFields.weddingDate
         });
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -68,8 +66,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bride: weddingFields.bride,
         groom: weddingFields.groom,
         weddingDate: new Date(weddingFields.weddingDate),
-        venue: weddingFields.venue,
-        venueAddress: weddingFields.venueAddress,
+        venue: weddingFields.venue || "",
+        venueAddress: weddingFields.venueAddress || "",
         story: weddingFields.story || "",
         template: weddingFields.template || "modernElegance",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
