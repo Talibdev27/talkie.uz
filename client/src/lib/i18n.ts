@@ -582,6 +582,7 @@ const resources = {
       'wedding.using': 'использованием LoveStory',
       'wedding.capturingJourney': 'Запечатлеваем наше путешествие вместе',
       'wedding.cantWaitToCelebrate': 'Мы не можем дождаться празднования с вами!',
+      'wedding.weddingDayIsHere': 'День свадьбы настал!',
 
       // RSVP Form
       'rsvp.guestName': 'Имя гостя',
