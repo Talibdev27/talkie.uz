@@ -23,7 +23,7 @@ export function CountdownTimer({ targetDate, className = '' }: CountdownTimerPro
     return (
       <div className={`text-center ${className}`}>
         <div className="text-2xl font-playfair font-bold text-romantic-gold">
-          🎉 The Wedding Day is Here! 🎉
+          🎉 {t('wedding.weddingDayIsHere')} 🎉
         </div>
       </div>
     );

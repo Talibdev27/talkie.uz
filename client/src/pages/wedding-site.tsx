@@ -233,14 +233,14 @@ export default function WeddingSite() {
               {t('wedding.guestBook')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70">
-              Leave us a message to make our day even more special
+              {t('wedding.guestBookSubtitle')}
             </p>
           </div>
 
           <div className="space-y-8">
             {guestBookEntries.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-xl font-playfair font-semibold text-charcoal">Messages from our loved ones</h3>
+                <h3 className="text-xl font-playfair font-semibold text-charcoal">{t('wedding.messagesFromLovedOnes')}</h3>
                 {guestBookEntries.slice(0, 5).map((entry) => (
                   <Card key={entry.id} className="wedding-card">
                     <CardContent className="p-6">
@@ -283,10 +283,10 @@ export default function WeddingSite() {
             </span>
           </div>
           <p className="text-gray-300">
-            Thank you for being part of our special day
+            {t('wedding.thankYouGuests')}
           </p>
           <p className="text-gray-400 text-sm mt-4">
-            Created with <Heart className="inline h-4 w-4 text-romantic-gold mx-1" /> using LoveStory
+            {t('wedding.createdWith')} <Heart className="inline h-4 w-4 text-romantic-gold mx-1" /> {t('wedding.using')}
           </p>
         </div>
       </footer>

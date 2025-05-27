@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,6 +14,7 @@ interface PhotoGalleryProps {
 }
 
 export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
+  const { t } = useTranslation();
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   const { data: photos = [], isLoading } = useQuery<Photo[]>({
@@ -49,8 +51,8 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
     return (
       <div className={`text-center py-12 ${className}`}>
         <div className="text-gray-500">
-          <p className="text-lg font-medium mb-2">No photos yet</p>
-          <p className="text-sm">Photos will appear here once they're uploaded</p>
+          <p className="text-lg font-medium mb-2">{t('photos.noPhotosYet')}</p>
+          <p className="text-sm">{t('photos.photosWillAppear')}</p>
         </div>
       </div>
     );

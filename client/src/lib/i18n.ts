@@ -47,6 +47,7 @@ const resources = {
       'wedding.using': 'using LoveStory',
       'wedding.capturingJourney': 'Capturing our journey together',
       'wedding.cantWaitToCelebrate': 'We can\'t wait to celebrate with you!',
+      'wedding.weddingDayIsHere': 'The Wedding Day is Here!',
 
       // RSVP Form
       'rsvp.guestName': 'Guest Name',
@@ -309,6 +310,7 @@ const resources = {
       'wedding.using': 'LoveStory yordamida',
       'wedding.capturingJourney': 'Bizning sayohatimizni suratga olish',
       'wedding.cantWaitToCelebrate': 'Siz bilan nishonlashimizni kutib turibmiz!',
+      'wedding.weddingDayIsHere': 'To\'y kuni keldi!',
 
       // RSVP Form
       'rsvp.guestName': 'Mehmon ismi',
