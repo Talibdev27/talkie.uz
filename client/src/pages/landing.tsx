@@ -202,9 +202,11 @@ export default function Landing() {
                     {t('hero.startCreating')}
                   </Button>
                 </Link>
-                <Button variant="outline" className="wedding-button-outline text-lg px-8 py-4">
-                  {t('hero.viewDemo')}
-                </Button>
+                <Link href="/demo">
+                  <Button variant="outline" className="wedding-button-outline text-lg px-8 py-4">
+                    {t('hero.viewDemo')}
+                  </Button>
+                </Link>
               </div>
               <div className="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-charcoal opacity-70">
                 <div className="flex items-center">

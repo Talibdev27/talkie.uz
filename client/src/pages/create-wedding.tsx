@@ -458,7 +458,11 @@ export default function CreateWedding() {
                                   ? "ring-4 ring-gold shadow-2xl"
                                   : "ring-2 ring-gray-200 hover:ring-gold/50"
                               }`}
-                              onClick={() => field.onChange(template.id)}
+                              onClick={() => {
+                                console.log('Template clicked:', template.id);
+                                field.onChange(template.id);
+                                console.log('Field value after change:', field.value);
+                              }}
                             >
                               <img
                                 src={template.image}

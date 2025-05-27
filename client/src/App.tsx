@@ -10,6 +10,7 @@ import Landing from "@/pages/landing";
 import CreateWedding from "@/pages/create-wedding";
 import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard";
+import DemoWedding from "@/pages/demo-wedding";
 
 function Router() {
   return (
@@ -19,6 +20,9 @@ function Router() {
       
       {/* Wedding creation flow */}
       <Route path="/create-wedding" component={CreateWedding} />
+      
+      {/* Demo wedding site */}
+      <Route path="/demo" component={DemoWedding} />
       
       {/* Individual wedding sites */}
       <Route path="/wedding/:uniqueUrl" component={WeddingSite} />
