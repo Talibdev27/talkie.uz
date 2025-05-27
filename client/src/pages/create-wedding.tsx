@@ -79,7 +79,11 @@ export default function CreateWedding() {
   });
 
   const onSubmit = (data: CreateWeddingFormData) => {
-    createWedding.mutate(data);
+    if (currentStep < totalSteps) {
+      nextStep();
+    } else {
+      createWedding.mutate(data);
+    }
   };
 
   const nextStep = () => {
