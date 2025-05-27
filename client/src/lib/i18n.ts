@@ -138,6 +138,12 @@ const resources = {
       'templates.modernEleganceDesc': 'Clean, sophisticated design for contemporary couples',
       'templates.rusticCharm': 'Rustic Charm',
       'templates.rusticCharmDesc': 'Warm, cozy design with vintage and rustic elements',
+      'templates.beachBliss': 'Beach Bliss',
+      'templates.beachBlissDesc': 'Tropical, breezy design perfect for destination weddings',
+      'templates.classicTradition': 'Classic Tradition',
+      'templates.classicTraditionDesc': 'Timeless, traditional design for classic ceremonies',
+      'templates.bohoChic': 'Boho Chic',
+      'templates.bohoChicDesc': 'Free-spirited, artistic design with bohemian elements',
       'templates.previewTemplate': 'Preview Template',
 
       // CTA Section
@@ -410,6 +416,12 @@ const resources = {
       'templates.modernEleganceDesc': 'Zamonaviy juftliklar uchun toza, murakkab dizayn',
       'templates.rusticCharm': 'Qishloq jozibasiz',
       'templates.rusticCharmDesc': 'Vintage va qishloq elementlari bilan iliq, qulay dizayn',
+      'templates.beachBliss': 'Dengiz sohili baxt',
+      'templates.beachBlissDesc': 'Tropik, yengil dizayn sayohat to\'ylari uchun mukammal',
+      'templates.classicTradition': 'Klassik an\'ana',
+      'templates.classicTraditionDesc': 'Klassik marosimlar uchun vaqt sinovidan o\'tgan an\'anaviy dizayn',
+      'templates.bohoChic': 'Boho chik',
+      'templates.bohoChicDesc': 'Bohem elementlari bilan erkin ruhli, badiiy dizayn',
       'templates.previewTemplate': 'Shablonni ko\'rish',
 
       // CTA Section
@@ -677,6 +689,12 @@ const resources = {
       'templates.modernEleganceDesc': 'Чистый, сложный дизайн для современных пар',
       'templates.rusticCharm': 'Деревенский шарм',
       'templates.rusticCharmDesc': 'Теплый, уютный дизайн с винтажными и деревенскими элементами',
+      'templates.beachBliss': 'Пляжное блаженство',
+      'templates.beachBlissDesc': 'Тропический, легкий дизайн, идеальный для свадеб-путешествий',
+      'templates.classicTradition': 'Классическая традиция',
+      'templates.classicTraditionDesc': 'Вечный, традиционный дизайн для классических церемоний',
+      'templates.bohoChic': 'Бохо шик',
+      'templates.bohoChicDesc': 'Свободолюбивый, художественный дизайн с богемными элементами',
       'templates.previewTemplate': 'Предварительный просмотр шаблона',
 
       // CTA Section

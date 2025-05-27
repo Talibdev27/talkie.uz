@@ -63,19 +63,19 @@ export default function Landing() {
       descriptionKey: 'templates.rusticCharmDesc',
     },
     {
-      name: 'Beach Bliss',
+      nameKey: 'templates.beachBliss',
       image: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
-      description: 'Tropical, breezy design perfect for destination weddings',
+      descriptionKey: 'templates.beachBlissDesc',
     },
     {
-      name: 'Classic Tradition',
+      nameKey: 'templates.classicTradition',
       image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
-      description: 'Timeless, traditional design for classic ceremonies',
+      descriptionKey: 'templates.classicTraditionDesc',
     },
     {
-      name: 'Boho Chic',
+      nameKey: 'templates.bohoChic',
       image: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=250',
-      description: 'Free-spirited, artistic design with bohemian elements',
+      descriptionKey: 'templates.bohoChicDesc',
     },
   ];
 
@@ -478,15 +478,15 @@ export default function Landing() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/create-wedding">
               <Button className="bg-white text-romantic-gold px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all shadow-lg">
-                Start Free Trial
+                {t('cta.startFreeTrial')}
               </Button>
             </Link>
             <Button variant="outline" className="border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-white hover:text-romantic-gold transition-all">
-              Watch Demo
+              {t('hero.viewDemo')}
             </Button>
           </div>
           <p className="mt-6 text-sm text-white opacity-70">
-            No credit card required • 30-day free trial • Cancel anytime
+            {t('cta.noCreditCard')} • {t('cta.freeTrial')} • {t('cta.cancelAnytime')}
           </p>
         </div>
       </section>
@@ -503,27 +503,27 @@ export default function Landing() {
                 </h3>
               </div>
               <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
-                Creating beautiful, personalized wedding websites that help couples share their special day with loved ones around the world.
+                {t('footer.description')}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4">Features</h4>
+              <h4 className="font-semibold text-white mb-4">{t('footer.features')}</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Wedding Websites</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">RSVP Management</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Photo Galleries</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Guest Book</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.weddingWebsites')}</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.rsvpManagement')}</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.photoGalleries')}</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.guestBook')}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4">Support</h4>
+              <h4 className="font-semibold text-white mb-4">{t('footer.support')}</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-romantic-gold transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.helpCenter')}</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.contactUs')}</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.privacyPolicy')}</a></li>
+                <li><a href="#" className="hover:text-romantic-gold transition-colors">{t('footer.termsOfService')}</a></li>
               </ul>
             </div>
           </div>
