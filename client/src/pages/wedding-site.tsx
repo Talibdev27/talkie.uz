@@ -136,10 +136,10 @@ export default function WeddingSite() {
               <div className="text-center">
                 <Heart className="h-12 w-12 text-romantic-gold mx-auto mb-4" />
                 <h3 className="text-xl font-playfair font-semibold text-charcoal mb-4">
-                  How We Met
+                  {t('demo.howWeMet')}
                 </h3>
                 <p className="text-charcoal opacity-70 leading-relaxed">
-                  Every love story is special, and ours began in the most unexpected way...
+                  {t('demo.howWeMetText')}
                 </p>
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function WeddingSite() {
               {t('wedding.photos')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70">
-              Capturing our journey together
+              {t('wedding.capturingJourney')}
             </p>
           </div>
           
@@ -171,7 +171,7 @@ export default function WeddingSite() {
               {t('wedding.rsvp')}
             </h2>
             <p className="mt-4 text-lg text-charcoal opacity-70">
-              We can't wait to celebrate with you!
+              {t('wedding.cantWaitToCelebrate')}
             </p>
           </div>
           
@@ -193,13 +193,13 @@ export default function WeddingSite() {
               <CardContent className="p-8 text-center">
                 <Calendar className="h-12 w-12 text-romantic-gold mx-auto mb-4" />
                 <h3 className="text-xl font-playfair font-semibold text-charcoal mb-2">
-                  When
+                  {t('wedding.when')}
                 </h3>
                 <p className="text-lg text-charcoal">
                   {formatDate(wedding.weddingDate)}
                 </p>
                 <p className="text-charcoal opacity-70 mt-2">
-                  Ceremony begins at 4:00 PM
+                  {t('wedding.ceremonyTime')}
                 </p>
               </CardContent>
             </Card>
@@ -208,7 +208,7 @@ export default function WeddingSite() {
               <CardContent className="p-8 text-center">
                 <MapPin className="h-12 w-12 text-romantic-gold mx-auto mb-4" />
                 <h3 className="text-xl font-playfair font-semibold text-charcoal mb-2">
-                  Where
+                  {t('wedding.where')}
                 </h3>
                 <p className="text-lg text-charcoal font-medium">
                   {wedding.venue}
@@ -217,7 +217,7 @@ export default function WeddingSite() {
                   {wedding.venueAddress}
                 </p>
                 <Button variant="outline" className="mt-4 wedding-button-outline">
-                  View on Map
+                  {t('wedding.viewOnMap')}
                 </Button>
               </CardContent>
             </Card>
