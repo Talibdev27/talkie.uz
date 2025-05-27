@@ -133,9 +133,11 @@ export default function Landing() {
                 {t('nav.pricing')}
               </a>
               <LanguageToggle />
-              <Button variant="ghost" className="text-charcoal hover:text-romantic-gold">
-                {t('nav.signIn')}
-              </Button>
+              <Link href="/admin/login">
+                <Button variant="ghost" className="text-charcoal hover:text-romantic-gold">
+                  {t('nav.signIn')}
+                </Button>
+              </Link>
               <Link href="/create-wedding">
                 <Button className="wedding-button">
                   {t('nav.getStarted')}

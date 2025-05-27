@@ -16,6 +16,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserById(id: number): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
 
   // Weddings
   createWedding(userId: number, wedding: InsertWedding): Promise<Wedding>;
