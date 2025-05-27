@@ -263,6 +263,10 @@ const resources = {
       'time.hours': 'Hours',
       'time.minutes': 'Minutes',
       'time.seconds': 'Seconds',
+
+      // Photos
+      'photos.noPhotosYet': 'No photos yet',
+      'photos.photosWillAppear': 'Photos will appear here once they\'re uploaded',
     }
   },
   uz: {
@@ -521,6 +525,10 @@ const resources = {
       'time.hours': 'Soatlar',
       'time.minutes': 'Daqiqalar',
       'time.seconds': 'Soniyalar',
+
+      // Photos
+      'photos.noPhotosYet': 'Hali rasmlar yo\'q',
+      'photos.photosWillAppear': 'Rasmlar yuklangandan so\'ng bu yerda ko\'rinadi',
     }
   },
   ru: {
@@ -778,6 +786,10 @@ const resources = {
       'time.hours': 'Часы',
       'time.minutes': 'Минуты',
       'time.seconds': 'Секунды',
+
+      // Photos
+      'photos.noPhotosYet': 'Пока нет фотографий',
+      'photos.photosWillAppear': 'Фотографии появятся здесь после загрузки',
     }
   }
 };
