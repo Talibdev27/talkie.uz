@@ -73,11 +73,15 @@ export class MemStorage implements IStorage {
   private guests: Map<number, Guest>;
   private photos: Map<number, Photo>;
   private guestBookEntries: Map<number, GuestBookEntry>;
+  private invitations: Map<number, Invitation>;
+  private guestCollaborators: Map<number, GuestCollaborator>;
   private currentUserId: number;
   private currentWeddingId: number;
   private currentGuestId: number;
   private currentPhotoId: number;
   private currentGuestBookId: number;
+  private currentInvitationId: number;
+  private currentCollaboratorId: number;
 
   constructor() {
     this.users = new Map();
@@ -85,11 +89,15 @@ export class MemStorage implements IStorage {
     this.guests = new Map();
     this.photos = new Map();
     this.guestBookEntries = new Map();
+    this.invitations = new Map();
+    this.guestCollaborators = new Map();
     this.currentUserId = 1;
     this.currentWeddingId = 1;
     this.currentGuestId = 1;
     this.currentPhotoId = 1;
     this.currentGuestBookId = 1;
+    this.currentInvitationId = 1;
+    this.currentCollaboratorId = 1;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -211,6 +219,107 @@ export class MemStorage implements IStorage {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
+  // Invitations
+  async createInvitation(insertInvitation: InsertInvitation): Promise<Invitation> {
+    const id = this.currentInvitationId++;
+    const invitation: Invitation = {
+      ...insertInvitation,
+      id,
+      createdAt: new Date(),
+    };
+    this.invitations.set(id, invitation);
+    return invitation;
+  }
+
+  async getInvitationsByWeddingId(weddingId: number): Promise<Invitation[]> {
+    return Array.from(this.invitations.values())
+      .filter(invitation => invitation.weddingId === weddingId);
+  }
+
+  async getInvitationsByGuestId(guestId: number): Promise<Invitation[]> {
+    return Array.from(this.invitations.values())
+      .filter(invitation => invitation.guestId === guestId);
+  }
+
+  async updateInvitationStatus(id: number, status: string, errorMessage?: string): Promise<Invitation | undefined> {
+    const invitation = this.invitations.get(id);
+    if (!invitation) return undefined;
+
+    const updatedInvitation: Invitation = {
+      ...invitation,
+      status,
+      errorMessage: errorMessage || invitation.errorMessage,
+      sentAt: status === 'sent' ? new Date() : invitation.sentAt,
+      deliveredAt: status === 'delivered' ? new Date() : invitation.deliveredAt,
+      openedAt: status === 'opened' ? new Date() : invitation.openedAt,
+    };
+
+    this.invitations.set(id, updatedInvitation);
+    return updatedInvitation;
+  }
+
+  async sendInvitationReminder(id: number): Promise<boolean> {
+    const invitation = this.invitations.get(id);
+    if (!invitation) return false;
+
+    const updatedInvitation: Invitation = {
+      ...invitation,
+      reminderSentAt: new Date(),
+    };
+
+    this.invitations.set(id, updatedInvitation);
+    return true;
+  }
+
+  // Guest Collaborators
+  async createGuestCollaborator(insertCollaborator: InsertGuestCollaborator): Promise<GuestCollaborator> {
+    const id = this.currentCollaboratorId++;
+    const collaborator: GuestCollaborator = {
+      ...insertCollaborator,
+      id,
+      invitedAt: new Date(),
+    };
+    this.guestCollaborators.set(id, collaborator);
+    return collaborator;
+  }
+
+  async getCollaboratorsByWeddingId(weddingId: number): Promise<GuestCollaborator[]> {
+    return Array.from(this.guestCollaborators.values())
+      .filter(collaborator => collaborator.weddingId === weddingId);
+  }
+
+  async updateCollaboratorStatus(id: number, status: string): Promise<GuestCollaborator | undefined> {
+    const collaborator = this.guestCollaborators.get(id);
+    if (!collaborator) return undefined;
+
+    const updatedCollaborator: GuestCollaborator = {
+      ...collaborator,
+      status,
+      acceptedAt: status === 'active' ? new Date() : collaborator.acceptedAt,
+      lastActiveAt: status === 'active' ? new Date() : collaborator.lastActiveAt,
+    };
+
+    this.guestCollaborators.set(id, updatedCollaborator);
+    return updatedCollaborator;
+  }
+
+  async acceptCollaboratorInvite(email: string, weddingId: number): Promise<GuestCollaborator | undefined> {
+    const collaborator = Array.from(this.guestCollaborators.values())
+      .find(c => c.email === email && c.weddingId === weddingId);
+    
+    if (!collaborator) return undefined;
+
+    const updatedCollaborator: GuestCollaborator = {
+      ...collaborator,
+      status: 'active',
+      acceptedAt: new Date(),
+      lastActiveAt: new Date(),
+    };
+
+    this.guestCollaborators.set(collaborator.id, updatedCollaborator);
+    return updatedCollaborator;
+  }
+
   async getWeddingStats(weddingId: number): Promise<{
     totalGuests: number;
     confirmedGuests: number;
@@ -218,10 +327,15 @@ export class MemStorage implements IStorage {
     declinedGuests: number;
     totalPhotos: number;
     guestBookEntries: number;
+    pendingInvitations: number;
+    sentInvitations: number;
+    activeCollaborators: number;
   }> {
     const guests = await this.getGuestsByWeddingId(weddingId);
     const photos = await this.getPhotosByWeddingId(weddingId);
     const guestBookEntries = await this.getGuestBookEntriesByWeddingId(weddingId);
+    const invitations = await this.getInvitationsByWeddingId(weddingId);
+    const collaborators = await this.getCollaboratorsByWeddingId(weddingId);
 
     return {
       totalGuests: guests.length,
@@ -230,6 +344,9 @@ export class MemStorage implements IStorage {
       declinedGuests: guests.filter(g => g.rsvpStatus === "declined").length,
       totalPhotos: photos.length,
       guestBookEntries: guestBookEntries.length,
+      pendingInvitations: invitations.filter(i => i.status === "pending").length,
+      sentInvitations: invitations.filter(i => i.status === "sent" || i.status === "delivered").length,
+      activeCollaborators: collaborators.filter(c => c.status === "active").length,
     };
   }
 }
