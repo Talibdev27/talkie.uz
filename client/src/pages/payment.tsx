@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useLocation, useRouter } from 'wouter';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,8 +19,7 @@ interface PaymentMethod {
 
 export function PaymentPage() {
   const { t } = useTranslation();
-  const [location] = useLocation();
-  const router = useRouter();
+  const [location, setLocation] = useLocation();
   
   // Parse URL parameters manually since wouter doesn't have useSearchParams
   const searchParams = new URLSearchParams(location.split('?')[1] || '');
@@ -105,7 +104,7 @@ export function PaymentPage() {
           window.location.href = result.redirectUrl;
         } else {
           // Handle success
-          router.push(`/payment-success?order=${result.orderId}`);
+          setLocation(`/payment-success?order=${result.orderId}`);
         }
       } else {
         alert('To\'lovda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
@@ -122,7 +121,7 @@ export function PaymentPage() {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-2xl font-bold mb-4">Noto'g'ri so'rov</h1>
-        <Button onClick={() => router.push('/')}>Bosh sahifaga qaytish</Button>
+        <Button onClick={() => setLocation('/')}>Bosh sahifaga qaytish</Button>
       </div>
     );
   }
@@ -133,7 +132,7 @@ export function PaymentPage() {
         <Button 
           variant="ghost" 
           className="mb-6"
-          onClick={() => router.push('/')}
+          onClick={() => setLocation('/')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Orqaga
