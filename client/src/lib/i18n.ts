@@ -19,6 +19,8 @@ const resources = {
       'hero.viewDemo': 'View Demo',
       'hero.freeTrial': 'Free 30-day trial',
       'hero.noCreditCard': 'No credit card required',
+      'hero.joinOver': 'Join over',
+      'hero.happyCouples': 'happy couples',
 
       // Demo Section
       'demo.title': 'See Your Wedding Website Come to Life',
@@ -289,6 +291,8 @@ const resources = {
       'hero.viewDemo': 'Demo ko\'rish',
       'hero.freeTrial': '30 kunlik bepul sinov',
       'hero.noCreditCard': 'Kredit karta talab qilinmaydi',
+      'hero.joinOver': 'Qo\'shiling',
+      'hero.happyCouples': 'baxtli juftliklar',
 
       // Demo Section
       'demo.title': 'To\'y veb-saytingizning jonlanishini ko\'ring',
@@ -554,6 +558,8 @@ const resources = {
       'hero.viewDemo': 'Посмотреть демо',
       'hero.freeTrial': '30-дневная бесплатная версия',
       'hero.noCreditCard': 'Кредитная карта не требуется',
+      'hero.joinOver': 'Присоединяйтесь к',
+      'hero.happyCouples': 'счастливым парам',
 
       // Demo Section
       'demo.title': 'Посмотрите, как ваш свадебный сайт оживает',

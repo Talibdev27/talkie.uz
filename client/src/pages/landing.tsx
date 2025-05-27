@@ -229,9 +229,9 @@ export default function Landing() {
               />
               <Card className="absolute -bottom-6 -left-6 wedding-card">
                 <CardContent className="p-6 text-center">
-                  <p className="text-sm text-charcoal opacity-70 font-lato">Join over</p>
+                  <p className="text-sm text-charcoal opacity-70 font-lato">{t('hero.joinOver')}</p>
                   <p className="text-2xl font-playfair font-bold text-romantic-gold">50,000+</p>
-                  <p className="text-sm text-charcoal opacity-70 font-lato">happy couples</p>
+                  <p className="text-sm text-charcoal opacity-70 font-lato">{t('hero.happyCouples')}</p>
                 </CardContent>
               </Card>
             </div>
