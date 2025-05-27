@@ -42,6 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { userId, ...weddingFields } = req.body;
       
       if (!userId) {
+        console.log("Missing userId in request");
         return res.status(401).json({ message: "User ID required" });
       }
 

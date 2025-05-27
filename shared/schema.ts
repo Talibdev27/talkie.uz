@@ -68,6 +68,43 @@ export const guestBookEntries = pgTable("guest_book_entries", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const budgetCategories = pgTable("budget_categories", {
+  id: serial("id").primaryKey(),
+  weddingId: integer("wedding_id").references(() => weddings.id).notNull(),
+  name: text("name").notNull(),
+  estimatedCost: integer("estimated_cost").notNull(),
+  actualCost: integer("actual_cost").notNull().default(0),
+  isPaid: boolean("is_paid").notNull().default(false),
+  priority: text("priority").notNull().default("medium"), // high, medium, low
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const budgetItems = pgTable("budget_items", {
+  id: serial("id").primaryKey(),
+  categoryId: integer("category_id").references(() => budgetCategories.id).notNull(),
+  name: text("name").notNull(),
+  estimatedCost: integer("estimated_cost").notNull(),
+  actualCost: integer("actual_cost").notNull().default(0),
+  isPaid: boolean("is_paid").notNull().default(false),
+  vendor: text("vendor"),
+  dueDate: timestamp("due_date"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const milestones = pgTable("milestones", {
+  id: serial("id").primaryKey(),
+  weddingId: integer("wedding_id").references(() => weddings.id).notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  targetDate: timestamp("target_date").notNull(),
+  isCompleted: boolean("is_completed").notNull().default(false),
+  completedAt: timestamp("completed_at"),
+  celebrationMessage: text("celebration_message"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -97,6 +134,22 @@ export const insertGuestBookEntrySchema = createInsertSchema(guestBookEntries).o
   createdAt: true,
 });
 
+export const insertBudgetCategorySchema = createInsertSchema(budgetCategories).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertBudgetItemSchema = createInsertSchema(budgetItems).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMilestoneSchema = createInsertSchema(milestones).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
 export const rsvpUpdateSchema = z.object({
   rsvpStatus: z.enum(["confirmed", "declined", "maybe"]),
   message: z.string().optional(),
@@ -117,5 +170,14 @@ export type InsertPhoto = z.infer<typeof insertPhotoSchema>;
 
 export type GuestBookEntry = typeof guestBookEntries.$inferSelect;
 export type InsertGuestBookEntry = z.infer<typeof insertGuestBookEntrySchema>;
+
+export type BudgetCategory = typeof budgetCategories.$inferSelect;
+export type InsertBudgetCategory = z.infer<typeof insertBudgetCategorySchema>;
+
+export type BudgetItem = typeof budgetItems.$inferSelect;
+export type InsertBudgetItem = z.infer<typeof insertBudgetItemSchema>;
+
+export type Milestone = typeof milestones.$inferSelect;
+export type InsertMilestone = z.infer<typeof insertMilestoneSchema>;
 
 export type RSVPUpdate = z.infer<typeof rsvpUpdateSchema>;
