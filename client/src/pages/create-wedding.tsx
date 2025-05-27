@@ -17,6 +17,7 @@ import { insertWeddingSchema, type InsertWedding } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDateForInput } from "@/lib/utils";
 import { Heart, Calendar, MapPin, Camera, Music, Palette, ChevronLeft, ChevronRight } from "lucide-react";
+import { CreateWeddingLoading } from "@/components/ui/loading";
 
 const createWeddingSchema = insertWeddingSchema.extend({
   weddingDate: insertWeddingSchema.shape.weddingDate.transform((val) => 
@@ -514,8 +515,18 @@ export default function CreateWedding() {
                 )}
               </Button>
             </div>
+
           </form>
         </Form>
+
+        {/* Loading overlay when creating wedding */}
+        {createWedding.isPending && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-8 m-4 max-w-md w-full">
+              <CreateWeddingLoading />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
