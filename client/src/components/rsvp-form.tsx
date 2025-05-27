@@ -112,7 +112,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                 <FormItem>
                   <FormLabel>{t('rsvp.guestName')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your full name" {...field} />
+                    <Input placeholder={t('rsvp.enterFullName')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -128,7 +128,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                   <FormControl>
                     <Input 
                       type="email" 
-                      placeholder="your.email@example.com" 
+                      placeholder={t('rsvp.enterEmail')} 
                       {...field} 
                     />
                   </FormControl>
@@ -194,7 +194,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                   <FormLabel>{t('rsvp.message')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Share your excitement or well wishes..."
+                      placeholder={t('rsvp.shareMessage')}
                       className="resize-none"
                       {...field}
                     />

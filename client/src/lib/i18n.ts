@@ -61,6 +61,9 @@ const resources = {
       'rsvp.submit': 'Submit RSVP',
       'rsvp.thankYou': 'Thank you for your RSVP!',
       'rsvp.thankYouMessage': 'We can\'t wait to celebrate with you!',
+      'rsvp.enterFullName': 'Enter your full name',
+      'rsvp.enterEmail': 'your.email@example.com',
+      'rsvp.shareMessage': 'Share your excitement or well wishes...',
 
       // Admin Dashboard
       'admin.dashboard': 'Dashboard',
@@ -328,6 +331,9 @@ const resources = {
       'rsvp.submit': 'Tasdiqlash yuborish',
       'rsvp.thankYou': 'Tasdiqlashingiz uchun rahmat!',
       'rsvp.thankYouMessage': 'Siz bilan nishonlashimizni kutib turibmiz!',
+      'rsvp.enterFullName': 'To\'liq ismingizni kiriting',
+      'rsvp.enterEmail': 'sizning.email@example.com',
+      'rsvp.shareMessage': 'Xursandchiligingiz yoki tilaklaringizni ulashing...',
 
       // Admin Dashboard
       'admin.dashboard': 'Boshqaruv paneli',
@@ -589,6 +595,9 @@ const resources = {
       'rsvp.submit': 'Отправить подтверждение',
       'rsvp.thankYou': 'Спасибо за ваше подтверждение!',
       'rsvp.thankYouMessage': 'Мы не можем дождаться празднования с вами!',
+      'rsvp.enterFullName': 'Введите ваше полное имя',
+      'rsvp.enterEmail': 'ваш.email@example.com',
+      'rsvp.shareMessage': 'Поделитесь вашими пожеланиями или радостью...',
 
       // Admin Dashboard
       'admin.dashboard': 'Панель управления',
