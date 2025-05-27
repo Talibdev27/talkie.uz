@@ -37,17 +37,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Wedding routes
   app.post("/api/weddings", async (req, res) => {
     try {
-      console.log("Wedding creation request:", req.body);
+      console.log("Wedding creation request:", JSON.stringify(req.body, null, 2));
       
       const { userId, ...weddingFields } = req.body;
       
       if (!userId) {
         console.log("Missing userId in request");
-        return res.status(401).json({ message: "User ID required" });
+        return res.status(400).json({ message: "User ID required" });
       }
 
       // Validate required fields
       if (!weddingFields.bride || !weddingFields.groom || !weddingFields.weddingDate || !weddingFields.venue || !weddingFields.venueAddress) {
+        console.log("Missing required fields:", {
+          bride: !!weddingFields.bride,
+          groom: !!weddingFields.groom,
+          weddingDate: !!weddingFields.weddingDate,
+          venue: !!weddingFields.venue,
+          venueAddress: !!weddingFields.venueAddress
+        });
         return res.status(400).json({ message: "Missing required fields" });
       }
 
@@ -65,8 +72,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         template: weddingFields.template || "modernElegance",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
-        backgroundMusicUrl: weddingFields.backgroundMusicUrl || null,
-        venueCoordinates: weddingFields.venueCoordinates || null,
+        backgroundMusicUrl: null,
+        venueCoordinates: null,
         isPublic: weddingFields.isPublic !== undefined ? weddingFields.isPublic : true,
         uniqueUrl
       };

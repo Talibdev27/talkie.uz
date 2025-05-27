@@ -118,18 +118,25 @@ export default function CreateWedding() {
           isPublic: data.isPublic
         };
         
+        console.log('Sending wedding data:', weddingData);
+        
         const weddingResponse = await fetch('/api/weddings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(weddingData)
         });
         
+        console.log('Wedding response status:', weddingResponse.status);
+        
         if (!weddingResponse.ok) {
           const errorText = await weddingResponse.text();
+          console.error('Wedding creation failed:', errorText);
           throw new Error(`Failed to create wedding: ${errorText}`);
         }
         
-        return await weddingResponse.json();
+        const result = await weddingResponse.json();
+        console.log('Wedding created successfully:', result);
+        return result;
       } catch (error) {
         console.error('Wedding creation error:', error);
         throw error;
