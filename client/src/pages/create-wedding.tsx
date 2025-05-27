@@ -1,78 +1,105 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'wouter';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
-import { insertWeddingSchema } from '@shared/schema';
-import { formatDateForInput } from '@/lib/utils';
-import { ArrowLeft, Heart } from 'lucide-react';
-import { Link } from 'wouter';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { insertWeddingSchema, type InsertWedding } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
+import { formatDateForInput } from "@/lib/utils";
+import { Heart, Calendar, MapPin, Camera, Music, Palette, ChevronLeft, ChevronRight } from "lucide-react";
 
 const createWeddingSchema = insertWeddingSchema.extend({
-  userId: z.number().optional(),
+  weddingDate: insertWeddingSchema.shape.weddingDate.transform((val) => 
+    typeof val === 'string' ? new Date(val) : val
+  ),
 });
 
-type CreateWeddingFormData = z.infer<typeof createWeddingSchema>;
+type CreateWeddingFormData = InsertWedding & {
+  weddingDate: Date;
+};
+
+const templateOptions = [
+  {
+    id: "gardenRomance",
+    name: "Garden Romance",
+    nameUz: "Bog' romantikasi",
+    nameRu: "Садовый романс",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
+  },
+  {
+    id: "modernElegance", 
+    name: "Modern Elegance",
+    nameUz: "Zamonaviy nafislik",
+    nameRu: "Современная элегантность",
+    image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop"
+  },
+  {
+    id: "rusticCharm",
+    name: "Rustic Charm",
+    nameUz: "Qishloq jozibasi",
+    nameRu: "Деревенский шарм",
+    image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop"
+  },
+  {
+    id: "beachBliss",
+    name: "Beach Bliss",
+    nameUz: "Plyaj baxt",
+    nameRu: "Пляжное блаженство",
+    image: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&h=300&fit=crop"
+  },
+];
 
 export default function CreateWedding() {
-  const { t } = useTranslation();
-  const { toast } = useToast();
+  const { t, i18n } = useTranslation();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
 
   const form = useForm<CreateWeddingFormData>({
     resolver: zodResolver(createWeddingSchema),
     defaultValues: {
-      bride: '',
-      groom: '',
-      weddingDate: formatDateForInput(new Date()),
-      venue: '',
-      venueAddress: '',
-      story: '',
-      template: 'garden-romance',
-      primaryColor: '#D4B08C',
-      accentColor: '#89916B',
-      backgroundMusicUrl: '',
+      bride: "",
+      groom: "",
+      weddingDate: new Date(),
+      venue: "",
+      venueAddress: "",
+      template: "gardenRomance",
+      primaryColor: "#D4B08C",
+      accentColor: "#89916B",
+      story: "",
+      backgroundMusicUrl: "",
       isPublic: true,
     },
   });
 
   const createWedding = useMutation({
     mutationFn: async (data: CreateWeddingFormData) => {
-      // In a real app, userId would come from authentication
       const weddingData = { ...data, userId: 1 };
       const response = await apiRequest('POST', '/api/weddings', weddingData);
       return response.json();
     },
     onSuccess: (wedding) => {
       toast({
-        title: "Wedding website created!",
-        description: "Your beautiful wedding website is ready to share.",
+        title: t('createWedding.success'),
+        description: t('createWedding.successDescription'),
       });
       setLocation(`/wedding/${wedding.uniqueUrl}`);
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: t('createWedding.error'),
+        description: t('createWedding.errorDescription'),
         variant: "destructive",
       });
     },
@@ -98,54 +125,49 @@ export default function CreateWedding() {
     }
   };
 
-  const templates = [
-    { id: 'garden-romance', name: t('createWedding.gardenRomance'), preview: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
-    { id: 'modern-elegance', name: t('createWedding.modernElegance'), preview: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
-    { id: 'rustic-charm', name: t('createWedding.rusticCharm'), preview: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=300&h=200' },
-    { id: 'beach-bliss', name: t('createWedding.beachBliss'), preview: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200' },
-  ];
+  const getTemplateName = (template: any) => {
+    if (i18n.language === 'uz') return template.nameUz;
+    if (i18n.language === 'ru') return template.nameRu;
+    return template.name;
+  };
 
   return (
-    <div className="min-h-screen bg-soft-white">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center text-romantic-gold hover:text-opacity-80 transition-colors">
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              <Heart className="h-6 w-6 mr-2" />
-              <span className="font-playfair font-semibold text-lg">LoveStory</span>
-            </Link>
-            <div className="text-sm text-charcoal opacity-70">
-              {t('createWedding.step')} {currentStep} {t('createWedding.of')} {totalSteps}
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-cream via-white to-sage/10 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-charcoal mb-4">
+            {t('createWedding.title')}
+          </h1>
+          <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
+            {t('createWedding.subtitle')}
+          </p>
         </div>
-      </div>
 
-      {/* Progress Bar */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between mb-8">
-          {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
-            <div key={step} className="flex items-center">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${
-                  step <= currentStep
-                    ? 'bg-romantic-gold text-white'
-                    : 'bg-gray-200 text-gray-500'
-                }`}
-              >
-                {step}
-              </div>
-              {step < totalSteps && (
+        {/* Progress Steps */}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center space-x-4">
+            {[1, 2, 3].map((step) => (
+              <div key={step} className="flex items-center">
                 <div
-                  className={`flex-1 h-2 mx-4 rounded ${
-                    step < currentStep ? 'bg-romantic-gold' : 'bg-gray-200'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                    step <= currentStep
+                      ? "bg-gold text-white shadow-lg"
+                      : "bg-gray-200 text-gray-500"
                   }`}
-                />
-              )}
-            </div>
-          ))}
+                >
+                  {step}
+                </div>
+                {step < 3 && (
+                  <div
+                    className={`w-12 h-0.5 mx-2 transition-all ${
+                      step < currentStep ? "bg-gold" : "bg-gray-200"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         <Form {...form}>
@@ -154,11 +176,12 @@ export default function CreateWedding() {
             {currentStep === 1 && (
               <Card className="wedding-card">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-                    {t('createWedding.tellUsAboutDay')}
+                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
+                    <Heart className="text-gold" />
+                    {t('createWedding.basicInfo')}
                   </CardTitle>
-                  <p className="text-charcoal opacity-70">
-                    {t('createWedding.basicDetails')}
+                  <p className="text-charcoal/70">
+                    {t('createWedding.basicInfoDescription')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -168,9 +191,15 @@ export default function CreateWedding() {
                       name="bride"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('createWedding.brideName')}</FormLabel>
+                          <FormLabel className="text-charcoal font-semibold">
+                            {t('createWedding.brideName')}
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder={t('createWedding.enterBrideName')} {...field} />
+                            <Input
+                              placeholder={t('createWedding.brideNamePlaceholder')}
+                              className="wedding-input"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -182,9 +211,15 @@ export default function CreateWedding() {
                       name="groom"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('createWedding.groomName')}</FormLabel>
+                          <FormLabel className="text-charcoal font-semibold">
+                            {t('createWedding.groomName')}
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder={t('createWedding.enterGroomName')} {...field} />
+                            <Input
+                              placeholder={t('createWedding.groomNamePlaceholder')}
+                              className="wedding-input"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -197,9 +232,17 @@ export default function CreateWedding() {
                     name="weddingDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('createWedding.weddingDate')}</FormLabel>
+                        <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-gold" />
+                          {t('createWedding.weddingDate')}
+                        </FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input
+                            type="date"
+                            className="wedding-input"
+                            value={formatDateForInput(field.value)}
+                            onChange={(e) => field.onChange(new Date(e.target.value))}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -211,9 +254,16 @@ export default function CreateWedding() {
                     name="venue"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('createWedding.venueName')}</FormLabel>
+                        <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-gold" />
+                          {t('createWedding.venue')}
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder={t('createWedding.enterVenueName')} {...field} />
+                          <Input
+                            placeholder={t('createWedding.venuePlaceholder')}
+                            className="wedding-input"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -225,9 +275,15 @@ export default function CreateWedding() {
                     name="venueAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('createWedding.venueAddress')}</FormLabel>
+                        <FormLabel className="text-charcoal font-semibold">
+                          {t('createWedding.venueAddress')}
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder={t('createWedding.enterVenueAddress')} {...field} />
+                          <Input
+                            placeholder={t('createWedding.venueAddressPlaceholder')}
+                            className="wedding-input"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -237,15 +293,16 @@ export default function CreateWedding() {
               </Card>
             )}
 
-            {/* Step 2: Your Story */}
+            {/* Step 2: Story & Details */}
             {currentStep === 2 && (
               <Card className="wedding-card">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-                    {t('createWedding.shareYourLoveStory')}
+                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
+                    <Camera className="text-gold" />
+                    {t('createWedding.storyDetails')}
                   </CardTitle>
-                  <p className="text-charcoal opacity-70">
-                    {t('createWedding.tellGuestsAboutJourney')}
+                  <p className="text-charcoal/70">
+                    {t('createWedding.storyDetailsDescription')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -254,12 +311,15 @@ export default function CreateWedding() {
                     name="story"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('createWedding.yourLoveStory')}</FormLabel>
+                        <FormLabel className="text-charcoal font-semibold">
+                          {t('createWedding.loveStory')}
+                        </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder={t('createWedding.shareHowYouMet')}
-                            className="min-h-32 resize-none"
+                            placeholder={t('createWedding.loveStoryPlaceholder')}
+                            className="wedding-input min-h-[120px]"
                             {...field}
+                            value={field.value || ""}
                           />
                         </FormControl>
                         <FormMessage />
@@ -272,17 +332,42 @@ export default function CreateWedding() {
                     name="backgroundMusicUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('createWedding.backgroundMusic')}</FormLabel>
+                        <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
+                          <Music className="w-4 h-4 text-gold" />
+                          {t('createWedding.backgroundMusic')}
+                        </FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder={t('createWedding.enterYouTubeSpotify')} 
-                            {...field} 
+                          <Input
+                            placeholder={t('createWedding.backgroundMusicPlaceholder')}
+                            className="wedding-input"
+                            {...field}
+                            value={field.value || ""}
                           />
                         </FormControl>
-                        <p className="text-sm text-charcoal opacity-60">
-                          {t('createWedding.addSpecialSong')}
-                        </p>
                         <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="isPublic"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border border-sage/20 p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base font-semibold text-charcoal">
+                            {t('createWedding.makePublic')}
+                          </FormLabel>
+                          <p className="text-sm text-charcoal/70">
+                            {t('createWedding.makePublicDescription')}
+                          </p>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
                       </FormItem>
                     )}
                   />
@@ -294,11 +379,12 @@ export default function CreateWedding() {
             {currentStep === 3 && (
               <Card className="wedding-card">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-                    {t('createWedding.chooseYourDesign')}
+                  <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
+                    <Palette className="text-gold" />
+                    {t('createWedding.designTemplate')}
                   </CardTitle>
-                  <p className="text-charcoal opacity-70">
-                    {t('createWedding.selectTemplateCustomize')}
+                  <p className="text-charcoal/70">
+                    {t('createWedding.designTemplateDescription')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-8">
@@ -307,35 +393,39 @@ export default function CreateWedding() {
                     name="template"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('createWedding.websiteTemplate')}</FormLabel>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          {templates.map((template) => (
+                        <FormLabel className="text-lg font-semibold text-charcoal">
+                          {t('createWedding.chooseTemplate')}
+                        </FormLabel>
+                        <div className="grid md:grid-cols-2 gap-6 mt-4">
+                          {templateOptions.map((template) => (
                             <div
                               key={template.id}
-                              className={`relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all ${
+                              className={`relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${
                                 field.value === template.id
-                                  ? 'border-romantic-gold shadow-lg'
-                                  : 'border-gray-200 hover:border-romantic-gold'
+                                  ? "ring-4 ring-gold shadow-2xl"
+                                  : "ring-2 ring-gray-200 hover:ring-gold/50"
                               }`}
                               onClick={() => field.onChange(template.id)}
                             >
                               <img
-                                src={template.preview}
-                                alt={template.name}
-                                className="w-full h-32 object-cover"
+                                src={template.image}
+                                alt={getTemplateName(template)}
+                                className="w-full h-48 object-cover"
                               />
-                              <div className="p-3 bg-white">
-                                <h4 className="font-medium text-charcoal">{template.name}</h4>
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              <div className="absolute bottom-4 left-4 right-4">
+                                <h3 className="text-white font-semibold text-lg">
+                                  {getTemplateName(template)}
+                                </h3>
+                                {field.value === template.id && (
+                                  <Badge className="mt-2 bg-gold hover:bg-gold/90">
+                                    {t('createWedding.selected')}
+                                  </Badge>
+                                )}
                               </div>
-                              {field.value === template.id && (
-                                <div className="absolute top-2 right-2 w-6 h-6 bg-romantic-gold rounded-full flex items-center justify-center">
-                                  <div className="w-2 h-2 bg-white rounded-full" />
-                                </div>
-                              )}
                             </div>
                           ))}
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -346,7 +436,9 @@ export default function CreateWedding() {
                       name="primaryColor"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Primary Color</FormLabel>
+                          <FormLabel className="text-charcoal font-semibold">
+                            {t('createWedding.primaryColor')}
+                          </FormLabel>
                           <div className="flex items-center space-x-3">
                             <FormControl>
                               <Input type="color" className="w-12 h-12 rounded-lg border" {...field} />
@@ -365,7 +457,9 @@ export default function CreateWedding() {
                       name="accentColor"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Accent Color</FormLabel>
+                          <FormLabel className="text-charcoal font-semibold">
+                            {t('createWedding.accentColor')}
+                          </FormLabel>
                           <div className="flex items-center space-x-3">
                             <FormControl>
                               <Input type="color" className="w-12 h-12 rounded-lg border" {...field} />
@@ -383,35 +477,42 @@ export default function CreateWedding() {
               </Card>
             )}
 
-            {/* Navigation */}
-            <div className="flex justify-between">
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center pt-6">
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="wedding-button-outline"
+                className="flex items-center gap-2"
               >
+                <ChevronLeft className="w-4 h-4" />
                 {t('createWedding.previous')}
               </Button>
 
-              {currentStep < totalSteps ? (
-                <Button
-                  type="button"
-                  onClick={nextStep}
-                  className="wedding-button"
-                >
-                  {t('createWedding.nextStep')}
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  disabled={createWedding.isPending}
-                  className="wedding-button"
-                >
-                  {createWedding.isPending ? t('common.loading') : t('createWedding.createWebsite')}
-                </Button>
-              )}
+              <div className="text-center">
+                <p className="text-sm text-charcoal/60">
+                  {t('createWedding.step')} {currentStep} {t('createWedding.of')} {totalSteps}
+                </p>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={createWedding.isPending}
+                className="wedding-button flex items-center gap-2"
+              >
+                {currentStep === totalSteps ? (
+                  <>
+                    {createWedding.isPending ? t('createWedding.creating') : t('createWedding.createWebsite')}
+                    <Heart className="w-4 h-4" />
+                  </>
+                ) : (
+                  <>
+                    {t('createWedding.next')}
+                    <ChevronRight className="w-4 h-4" />
+                  </>
+                )}
+              </Button>
             </div>
           </form>
         </Form>
