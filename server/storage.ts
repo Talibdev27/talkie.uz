@@ -93,6 +93,10 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
   async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
     const id = this.currentWeddingId++;
     const uniqueUrl = nanoid(10);
