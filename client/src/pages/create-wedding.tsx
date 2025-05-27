@@ -86,9 +86,16 @@ export default function CreateWedding() {
 
   const createWedding = useMutation({
     mutationFn: async (data: CreateWeddingFormData) => {
+      // Create or get guest user first
+      const guestUserResponse = await apiRequest('POST', '/api/users/guest', {
+        email: `guest_${Date.now()}@example.com`,
+        name: `${data.bride} & ${data.groom}`
+      });
+      const guestUser = await guestUserResponse.json();
+      
       const weddingData = { 
         ...data, 
-        userId: 1,
+        userId: guestUser.id,
         weddingDate: data.weddingDate.toISOString()
       };
       const response = await apiRequest('POST', '/api/weddings', weddingData);

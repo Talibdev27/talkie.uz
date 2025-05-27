@@ -7,6 +7,33 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
+  // User routes
+  app.post("/api/users/guest", async (req, res) => {
+    try {
+      const { email, name } = req.body;
+      
+      // Check if guest user already exists
+      let user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Create new guest user
+        user = await storage.createUser({
+          email,
+          name,
+          password: 'guest_user'
+        });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Guest user creation error:", error);
+      res.status(400).json({ 
+        message: "Failed to create guest user", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
   // Wedding routes
   app.post("/api/weddings", async (req, res) => {
     try {
