@@ -467,7 +467,7 @@ export default function CreateWedding() {
                                 form.trigger('template');
                                 console.log('Field value after change:', field.value);
                               }}
-                            ></div>
+                            >
                               <img
                                 src={template.image}
                                 alt={getTemplateName(template)}
