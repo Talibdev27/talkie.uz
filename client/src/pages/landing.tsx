@@ -174,7 +174,7 @@ export default function Landing() {
                 <Button variant="ghost" className="w-full justify-start text-charcoal hover:text-romantic-gold">
                   {t('nav.signIn')}
                 </Button>
-                <Link href="/create-wedding" className="block">
+                <Link href="/get-started" className="block">
                   <Button className="w-full wedding-button">
                     {t('nav.getStarted')}
                   </Button>
@@ -200,7 +200,7 @@ export default function Landing() {
                 {t('hero.subtitle')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link href="/create-wedding">
+                <Link href="/get-started">
                   <Button className="wedding-button text-lg px-8 py-4">
                     {t('hero.startCreating')}
                   </Button>

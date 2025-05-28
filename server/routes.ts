@@ -10,6 +10,20 @@ import { z } from "zod";
 import paymentsRouter from './payments';
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
+  app.post("/api/users", async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      const user = await storage.createUser(userData);
+      res.status(201).json(user);
+    } catch (error) {
+      console.error("User creation error:", error);
+      res.status(400).json({ 
+        message: "Failed to create user", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
   app.post("/api/users/guest", async (req, res) => {
     try {
       const { email, name } = req.body;
