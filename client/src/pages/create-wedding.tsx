@@ -449,8 +449,7 @@ export default function CreateWedding() {
                         <FormLabel className="text-lg font-semibold text-charcoal">
                           {t('createWedding.chooseTemplate')}
                         </FormLabel>
-                        <FormControl>
-                          <div className="grid md:grid-cols-2 gap-6 mt-4">
+                        <div className="grid md:grid-cols-2 gap-6 mt-4">
                           {templateOptions.map((template) => (
                             <div
                               key={template.id}
@@ -463,9 +462,7 @@ export default function CreateWedding() {
                                 console.log('Template clicked:', template.id);
                                 field.onChange(template.id);
                                 form.setValue('template', template.id);
-                                // Force re-render by triggering form validation
-                                form.trigger('template');
-                                console.log('Field value after change:', field.value);
+                                console.log('Field value after change:', template.id);
                               }}
                             >
                               <img
@@ -487,7 +484,6 @@ export default function CreateWedding() {
                             </div>
                           ))}
                         </div>
-                        </FormControl>
                       </FormItem>
                     )}
                   />
