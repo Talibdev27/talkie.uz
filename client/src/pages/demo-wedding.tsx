@@ -1,29 +1,109 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Heart, Users, Camera, MessageSquare } from "lucide-react";
 import { CountdownTimer } from "@/components/countdown-timer";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+
+const templateConfigs = {
+  gardenRomance: {
+    heroImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+    colorScheme: "from-[#F8F1F1] to-white",
+    primaryColor: "#D4B08C",
+    accentColor: "#89916B",
+    couple: "Emily & James",
+    tagline: "A love that blooms like flowers in spring",
+    venue: "Rose Garden Estate"
+  },
+  modernElegance: {
+    heroImage: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+    colorScheme: "from-slate-100 to-white",
+    primaryColor: "#2C3338",
+    accentColor: "#8B7355",
+    couple: "Sophia & Alexander",
+    tagline: "Elegance in every moment",
+    venue: "Grand Metropolitan Hall"
+  },
+  rusticCharm: {
+    heroImage: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+    colorScheme: "from-amber-50 to-white",
+    primaryColor: "#8B4513",
+    accentColor: "#CD853F",
+    couple: "Sarah & Michael",
+    tagline: "Simple love, beautiful moments",
+    venue: "Countryside Barn"
+  },
+  beachBliss: {
+    heroImage: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+    colorScheme: "from-blue-50 to-white",
+    primaryColor: "#2E86AB",
+    accentColor: "#A23B72",
+    couple: "Luna & Diego",
+    tagline: "Love as endless as the ocean",
+    venue: "Sunset Beach Resort"
+  },
+  classicTradition: {
+    heroImage: "https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+    colorScheme: "from-gray-50 to-white",
+    primaryColor: "#1F2937",
+    accentColor: "#6B7280",
+    couple: "Victoria & Edward",
+    tagline: "Timeless love, classic elegance",
+    venue: "Heritage Manor"
+  },
+  bohoChic: {
+    heroImage: "https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+    colorScheme: "from-orange-50 to-white",
+    primaryColor: "#92400E",
+    accentColor: "#F59E0B",
+    couple: "Aurora & River",
+    tagline: "Free spirits, boundless love",
+    venue: "Bohemian Gardens"
+  }
+};
 
 export default function DemoWedding() {
+  const [location] = useLocation();
+  const [currentTemplate, setCurrentTemplate] = useState('gardenRomance');
   const weddingDate = new Date('2024-08-15T15:00:00');
   
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.split('?')[1]);
+    const templateParam = urlParams.get('template');
+    if (templateParam && templateConfigs[templateParam as keyof typeof templateConfigs]) {
+      setCurrentTemplate(templateParam);
+    }
+  }, [location]);
+  
+  const config = templateConfigs[currentTemplate as keyof typeof templateConfigs];
+  
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white">
+    <div className={`min-h-screen bg-gradient-to-b ${config.colorScheme}`}>
+      {/* Template Selector - Show current template */}
+      <div className="fixed top-4 right-4 z-50">
+        <Card className="p-3 bg-white/90 backdrop-blur-sm">
+          <p className="text-sm font-medium text-gray-600">Template Preview:</p>
+          <p className="text-lg font-semibold" style={{ color: config.primaryColor }}>
+            {currentTemplate.charAt(0).toUpperCase() + currentTemplate.slice(1).replace(/([A-Z])/g, ' $1')}
+          </p>
+        </Card>
+      </div>
+
       {/* Hero Section */}
       <div 
         className="relative h-screen flex items-center justify-center bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')"
+          backgroundImage: `url('${config.heroImage}')`
         }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
           <h1 className="text-6xl md:text-8xl font-playfair font-bold mb-4">
-            Emily & James
+            {config.couple}
           </h1>
           <p className="text-2xl md:text-3xl font-light mb-8">
-            Two hearts, one love story
+            {config.tagline}
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-lg">
             <div className="flex items-center gap-2">
@@ -32,7 +112,7 @@ export default function DemoWedding() {
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              <span>Garden Paradise Venue</span>
+              <span>{config.venue}</span>
             </div>
           </div>
         </div>
@@ -240,10 +320,15 @@ export default function DemoWedding() {
         <p className="text-sm opacity-70 mt-2">
           August 15, 2024 • Garden Paradise Venue
         </p>
-        <div className="mt-4">
-          <Link href="/create-wedding">
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#2C3338]">
-              Create Your Own Wedding Site
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/get-started">
+            <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 px-8 py-3">
+              Create Your Own Wedding Website
+            </Button>
+          </Link>
+          <Link href="/">
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-gray-800 px-8 py-3">
+              Back to Home
             </Button>
           </Link>
         </div>
