@@ -175,10 +175,34 @@ export default function GetStarted() {
   });
 
   const onSubmit = (data: GetStartedFormData) => {
+    console.log('Form submitted, current step:', currentStep);
+    console.log('Form data:', data);
+    console.log('Form errors:', form.formState.errors);
+    
     if (currentStep < totalSteps) {
       nextStep();
     } else {
       createUserAndWedding.mutate(data);
+    }
+  };
+
+  const handleNextStep = async () => {
+    // Validate only the current step's required fields
+    let fieldsToValidate: (keyof GetStartedFormData)[] = [];
+    
+    if (currentStep === 1) {
+      fieldsToValidate = ['name', 'email', 'password', 'confirmPassword'];
+    } else if (currentStep === 2) {
+      fieldsToValidate = ['bride', 'groom', 'weddingDate'];
+    } else if (currentStep === 3) {
+      fieldsToValidate = ['venue', 'venueAddress'];
+    }
+    
+    const isValid = await form.trigger(fieldsToValidate);
+    console.log('Validation result for step', currentStep, ':', isValid);
+    
+    if (isValid) {
+      nextStep();
     }
   };
 
@@ -618,20 +642,24 @@ export default function GetStarted() {
                 Step {currentStep} of {totalSteps}
               </div>
 
-              <Button
-                type="submit"
-                className="wedding-button"
-                disabled={createUserAndWedding.isPending}
-              >
-                {currentStep === totalSteps ? (
-                  createUserAndWedding.isPending ? "Creating..." : "Create My Website"
-                ) : (
-                  <>
-                    Next
-                    <ChevronRight className="w-4 h-4 ml-2" />
-                  </>
-                )}
-              </Button>
+              {currentStep === totalSteps ? (
+                <Button
+                  type="submit"
+                  className="wedding-button"
+                  disabled={createUserAndWedding.isPending}
+                >
+                  {createUserAndWedding.isPending ? "Creating..." : "Create My Website"}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="wedding-button"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
             </div>
           </form>
         </Form>
