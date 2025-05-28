@@ -29,7 +29,7 @@ export default function WeddingSite() {
     enabled: !!wedding?.id,
   });
 
-  const { data: photos = [] } = useQuery({
+  const { data: photos = [] } = useQuery<any[]>({
     queryKey: ['/api/photos/wedding', wedding?.id],
     enabled: !!wedding?.id,
   });
@@ -56,13 +56,74 @@ export default function WeddingSite() {
     );
   }
 
+  // Template-specific configurations
+  const templateConfigs = {
+    gardenRomance: {
+      heroImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-rose-50 to-green-50",
+      primaryColor: "#D4B08C",
+      accentColor: "#89916B",
+      textColor: "text-emerald-900",
+      cardBg: "bg-white/90 backdrop-blur-sm",
+      overlayBg: "bg-emerald-900/40"
+    },
+    modernElegance: {
+      heroImage: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-slate-50 to-gray-100",
+      primaryColor: "#2C3338",
+      accentColor: "#8B7355",
+      textColor: "text-slate-900",
+      cardBg: "bg-white shadow-2xl",
+      overlayBg: "bg-slate-900/50"
+    },
+    rusticCharm: {
+      heroImage: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-amber-50 to-orange-50",
+      primaryColor: "#8B4513",
+      accentColor: "#CD853F",
+      textColor: "text-amber-900",
+      cardBg: "bg-amber-50/95 border border-amber-200",
+      overlayBg: "bg-amber-900/40"
+    },
+    beachBliss: {
+      heroImage: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-cyan-50 to-blue-50",
+      primaryColor: "#2E86AB",
+      accentColor: "#A23B72",
+      textColor: "text-cyan-900",
+      cardBg: "bg-cyan-50/90 backdrop-blur-sm",
+      overlayBg: "bg-cyan-900/40"
+    },
+    classicTradition: {
+      heroImage: "https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-gray-50 to-stone-100",
+      primaryColor: "#1F2937",
+      accentColor: "#6B7280",
+      textColor: "text-gray-900",
+      cardBg: "bg-white border border-gray-200 shadow-lg",
+      overlayBg: "bg-gray-900/50"
+    },
+    bohoChic: {
+      heroImage: "https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-orange-50 to-yellow-50",
+      primaryColor: "#92400E",
+      accentColor: "#F59E0B",
+      textColor: "text-orange-900",
+      cardBg: "bg-orange-50/95 border border-orange-200",
+      overlayBg: "bg-orange-900/40"
+    }
+  };
+
+  const currentTemplate = wedding.template || 'gardenRomance';
+  const config = templateConfigs[currentTemplate as keyof typeof templateConfigs] || templateConfigs.gardenRomance;
+
   const customStyles = {
-    '--primary': wedding.primaryColor,
-    '--accent': wedding.accentColor,
+    '--primary': config.primaryColor,
+    '--accent': config.accentColor,
   } as React.CSSProperties;
 
   return (
-    <div className="min-h-screen bg-white" style={customStyles}>
+    <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
       {/* Header with Language Toggle */}
       <div className="absolute top-4 right-4 z-50">
         <LanguageToggle />
@@ -71,11 +132,11 @@ export default function WeddingSite() {
       {/* Hero Section */}
       <section className="relative h-screen overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080"
+          src={config.heroImage}
           alt="Wedding venue"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className={`absolute inset-0 ${config.overlayBg}`}></div>
         <div className="absolute inset-0 flex items-center justify-center text-center text-white">
           <div className="max-w-2xl px-4">
             <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-4 text-shadow">
@@ -117,14 +178,14 @@ export default function WeddingSite() {
       </nav>
 
       {/* Our Story Section */}
-      <section id="story" className="py-20 bg-white">
+      <section id="story" className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
+            <h2 className={`text-3xl lg:text-4xl font-playfair font-bold ${config.textColor} mb-6`}>
               {t('wedding.ourStory')}
             </h2>
             {wedding.story && (
-              <div className="prose prose-lg max-w-none text-charcoal opacity-80 leading-relaxed">
+              <div className={`prose prose-lg max-w-none ${config.textColor} opacity-80 leading-relaxed`}>
                 <p>{wedding.story}</p>
               </div>
             )}
