@@ -29,6 +29,11 @@ export default function WeddingSite() {
     enabled: !!wedding?.id,
   });
 
+  const { data: photos = [] } = useQuery({
+    queryKey: ['/api/photos/wedding', wedding?.id],
+    enabled: !!wedding?.id,
+  });
+
   if (isLoading) {
     return <WeddingPageLoading message={t('common.loading')} />;
   }
@@ -127,11 +132,22 @@ export default function WeddingSite() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <img
-                src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-                alt="Couple's engagement photo"
-                className="rounded-xl shadow-lg w-full h-auto"
-              />
+              {photos.length > 0 ? (
+                <img
+                  src={photos[0].url}
+                  alt="Couple's photo"
+                  className="rounded-xl shadow-lg w-full h-auto object-cover aspect-[4/3]"
+                />
+              ) : (
+                <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
+                  <div className="text-center p-8">
+                    <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
+                    <p className="text-charcoal opacity-70">
+                      {t('photos.photosWillAppear')}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="space-y-6">
               <div className="text-center">
