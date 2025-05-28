@@ -399,9 +399,11 @@ export default function Landing() {
                   <p className="text-sm text-charcoal opacity-70 mb-4">
                     {template.descriptionKey ? t(template.descriptionKey) : template.description}
                   </p>
-                  <Button className="w-full wedding-button">
-                    {t('templates.previewTemplate')}
-                  </Button>
+                  <Link href={`/demo?template=${template.nameKey.split('.')[1]}`}>
+                    <Button className="w-full wedding-button">
+                      {t('templates.previewTemplate')}
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
