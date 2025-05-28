@@ -69,10 +69,15 @@ export default function DemoWedding() {
   const weddingDate = new Date('2024-08-15T15:00:00');
   
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.split('?')[1]);
-    const templateParam = urlParams.get('template');
-    if (templateParam && templateConfigs[templateParam as keyof typeof templateConfigs]) {
-      setCurrentTemplate(templateParam);
+    const urlParts = location.split('?');
+    if (urlParts.length > 1) {
+      const urlParams = new URLSearchParams(urlParts[1]);
+      const templateParam = urlParams.get('template');
+      console.log('Template parameter from URL:', templateParam);
+      if (templateParam && templateConfigs[templateParam as keyof typeof templateConfigs]) {
+        console.log('Setting template to:', templateParam);
+        setCurrentTemplate(templateParam);
+      }
     }
   }, [location]);
   
@@ -80,13 +85,28 @@ export default function DemoWedding() {
   
   return (
     <div className={`min-h-screen bg-gradient-to-b ${config.colorScheme}`}>
-      {/* Template Selector - Show current template */}
+      {/* Template Selector - Show current template and allow switching */}
       <div className="fixed top-4 right-4 z-50">
-        <Card className="p-3 bg-white/90 backdrop-blur-sm">
-          <p className="text-sm font-medium text-gray-600">Template Preview:</p>
-          <p className="text-lg font-semibold" style={{ color: config.primaryColor }}>
+        <Card className="p-4 bg-white/95 backdrop-blur-sm shadow-lg">
+          <p className="text-sm font-medium text-gray-600 mb-2">Template Preview:</p>
+          <p className="text-lg font-semibold mb-3" style={{ color: config.primaryColor }}>
             {currentTemplate.charAt(0).toUpperCase() + currentTemplate.slice(1).replace(/([A-Z])/g, ' $1')}
           </p>
+          <div className="space-y-1">
+            {Object.keys(templateConfigs).map((templateKey) => (
+              <button
+                key={templateKey}
+                onClick={() => setCurrentTemplate(templateKey)}
+                className={`block w-full text-left px-2 py-1 rounded text-xs transition-colors ${
+                  currentTemplate === templateKey 
+                    ? 'bg-blue-100 text-blue-800' 
+                    : 'hover:bg-gray-100 text-gray-600'
+                }`}
+              >
+                {templateKey.charAt(0).toUpperCase() + templateKey.slice(1).replace(/([A-Z])/g, ' $1')}
+              </button>
+            ))}
+          </div>
         </Card>
       </div>
 
