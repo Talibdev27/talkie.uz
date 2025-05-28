@@ -158,6 +158,17 @@ export default function WeddingSite() {
             <p className="mt-4 text-lg text-charcoal opacity-70">
               {t('wedding.capturingJourney')}
             </p>
+            
+            {/* Photo Upload Button - Only visible to wedding owners */}
+            <div className="mt-6">
+              <PhotoUpload 
+                weddingId={wedding.id} 
+                isOwner={true}
+                onSuccess={() => {
+                  // Photos will automatically refresh via React Query
+                }}
+              />
+            </div>
           </div>
           
           <PhotoGallery weddingId={wedding.id} />
