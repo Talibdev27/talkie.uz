@@ -461,7 +461,8 @@ export default function CreateWedding() {
                               onClick={() => {
                                 console.log('Template clicked:', template.id);
                                 field.onChange(template.id);
-                                console.log('Field value after change:', field.value);
+                                form.setValue('template', template.id);
+                                console.log('Field value after change:', template.id);
                               }}
                             >
                               <img

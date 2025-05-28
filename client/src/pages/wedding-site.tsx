@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { PhotoGallery } from '@/components/photo-gallery';
+import { PhotoUpload } from '@/components/photo-upload';
 import { RSVPForm } from '@/components/rsvp-form';
 import { LanguageToggle } from '@/components/language-toggle';
 import { WeddingPageLoading } from '@/components/ui/loading';
