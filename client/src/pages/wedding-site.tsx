@@ -240,22 +240,24 @@ export default function WeddingSite() {
             </p>
             
             {/* Enhanced Photo Upload Options - Only visible to wedding owners */}
-            <div className="mt-6 flex gap-3 justify-center">
-              <PhotoUpload 
-                weddingId={wedding.id} 
-                isOwner={true}
-                onSuccess={() => {
-                  // Photos will automatically refresh via React Query
-                }}
-              />
-              <SmartImageUpload 
-                weddingId={wedding.id} 
-                isOwner={true}
-                onSuccess={() => {
-                  // Photos will automatically refresh via React Query
-                }}
-              />
-            </div>
+            {isOwner && (
+              <div className="mt-6 flex gap-3 justify-center">
+                <PhotoUpload 
+                  weddingId={wedding.id} 
+                  isOwner={true}
+                  onSuccess={() => {
+                    // Photos will automatically refresh via React Query
+                  }}
+                />
+                <SmartImageUpload 
+                  weddingId={wedding.id} 
+                  isOwner={true}
+                  onSuccess={() => {
+                    // Photos will automatically refresh via React Query
+                  }}
+                />
+              </div>
+            )}
           </div>
           
           <PhotoGallery weddingId={wedding.id} />

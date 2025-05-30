@@ -19,6 +19,7 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
 
   const { data: photos = [], isLoading } = useQuery<Photo[]>({
     queryKey: ['/api/photos/wedding', weddingId],
+    queryFn: () => fetch(`/api/photos/wedding/${weddingId}`).then(res => res.json()),
   });
 
   const openModal = (index: number) => {
