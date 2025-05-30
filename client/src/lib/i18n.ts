@@ -164,6 +164,14 @@ const resources = {
       'demo.using': 'LoveStory',
       'demo.capturingJourney': 'Capturing our journey together',
       'demo.loveStoryFull': 'We met on a rainy Tuesday at our favorite coffee shop downtown. What started as a simple conversation about books turned into hours of talking, and we knew something special was beginning.\n\nFive years later, James proposed in that same coffee shop, and now we\'re ready to start the most beautiful chapter of our lives together.',
+      'demo.messagesFromFamily': 'Messages from Friends & Family',
+      'demo.withLove': 'With love, Emily & James',
+      'demo.createYourOwn': 'Create Your Own Wedding Website',
+      'demo.backToHome': 'Back to Home',
+      'demo.guestMessage1': 'So excited to celebrate with you both! You\'re perfect for each other. Can\'t wait to see Emily in her dress!',
+      'demo.guestMessage2': 'James, you\'re getting the most wonderful daughter-in-law! Emily, welcome to our family with open hearts. Love you both!',
+      'demo.guestMessage3': 'Wishing you a lifetime of love, laughter, and endless adventures together. So happy for you both!',
+      'demo.guestMessage4': 'From study groups to wedding bells! We\'ve watched your love story unfold and it\'s been beautiful. Congratulations!',
 
       // CTA Section
       'cta.title': 'Ready to Create Your Dream Wedding Website?',
@@ -426,6 +434,14 @@ const resources = {
       'demo.using': 'LoveStory yordamida',
       'demo.capturingJourney': 'Bizning sayohatimizni suratga olish',
       'demo.loveStoryFull': 'Biz yomg\'irli seshanba kuni sevimli qahvaxonamizda uchrashdik. Kitoblar haqidagi oddiy suhbat soatlab davom etdi va biz nimadir maxsus boshlanayotganini his qildik.\n\nBesh yil o\'tgach, Jeyms o\'sha qahvaxonada turmush qurish taklifini qildi va endi biz hayotimizning eng go\'zal bobini boshqarishga tayyormiz.',
+      'demo.messagesFromFamily': 'Do\'stlar va oiladan xabarlar',
+      'demo.withLove': 'Sevgi bilan, Emili va Jeyms',
+      'demo.createYourOwn': 'O\'zingizning to\'y veb-saytingizni yarating',
+      'demo.backToHome': 'Bosh sahifaga qaytish',
+      'demo.guestMessage1': 'Siz bilan nishonlashni kutib turibmiz! Siz bir-biringiz uchun mukammalsiz. Emilini ko\'ylakda ko\'rishni kutib turibmiz!',
+      'demo.guestMessage2': 'Jeyms, siz eng ajoyib kelin olasiz! Emili, oilamizga ochiq yurak bilan xush kelibsiz. Ikkalangizni ham yaxshi ko\'ramiz!',
+      'demo.guestMessage3': 'Sizga umr bo\'yi sevgi, kulgi va cheksiz sarguzashtlar tilaymiz. Ikkalangiz uchun juda xursandmiz!',
+      'demo.guestMessage4': 'O\'quv guruhlaridan to\'y qo\'ng\'iroqlarigacha! Biz sizning sevgi hikoyangizni kuzatdik va bu juda go\'zal edi. Tabriklaymiz!',
 
       // Wedding Site
       'wedding.ourStory': 'Bizning sevgi hikoyamiz',
@@ -758,6 +774,14 @@ const resources = {
       'demo.using': 'LoveStory',
       'demo.capturingJourney': 'Запечатлеваем наше путешествие вместе',
       'demo.loveStoryFull': 'Мы встретились в дождливый вторник в нашем любимом кафе в центре города. То, что началось как простой разговор о книгах, превратилось в часы общения, и мы поняли, что начинается что-то особенное.\n\nПять лет спустя Джеймс сделал предложение в том же кафе, и теперь мы готовы начать самую прекрасную главу нашей жизни вместе.',
+      'demo.messagesFromFamily': 'Сообщения от друзей и семьи',
+      'demo.withLove': 'С любовью, Эмили и Джеймс',
+      'demo.createYourOwn': 'Создайте свой собственный свадебный сайт',
+      'demo.backToHome': 'Вернуться на главную',
+      'demo.guestMessage1': 'Так рады отпраздновать с вами! Вы идеально подходите друг другу. Не можем дождаться увидеть Эмили в свадебном платье!',
+      'demo.guestMessage2': 'Джеймс, ты получаешь самую замечательную невестку! Эмили, добро пожаловать в нашу семью с открытыми сердцами. Любим вас обоих!',
+      'demo.guestMessage3': 'Желаем вам всю жизнь любви, смеха и бесконечных приключений вместе. Так счастливы за вас обоих!',
+      'demo.guestMessage4': 'От учебных групп до свадебных колокольчиков! Мы наблюдали, как разворачивается ваша история любви, и это было прекрасно. Поздравляем!',
 
       // Wedding Site
       'wedding.ourStory': 'Наша история любви',

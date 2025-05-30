@@ -240,45 +240,45 @@ export default function DemoWedding() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-4xl font-playfair font-bold text-[#2C3338] mb-8 flex items-center justify-center gap-3">
             <Heart className="h-8 w-8 text-[#D4B08C]" />
-            RSVP
+            {t('demo.rsvp')}
           </h2>
           <p className="text-lg text-[#2C3338]/80 mb-8">
-            We can't wait to celebrate with you! Please let us know if you'll be joining us on our special day.
+            {t('wedding.cantWaitToCelebrate')}
           </p>
           <Card className="p-8 shadow-lg">
             <CardContent className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <input
                   type="text"
-                  placeholder="Your Name"
+                  placeholder={t('rsvp.enterFullName')}
                   className="w-full p-3 border border-[#D4B08C]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4B08C]"
                 />
                 <input
                   type="email"
-                  placeholder="Email Address"
+                  placeholder={t('rsvp.enterEmail')}
                   className="w-full p-3 border border-[#D4B08C]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4B08C]"
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <select className="w-full p-3 border border-[#D4B08C]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4B08C]">
-                  <option>Will you attend?</option>
-                  <option>Yes, I'll be there!</option>
-                  <option>Sorry, can't make it</option>
-                  <option>Maybe</option>
+                  <option>{t('rsvp.willYouAttend')}</option>
+                  <option>{t('rsvp.yesAttending')}</option>
+                  <option>{t('rsvp.notAttending')}</option>
+                  <option>{t('rsvp.maybe')}</option>
                 </select>
                 <input
                   type="number"
-                  placeholder="Number of guests"
+                  placeholder={t('guestList.totalGuests')}
                   className="w-full p-3 border border-[#D4B08C]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4B08C]"
                 />
               </div>
               <textarea
                 rows={4}
-                placeholder="Special dietary requirements or message for the couple..."
+                placeholder={t('rsvp.shareMessage')}
                 className="w-full p-3 border border-[#D4B08C]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4B08C]"
               ></textarea>
               <Button className="w-full bg-[#D4B08C] hover:bg-[#C09E7A] text-white py-3 text-lg">
-                Send RSVP
+                {t('rsvp.submit')}
               </Button>
             </CardContent>
           </Card>
@@ -290,28 +290,28 @@ export default function DemoWedding() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-playfair font-bold text-[#2C3338] text-center mb-12 flex items-center justify-center gap-3">
             <MessageSquare className="h-8 w-8 text-[#D4B08C]" />
-            Messages from Friends & Family
+            {t('demo.messagesFromFamily')}
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
                 name: "Sarah & Michael",
-                message: "So excited to celebrate with you both! You're perfect for each other. Can't wait to see Emily in her dress! 💕",
+                message: t('demo.guestMessage1'),
                 avatar: "S"
               },
               {
                 name: "Mom & Dad Johnson",
-                message: "James, you're getting the most wonderful daughter-in-law! Emily, welcome to our family with open hearts. Love you both!",
+                message: t('demo.guestMessage2'),
                 avatar: "J"
               },
               {
                 name: "The Wilsons",
-                message: "Wishing you a lifetime of love, laughter, and endless adventures together. So happy for you both!",
+                message: t('demo.guestMessage3'),
                 avatar: "W"
               },
               {
                 name: "College Friends",
-                message: "From study groups to wedding bells! We've watched your love story unfold and it's been beautiful. Congratulations! 🎉",
+                message: t('demo.guestMessage4'),
                 avatar: "F"
               }
             ].map((message, index) => (
@@ -334,20 +334,20 @@ export default function DemoWedding() {
       {/* Footer */}
       <footer className="py-8 px-6 bg-[#2C3338] text-white text-center">
         <p className="text-lg font-light">
-          With love, Emily & James
+          {t('demo.withLove')}
         </p>
         <p className="text-sm opacity-70 mt-2">
-          August 15, 2024 • Garden Paradise Venue
+          {t('demo.date')} • {t('demo.venue')}
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/get-started">
             <Button size="lg" className="bg-white text-gray-800 hover:bg-gray-100 px-8 py-3">
-              Create Your Own Wedding Website
+              {t('demo.createYourOwn')}
             </Button>
           </Link>
           <Link href="/">
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-gray-800 px-8 py-3">
-              Back to Home
+              {t('demo.backToHome')}
             </Button>
           </Link>
         </div>
