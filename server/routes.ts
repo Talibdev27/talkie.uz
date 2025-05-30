@@ -69,19 +69,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Then create wedding
       const weddingData = {
-        brideFirstName: data.bride.split(' ')[0] || data.bride,
-        brideLastName: data.bride.split(' ').slice(1).join(' ') || '',
-        groomFirstName: data.groom.split(' ')[0] || data.groom,
-        groomLastName: data.groom.split(' ').slice(1).join(' ') || '',
+        bride: data.bride,
+        groom: data.groom,
         weddingDate: new Date(data.weddingDate),
         venue: data.venue,
         venueAddress: data.venueAddress,
-        template: data.template,
-        primaryColor: data.primaryColor,
-        accentColor: data.accentColor,
-        story: data.story || null,
-        backgroundMusicUrl: data.backgroundMusicUrl || null,
-        isPublic: data.isPublic
+        template: data.template || 'gardenRomance',
+        primaryColor: data.primaryColor || '#D4B08C',
+        accentColor: data.accentColor || '#89916B',
+        story: data.relationshipStory || '',
+        isPublic: data.isPublic !== false
       };
 
       const wedding = await storage.createWedding(user.id, weddingData);
