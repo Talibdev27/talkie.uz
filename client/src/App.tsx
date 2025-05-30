@@ -31,7 +31,7 @@ function Router() {
 
       {/* Enhanced Progressive Onboarding */}
       <Route path="/get-started" component={ProgressiveOnboarding} />
-      
+
       {/* Legacy registration (backup) */}
       <Route path="/get-started-legacy" component={GetStarted} />
 

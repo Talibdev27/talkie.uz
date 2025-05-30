@@ -147,7 +147,12 @@ export default function CreateWedding() {
         title: t('createWedding.success'),
         description: t('createWedding.successDescription'),
       });
-      setLocation(`/wedding/${wedding.uniqueUrl}`);
+      // Store user ID for dashboard access
+      localStorage.setItem('currentUserId', wedding.userId.toString());
+      // Redirect to the wedding site
+      setTimeout(() => {
+        setLocation(`/wedding/${wedding.uniqueUrl}`);
+      }, 1000);
     },
     onError: () => {
       toast({
