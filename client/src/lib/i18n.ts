@@ -234,6 +234,17 @@ const resources = {
       'getStarted.registrationFailed': 'Registration Failed',
       'getStarted.registrationFailedDesc': 'An error occurred during registration. Please try again.',
 
+      // Social Share
+      'share.title': 'Share Our Wedding',
+      'share.subtitle': 'Let your friends and family know about our special day',
+      'share.quickShare': 'Quick Share',
+      'share.copyLink': 'Copy Link',
+      'share.moreOptions': 'More Options',
+      'share.showLess': 'Show Less',
+      'share.linkCopied': 'Link Copied!',
+      'share.linkCopiedDesc': 'Wedding website link has been copied to clipboard',
+      'share.copyError': 'Failed to copy link. Please try again.',
+
       // Common
       'common.save': 'Save',
       'common.cancel': 'Cancel',
@@ -442,6 +453,17 @@ const resources = {
       'demo.guestMessage2': 'Jeyms, siz eng ajoyib kelin olasiz! Emili, oilamizga ochiq yurak bilan xush kelibsiz. Ikkalangizni ham yaxshi ko\'ramiz!',
       'demo.guestMessage3': 'Sizga umr bo\'yi sevgi, kulgi va cheksiz sarguzashtlar tilaymiz. Ikkalangiz uchun juda xursandmiz!',
       'demo.guestMessage4': 'O\'quv guruhlaridan to\'y qo\'ng\'iroqlarigacha! Biz sizning sevgi hikoyangizni kuzatdik va bu juda go\'zal edi. Tabriklaymiz!',
+
+      // Social Share
+      'share.title': 'To\'yimizni baham ko\'ring',
+      'share.subtitle': 'Do\'stlar va oilangizga bizning maxsus kunimiz haqida xabar bering',
+      'share.quickShare': 'Tez baham ko\'rish',
+      'share.copyLink': 'Havolani nusxalash',
+      'share.moreOptions': 'Ko\'proq variantlar',
+      'share.showLess': 'Kamroq ko\'rsatish',
+      'share.linkCopied': 'Havola nusxalandi!',
+      'share.linkCopiedDesc': 'To\'y veb-sayti havolasi buferga nusxalandi',
+      'share.copyError': 'Havolani nusxalash amalga oshmadi. Qaytadan urinib ko\'ring.',
 
       // Wedding Site
       'wedding.ourStory': 'Bizning sevgi hikoyamiz',
@@ -782,6 +804,17 @@ const resources = {
       'demo.guestMessage2': 'Джеймс, ты получаешь самую замечательную невестку! Эмили, добро пожаловать в нашу семью с открытыми сердцами. Любим вас обоих!',
       'demo.guestMessage3': 'Желаем вам всю жизнь любви, смеха и бесконечных приключений вместе. Так счастливы за вас обоих!',
       'demo.guestMessage4': 'От учебных групп до свадебных колокольчиков! Мы наблюдали, как разворачивается ваша история любви, и это было прекрасно. Поздравляем!',
+
+      // Social Share
+      'share.title': 'Поделиться нашей свадьбой',
+      'share.subtitle': 'Расскажите друзьям и семье о нашем особенном дне',
+      'share.quickShare': 'Быстро поделиться',
+      'share.copyLink': 'Копировать ссылку',
+      'share.moreOptions': 'Больше вариантов',
+      'share.showLess': 'Показать меньше',
+      'share.linkCopied': 'Ссылка скопирована!',
+      'share.linkCopiedDesc': 'Ссылка на свадебный сайт скопирована в буфер обмена',
+      'share.copyError': 'Не удалось скопировать ссылку. Попробуйте еще раз.',
 
       // Wedding Site
       'wedding.ourStory': 'Наша история любви',

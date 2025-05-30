@@ -9,6 +9,7 @@ import { PhotoGallery } from '@/components/photo-gallery';
 import { PhotoUpload } from '@/components/photo-upload';
 import { RSVPForm } from '@/components/rsvp-form';
 import { LanguageToggle } from '@/components/language-toggle';
+import { SocialShare } from '@/components/social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music } from 'lucide-react';
@@ -311,6 +312,17 @@ export default function WeddingSite() {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Social Share Section */}
+      <section className="py-16 bg-sage-green/5">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SocialShare
+            title={`${wedding.brideFirstName} & ${wedding.groomFirstName}'s Wedding`}
+            url={`/wedding/${wedding.uniqueUrl}`}
+            description={`Join us for our special day on ${formatDate(wedding.weddingDate)} at ${wedding.venue}. We can't wait to celebrate with you!`}
+          />
         </div>
       </section>
 
