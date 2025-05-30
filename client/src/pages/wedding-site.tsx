@@ -21,19 +21,19 @@ export default function WeddingSite() {
   const { t } = useTranslation();
   const params = useParams();
   const uniqueUrl = params.uniqueUrl as string;
+  
+  // For now, assume user is owner - this should be determined by authentication
+  const isOwner = true;
 
   const { data: wedding, isLoading, error } = useQuery<Wedding>({
     queryKey: [`/api/weddings/url/${uniqueUrl}`],
+    queryFn: () => fetch(`/api/weddings/url/${uniqueUrl}`).then(res => res.json()),
     enabled: !!uniqueUrl,
   });
 
   const { data: guestBookEntries = [] } = useQuery<GuestBookEntry[]>({
     queryKey: ['/api/guest-book/wedding', wedding?.id],
-    enabled: !!wedding?.id,
-  });
-
-  const { data: photos = [] } = useQuery<any[]>({
-    queryKey: ['/api/photos/wedding', wedding?.id],
+    queryFn: () => fetch(`/api/guest-book/wedding/${wedding?.id}`).then(res => res.json()),
     enabled: !!wedding?.id,
   });
 
@@ -330,7 +330,7 @@ export default function WeddingSite() {
       <section className="py-16 bg-sage-green/5">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <SocialShare
-            title={`${wedding.brideFirstName} & ${wedding.groomFirstName}'s Wedding`}
+            title={`${wedding.bride.split(' ')[0]} & ${wedding.groom.split(' ')[0]}'s Wedding`}
             url={`/wedding/${wedding.uniqueUrl}`}
             description={`Join us for our special day on ${formatDate(wedding.weddingDate)} at ${wedding.venue}. We can't wait to celebrate with you!`}
           />

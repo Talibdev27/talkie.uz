@@ -10,6 +10,7 @@ import Landing from "@/pages/landing";
 import CreateWedding from "@/pages/create-wedding";
 import GetStarted from "@/pages/get-started";
 import { ProgressiveOnboarding } from "@/components/progressive-onboarding";
+import GuestWeddingView from "@/pages/guest-wedding-view";
 import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
