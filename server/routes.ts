@@ -1,5 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { storage } from "./storage";
 import { 
   insertUserSchema, insertWeddingSchema, insertGuestSchema, 
@@ -8,7 +11,36 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import paymentsRouter from './payments';
+// Configure multer for file uploads
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG, and WebP images are allowed.'));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded files statically
+  app.use('/uploads', express.static(uploadDir));
   // User routes
   app.post("/api/users", async (req, res) => {
     try {
@@ -199,20 +231,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Secure photo upload endpoint with validation
-  app.post("/api/photos/upload", async (req, res) => {
+  // Real photo upload endpoint with multer
+  app.post("/api/photos/upload", upload.single('photo'), async (req, res) => {
     try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No photo file provided" });
+      }
+
       const { weddingId, caption, isHero } = req.body;
       
       if (!weddingId) {
         return res.status(400).json({ message: "Wedding ID is required" });
       }
 
-      // For now, we'll simulate file upload by creating a photo with a placeholder URL
-      // In production, you would handle actual file upload here with multer
+      // Create photo record with actual file URL
       const photoData = {
         weddingId: parseInt(weddingId),
-        url: `https://images.unsplash.com/photo-${Date.now()}?w=800&h=600&fit=crop&auto=format`,
+        url: `/uploads/${req.file.filename}`,
         caption: caption || null,
         isHero: isHero === 'true'
       };
@@ -221,6 +256,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(photo);
     } catch (error) {
       console.error("Photo upload error:", error);
+      if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ message: "File too large. Maximum size is 5MB." });
+        }
+      }
       res.status(500).json({ message: "Failed to upload photo" });
     }
   });
