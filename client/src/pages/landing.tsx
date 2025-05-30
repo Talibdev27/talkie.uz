@@ -421,14 +421,16 @@ export default function Landing() {
             {t('cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/create-wedding">
+            <Link href="/get-started">
               <Button className="bg-white text-romantic-gold px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all shadow-lg">
                 {t('cta.startFreeTrial')}
               </Button>
             </Link>
-            <Button variant="outline" className="border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-white hover:text-romantic-gold transition-all">
-              {t('hero.viewDemo')}
-            </Button>
+            <Link href="/demo">
+              <Button className="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-white hover:text-romantic-gold transition-all shadow-lg font-semibold">
+                {t('hero.viewDemo')}
+              </Button>
+            </Link>
           </div>
           <p className="mt-6 text-sm text-white opacity-70">
             {t('cta.noCreditCard')} • {t('cta.freeTrial')} • {t('cta.cancelAnytime')}
