@@ -7,6 +7,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { PhotoUpload } from '@/components/photo-upload';
+import { SmartImageUpload } from '@/components/smart-image-upload';
+import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
 import { RSVPForm } from '@/components/rsvp-form';
 import { LanguageToggle } from '@/components/language-toggle';
 import { SocialShare } from '@/components/social-share';
@@ -237,9 +239,16 @@ export default function WeddingSite() {
               {t('wedding.capturingJourney')}
             </p>
             
-            {/* Photo Upload Button - Only visible to wedding owners */}
-            <div className="mt-6">
+            {/* Enhanced Photo Upload Options - Only visible to wedding owners */}
+            <div className="mt-6 flex gap-3 justify-center">
               <PhotoUpload 
+                weddingId={wedding.id} 
+                isOwner={true}
+                onSuccess={() => {
+                  // Photos will automatically refresh via React Query
+                }}
+              />
+              <SmartImageUpload 
                 weddingId={wedding.id} 
                 isOwner={true}
                 onSuccess={() => {

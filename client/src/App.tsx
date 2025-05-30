@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import CreateWedding from "@/pages/create-wedding";
 import GetStarted from "@/pages/get-started";
+import { ProgressiveOnboarding } from "@/components/progressive-onboarding";
 import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
@@ -26,8 +27,11 @@ function Router() {
       <Route path="/login" component={UserLogin} />
       <Route path="/register" component={UserLogin} />
 
-      {/* Get Started - Combined registration and wedding creation */}
-      <Route path="/get-started" component={GetStarted} />
+      {/* Enhanced Progressive Onboarding */}
+      <Route path="/get-started" component={ProgressiveOnboarding} />
+      
+      {/* Legacy registration (backup) */}
+      <Route path="/get-started-legacy" component={GetStarted} />
 
       {/* Wedding creation flow */}
       <Route path="/create-wedding" component={CreateWedding} />
