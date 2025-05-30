@@ -107,52 +107,23 @@ export default function GetStarted() {
   const createUserAndWedding = useMutation({
     mutationFn: async (data: GetStartedFormData) => {
       try {
-        // Create user account
-        const userResponse = await fetch('/api/users', {
+        // Use the combined registration endpoint that creates both user and wedding
+        const response = await fetch('/api/get-started', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: data.name,
-            email: data.email,
-            password: data.password
+            ...data,
+            weddingDate: data.weddingDate.toISOString()
           })
         });
         
-        if (!userResponse.ok) {
-          const errorText = await userResponse.text();
-          throw new Error(`Failed to create user: ${errorText}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to create account and wedding website');
         }
         
-        const user = await userResponse.json();
-        
-        // Create wedding
-        const weddingData = { 
-          userId: user.id,
-          bride: data.bride,
-          groom: data.groom,
-          weddingDate: data.weddingDate.toISOString(),
-          venue: data.venue,
-          venueAddress: data.venueAddress,
-          story: data.story || "",
-          template: data.template,
-          primaryColor: data.primaryColor,
-          accentColor: data.accentColor,
-          isPublic: data.isPublic
-        };
-        
-        const weddingResponse = await fetch('/api/weddings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(weddingData)
-        });
-        
-        if (!weddingResponse.ok) {
-          const errorText = await weddingResponse.text();
-          throw new Error(`Failed to create wedding: ${errorText}`);
-        }
-        
-        const wedding = await weddingResponse.json();
-        return { user, wedding };
+        const result = await response.json();
+        return result;
       } catch (error) {
         console.error('Registration and wedding creation error:', error);
         throw error;

@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
@@ -41,6 +42,61 @@ const upload = multer({
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
+
+  // Combined registration and wedding creation endpoint
+  app.post("/api/get-started", async (req, res) => {
+    try {
+      // Parse and validate the combined data
+      const data = req.body;
+      
+      // First, check if user already exists
+      const existingUser = await storage.getUserByEmail(data.email);
+      if (existingUser) {
+        return res.status(400).json({ 
+          message: "User with this email already exists. Please login instead." 
+        });
+      }
+
+      // Create user first
+      const userData = {
+        name: data.name,
+        email: data.email,
+        password: data.password
+      };
+      const user = await storage.createUser(userData);
+
+      // Then create wedding
+      const weddingData = {
+        brideFirstName: data.bride.split(' ')[0] || data.bride,
+        brideLastName: data.bride.split(' ').slice(1).join(' ') || '',
+        groomFirstName: data.groom.split(' ')[0] || data.groom,
+        groomLastName: data.groom.split(' ').slice(1).join(' ') || '',
+        weddingDate: new Date(data.weddingDate),
+        venue: data.venue,
+        venueAddress: data.venueAddress,
+        template: data.template,
+        primaryColor: data.primaryColor,
+        accentColor: data.accentColor,
+        story: data.story || null,
+        backgroundMusicUrl: data.backgroundMusicUrl || null,
+        isPublic: data.isPublic
+      };
+
+      const wedding = await storage.createWedding(user.id, weddingData);
+
+      res.status(201).json({
+        user,
+        wedding,
+        message: "Registration and wedding website created successfully!"
+      });
+    } catch (error) {
+      console.error("Get started error:", error);
+      res.status(400).json({ 
+        message: "Failed to create account and wedding website", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
   // User routes
   app.post("/api/users", async (req, res) => {
     try {
