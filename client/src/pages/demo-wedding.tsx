@@ -122,19 +122,19 @@ export default function DemoWedding() {
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
           <h1 className="text-6xl md:text-8xl font-playfair font-bold mb-4">
-            {config.couple}
+            {t('demo.couple')}
           </h1>
           <p className="text-2xl md:text-3xl font-light mb-8">
-            {config.tagline}
+            {t('demo.tagline')}
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-lg">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
-              <span>August 15, 2024</span>
+              <span>{t('demo.date')}</span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              <span>{config.venue}</span>
+              <span>{t('demo.venue')}</span>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function DemoWedding() {
       <section className="py-16 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-playfair font-bold text-[#2C3338] mb-8">
-            Our Love Story
+            {t('demo.ourStory')}
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -162,13 +162,8 @@ export default function DemoWedding() {
               />
             </div>
             <div className="text-left">
-              <p className="text-lg text-[#2C3338]/80 leading-relaxed mb-6">
-                We met on a rainy Tuesday at our favorite coffee shop downtown. What started as a simple 
-                conversation about books turned into hours of talking, and we knew something special was beginning.
-              </p>
-              <p className="text-lg text-[#2C3338]/80 leading-relaxed">
-                Five years later, James proposed in that same coffee shop, and now we're ready to start 
-                the most beautiful chapter of our lives together.
+              <p className="text-lg text-[#2C3338]/80 leading-relaxed whitespace-pre-line">
+                {t('demo.loveStoryFull')}
               </p>
             </div>
           </div>
@@ -179,23 +174,25 @@ export default function DemoWedding() {
       <section className="py-16 px-6 bg-[#F8F1F1]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-playfair font-bold text-[#2C3338] text-center mb-12">
-            Wedding Details
+            {t('wedding.weddingDetails')}
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="p-6 shadow-lg">
               <CardContent className="text-center">
                 <Calendar className="h-12 w-12 text-[#D4B08C] mx-auto mb-4" />
-                <h3 className="text-2xl font-semibold text-[#2C3338] mb-2">Ceremony</h3>
-                <p className="text-[#2C3338]/70 mb-2">August 15, 2024</p>
-                <p className="text-[#2C3338]/70">3:00 PM</p>
+                <h3 className="text-2xl font-semibold text-[#2C3338] mb-2">{t('wedding.when')}</h3>
+                <p className="text-[#2C3338]/70 mb-2">{t('demo.date')}</p>
+                <p className="text-[#2C3338]/70">{t('demo.ceremony')}</p>
               </CardContent>
             </Card>
             <Card className="p-6 shadow-lg">
               <CardContent className="text-center">
                 <MapPin className="h-12 w-12 text-[#D4B08C] mx-auto mb-4" />
-                <h3 className="text-2xl font-semibold text-[#2C3338] mb-2">Venue</h3>
-                <p className="text-[#2C3338]/70 mb-2">Garden Paradise Venue</p>
-                <p className="text-[#2C3338]/70">123 Love Lane, Romance City</p>
+                <h3 className="text-2xl font-semibold text-[#2C3338] mb-2">{t('wedding.where')}</h3>
+                <p className="text-[#2C3338]/70 mb-2">{t('demo.venue')}</p>
+                <Button variant="outline" className="mt-2 text-sm">
+                  {t('demo.viewOnMap')}
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -207,7 +204,7 @@ export default function DemoWedding() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-playfair font-bold text-[#2C3338] text-center mb-12 flex items-center justify-center gap-3">
             <Camera className="h-8 w-8 text-[#D4B08C]" />
-            Our Memories
+            {t('demo.photos')}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[
