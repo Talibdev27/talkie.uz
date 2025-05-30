@@ -410,6 +410,23 @@ const resources = {
       'templates.vintageChic': 'Vintage Chic',
       'templates.bohoGarden': 'Boho Garden',
 
+      // User Dashboard
+      'dashboard.myWeddings': 'My Weddings',
+      'dashboard.manageYourWeddings': 'Manage and view all your wedding websites',
+      'dashboard.createNewWedding': 'Create New Wedding',
+      'dashboard.noWeddingsYet': 'No Weddings Yet',
+      'dashboard.startCreating': 'Start creating beautiful wedding websites to share your special moments with friends and family.',
+      'dashboard.createFirstWedding': 'Create Your First Wedding',
+      'dashboard.public': 'Public',
+      'dashboard.private': 'Private',
+      'dashboard.viewSite': 'View Site',
+      'dashboard.manage': 'Manage',
+      'dashboard.created': 'Created',
+      'dashboard.guests': 'guests',
+      'dashboard.totalWeddings': 'Total Weddings',
+      'dashboard.publicWeddings': 'Public Weddings',
+      'dashboard.upcomingWeddings': 'Upcoming Weddings',
+
       // Common
       'common.save': 'Save',
       'common.cancel': 'Cancel',

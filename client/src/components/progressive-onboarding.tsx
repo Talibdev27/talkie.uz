@@ -152,7 +152,10 @@ export function ProgressiveOnboarding() {
       
       return response.json();
     },
-    onSuccess: ({ wedding }) => {
+    onSuccess: ({ user, wedding }) => {
+      // Store user ID for dashboard access
+      localStorage.setItem('currentUserId', user.id.toString());
+      
       toast({
         title: t('onboarding.success.title'),
         description: t('onboarding.success.description'),
@@ -188,6 +191,12 @@ export function ProgressiveOnboarding() {
     const isValid = await validateCurrentStep();
     if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
+    } else if (!isValid) {
+      toast({
+        title: 'Please complete this step',
+        description: 'Fill in all required fields before continuing',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -199,12 +208,31 @@ export function ProgressiveOnboarding() {
 
   const handleSubmit = async (data: ProgressiveFormData) => {
     setIsSubmitting(true);
-    const isValid = await validateCurrentStep();
-    if (isValid) {
-      createAccountMutation.mutate(data);
-    } else {
+    
+    // Validate all steps before submission
+    const allFieldsValid = await form.trigger();
+    if (!allFieldsValid) {
       setIsSubmitting(false);
+      toast({
+        title: t('onboarding.error.title'),
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
     }
+    
+    // Check specifically for required fields
+    if (!data.bride || !data.groom || !data.venue || !data.venueAddress) {
+      setIsSubmitting(false);
+      toast({
+        title: t('onboarding.error.title'),
+        description: 'Please complete all required wedding information',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    createAccountMutation.mutate(data);
   };
 
   const templateOptions = [
