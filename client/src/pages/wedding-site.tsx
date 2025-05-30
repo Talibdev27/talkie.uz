@@ -196,22 +196,14 @@ export default function WeddingSite() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              {photos.length > 0 ? (
-                <img
-                  src={photos[0].url}
-                  alt="Couple's photo"
-                  className="rounded-xl shadow-lg w-full h-auto object-cover aspect-[4/3]"
-                />
-              ) : (
-                <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
-                    <p className="text-charcoal opacity-70">
-                      {t('photos.photosWillAppear')}
-                    </p>
-                  </div>
+              <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
+                <div className="text-center p-8">
+                  <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
+                  <p className="text-charcoal opacity-70">
+                    {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
             <div className="space-y-6">
               <div className="text-center">
