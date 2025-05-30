@@ -154,3 +154,6 @@ CORS_ALLOW_CREDENTIALS = True
 # Session settings
 SESSION_COOKIE_AGE = 86400  # 24 hours
 SESSION_SAVE_EVERY_REQUEST = True
+
+# Custom User Model
+AUTH_USER_MODEL = 'weddings.User'

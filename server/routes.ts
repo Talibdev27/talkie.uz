@@ -49,6 +49,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Parse and validate the combined data
       const data = req.body;
       
+      console.log("Registration data received:", data);
+      
       // First, check if user already exists
       const existingUser = await storage.getUserByEmail(data.email);
       if (existingUser) {
@@ -114,19 +116,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users/guest", async (req, res) => {
     try {
-      const { email, name } = req.body;
+      // Generate temporary guest user for immediate wedding creation
+      const timestamp = Date.now();
+      const guestEmail = `guest_${timestamp}@example.com`;
+      const guestName = `Guest User ${timestamp}`;
 
-      // Check if guest user already exists
-      let user = await storage.getUserByEmail(email);
-
-      if (!user) {
-        // Create new guest user
-        user = await storage.createUser({
-          email,
-          name,
-          password: 'guest_user'
-        });
-      }
+      // Create temporary guest user
+      const user = await storage.createUser({
+        email: guestEmail,
+        name: guestName,
+        password: 'temp_guest'
+      });
 
       res.json(user);
     } catch (error) {

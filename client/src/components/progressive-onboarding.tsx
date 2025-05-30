@@ -135,6 +135,11 @@ export function ProgressiveOnboarding() {
 
   const createAccountMutation = useMutation({
     mutationFn: async (data: ProgressiveFormData) => {
+      // Validate required fields
+      if (!data.email || !data.password || !data.name) {
+        throw new Error('Please fill in all required account information');
+      }
+
       const response = await fetch('/api/get-started', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
