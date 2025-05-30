@@ -130,6 +130,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin login endpoint
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // For now, use hardcoded admin credentials
+      if (username === 'Talibdev' && password === 'Dilnoza2003') {
+        res.json({
+          user: {
+            id: 1,
+            email: 'mukhammadaminkhonesaev@gmail.com',
+            name: 'Talibdev'
+          },
+          message: "Login successful"
+        });
+      } else {
+        res.status(401).json({ message: "Invalid username or password. Please try again." });
+      }
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.post("/api/users/guest", async (req, res) => {
     try {
       // Generate temporary guest user for immediate wedding creation

@@ -22,11 +22,19 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      // Simple admin authentication - in production, this should be properly secured
-      if (credentials.username === 'admin' && credentials.password === 'wedding2024') {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
         // Store admin session
         localStorage.setItem('isAdmin', 'true');
-        localStorage.setItem('adminUser', credentials.username);
+        localStorage.setItem('adminUser', data.user.email);
         
         toast({
           title: "Login Successful",
@@ -35,9 +43,10 @@ export default function AdminLogin() {
         
         setLocation('/system/dashboard');
       } else {
+        const errorData = await response.json();
         toast({
           title: "Login Failed",
-          description: "Invalid username or password. Please try again.",
+          description: errorData.message || "Invalid username or password. Please try again.",
           variant: "destructive",
         });
       }
