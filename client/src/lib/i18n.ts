@@ -146,6 +146,25 @@ const resources = {
       'templates.bohoChicDesc': 'Free-spirited, artistic design with bohemian elements',
       'templates.previewTemplate': 'Preview Template',
 
+      // Demo Content
+      'demo.templatePreview': 'Template Preview:',
+      'demo.couple': 'Emily & James',
+      'demo.tagline': 'A love that blooms like flowers in spring',
+      'demo.venue': 'Rose Garden Estate',
+      'demo.date': 'August 15, 2024',
+      'demo.ceremony': 'Ceremony begins at 4:00 PM',
+      'demo.viewOnMap': 'View on Map',
+      'demo.rsvp': 'RSVP',
+      'demo.photos': 'Our Memories',
+      'demo.guestBook': 'Guest Book',
+      'demo.guestBookSubtitle': 'Leave us a message to make our day even more special',
+      'demo.messagesFromLovedOnes': 'Messages from our loved ones',
+      'demo.thankYouGuests': 'Thank you for being part of our special day',
+      'demo.createdWith': 'Created with',
+      'demo.using': 'LoveStory',
+      'demo.capturingJourney': 'Capturing our journey together',
+      'demo.loveStoryFull': 'We met on a rainy Tuesday at our favorite coffee shop downtown. What started as a simple conversation about books turned into hours of talking, and we knew something special was beginning.\n\nFive years later, James proposed in that same coffee shop, and now we\'re ready to start the most beautiful chapter of our lives together.',
+
       // CTA Section
       'cta.title': 'Ready to Create Your Dream Wedding Website?',
       'cta.subtitle': 'Join thousands of couples who have shared their special day with LoveStory. Start your free trial today.',
@@ -388,6 +407,25 @@ const resources = {
       'demo.storyText': 'Biz yomg\'irli seshanba kuni sevimli qahvaxonamizda uchrashdik. Tasodifiy uchrashuvdan boshlanganlar eng go\'zal sevgi hikoyasiga aylandi...',
       'demo.howWeMet': 'Qanday uchrashganmiz',
       'demo.howWeMetText': 'Har bir sevgi hikoyasi o\'ziga xos, bizniki esa eng kutilmagan tarzda boshlandi...',
+
+      // Demo Content
+      'demo.templatePreview': 'Shablon ko\'rinishi:',
+      'demo.couple': 'Emili va Jeyms',
+      'demo.tagline': 'Bahorda gullardek ochilgan sevgi',
+      'demo.venue': 'Atirgul bog\'i saroyida',
+      'demo.date': '15 Avgust, 2024',
+      'demo.ceremony': 'Marosim soat 16:00 da boshlanadi',
+      'demo.viewOnMap': 'Xaritada ko\'rish',
+      'demo.rsvp': 'Tasdiq',
+      'demo.photos': 'Bizning xotiralarimiz',
+      'demo.guestBook': 'Mehmonlar kitobi',
+      'demo.guestBookSubtitle': 'Bizning kunimizni yanada o\'ziga xos qilish uchun xabar qoldiring',
+      'demo.messagesFromLovedOnes': 'Yaqinlarimizdan xabarlar',
+      'demo.thankYouGuests': 'Bizning maxsus kunimizda ishtirok etganingiz uchun rahmat',
+      'demo.createdWith': 'Yaratilgan',
+      'demo.using': 'LoveStory yordamida',
+      'demo.capturingJourney': 'Bizning sayohatimizni suratga olish',
+      'demo.loveStoryFull': 'Biz yomg\'irli seshanba kuni sevimli qahvaxonamizda uchrashdik. Kitoblar haqidagi oddiy suhbat soatlab davom etdi va biz nimadir maxsus boshlanayotganini his qildik.\n\nBesh yil o\'tgach, Jeyms o\'sha qahvaxonada turmush qurish taklifini qildi va endi biz hayotimizning eng go\'zal bobini boshqarishga tayyormiz.',
 
       // Wedding Site
       'wedding.ourStory': 'Bizning sevgi hikoyamiz',
@@ -701,6 +739,25 @@ const resources = {
       'demo.storyText': 'Мы встретились в дождливый вторник в нашем любимом кафе. То, что началось как случайная встреча, стало самой прекрасной историей любви, которую мы могли себе представить...',
       'demo.howWeMet': 'Как мы познакомились',
       'demo.howWeMetText': 'Каждая история любви особенная, а наша началась самым неожиданным образом...',
+
+      // Demo Content
+      'demo.templatePreview': 'Предварительный просмотр шаблона:',
+      'demo.couple': 'Эмили и Джеймс',
+      'demo.tagline': 'Любовь, что расцветает как цветы весной',
+      'demo.venue': 'Поместье Розового Сада',
+      'demo.date': '15 августа, 2024',
+      'demo.ceremony': 'Церемония начинается в 16:00',
+      'demo.viewOnMap': 'Посмотреть на карте',
+      'demo.rsvp': 'Подтверждение',
+      'demo.photos': 'Наши воспоминания',
+      'demo.guestBook': 'Книга гостей',
+      'demo.guestBookSubtitle': 'Оставьте нам сообщение, чтобы сделать наш день еще более особенным',
+      'demo.messagesFromLovedOnes': 'Сообщения от наших близких',
+      'demo.thankYouGuests': 'Спасибо за участие в нашем особенном дне',
+      'demo.createdWith': 'Создано с',
+      'demo.using': 'LoveStory',
+      'demo.capturingJourney': 'Запечатлеваем наше путешествие вместе',
+      'demo.loveStoryFull': 'Мы встретились в дождливый вторник в нашем любимом кафе в центре города. То, что началось как простой разговор о книгах, превратилось в часы общения, и мы поняли, что начинается что-то особенное.\n\nПять лет спустя Джеймс сделал предложение в том же кафе, и теперь мы готовы начать самую прекрасную главу нашей жизни вместе.',
 
       // Wedding Site
       'wedding.ourStory': 'Наша история любви',

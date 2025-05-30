@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Heart, Users, Camera, MessageSquare } from "lucide-react";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { Link, useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 
 const templateConfigs = {
   gardenRomance: {
@@ -64,6 +65,7 @@ const templateConfigs = {
 };
 
 export default function DemoWedding() {
+  const { t, i18n } = useTranslation();
   const [location] = useLocation();
   const [currentTemplate, setCurrentTemplate] = useState('gardenRomance');
   const weddingDate = new Date('2024-08-15T15:00:00');
@@ -88,9 +90,9 @@ export default function DemoWedding() {
       {/* Template Selector - Show current template and allow switching */}
       <div className="fixed top-4 right-4 z-50">
         <Card className="p-4 bg-white/95 backdrop-blur-sm shadow-lg">
-          <p className="text-sm font-medium text-gray-600 mb-2">Template Preview:</p>
+          <p className="text-sm font-medium text-gray-600 mb-2">{t('demo.templatePreview')}</p>
           <p className="text-lg font-semibold mb-3" style={{ color: config.primaryColor }}>
-            {currentTemplate.charAt(0).toUpperCase() + currentTemplate.slice(1).replace(/([A-Z])/g, ' $1')}
+            {t(`templates.${currentTemplate}`)}
           </p>
           <div className="space-y-1">
             {Object.keys(templateConfigs).map((templateKey) => (
