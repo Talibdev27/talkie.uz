@@ -22,8 +22,8 @@ export default function WeddingSite() {
   const params = useParams();
   const uniqueUrl = params.uniqueUrl as string;
   
-  // For now, assume user is owner - this should be determined by authentication
-  const isOwner = true;
+  // For now, assume user is guest by default - owners can access via special URL
+  const isOwner = false;
 
   const { data: wedding, isLoading, error } = useQuery<Wedding>({
     queryKey: [`/api/weddings/url/${uniqueUrl}`],
