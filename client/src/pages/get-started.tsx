@@ -234,10 +234,10 @@ export default function GetStarted() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-playfair font-bold text-charcoal mb-4">
-            Create Your Wedding Website
+            {t('getStarted.title')}
           </h1>
           <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
-            Join thousands of couples who've created beautiful wedding websites with us
+            {t('getStarted.subtitle')}
           </p>
         </div>
 
@@ -275,10 +275,10 @@ export default function GetStarted() {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
                     <User className="text-gold" />
-                    Create Your Account
+                    {t('getStarted.createAccount')}
                   </CardTitle>
                   <p className="text-charcoal/70">
-                    Let's start by setting up your account
+                    {t('getStarted.createAccountDesc')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -288,11 +288,11 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Full Name
+                          {t('getStarted.fullName')}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter your full name"
+                            placeholder={t('getStarted.fullNamePlaceholder')}
                             className="wedding-input"
                             {...field}
                           />
@@ -308,12 +308,12 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Email Address
+                          {t('getStarted.emailAddress')}
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="Enter your email address"
+                            placeholder={t('getStarted.emailPlaceholder')}
                             className="wedding-input"
                             {...field}
                           />
@@ -329,13 +329,13 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Password
+                          {t('getStarted.password')}
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
                               type={showPassword ? "text" : "password"}
-                              placeholder="Create a secure password"
+                              placeholder={t('getStarted.passwordPlaceholder')}
                               className="wedding-input pr-10"
                               {...field}
                             />
@@ -365,12 +365,12 @@ export default function GetStarted() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold">
-                          Confirm Password
+                          {t('getStarted.confirmPassword')}
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="password"
-                            placeholder="Confirm your password"
+                            placeholder={t('getStarted.confirmPasswordPlaceholder')}
                             className="wedding-input"
                             {...field}
                           />
@@ -423,11 +423,11 @@ export default function GetStarted() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-charcoal font-semibold">
-                            Groom's Name
+                            {t('getStarted.groomName')}
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter groom's name"
+                              placeholder={t('getStarted.groomNamePlaceholder')}
                               className="wedding-input"
                               {...field}
                             />
@@ -445,7 +445,7 @@ export default function GetStarted() {
                       <FormItem>
                         <FormLabel className="text-charcoal font-semibold flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-gold" />
-                          Wedding Date
+                          {t('getStarted.weddingDate')}
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -469,10 +469,10 @@ export default function GetStarted() {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-playfair font-bold text-charcoal flex items-center justify-center gap-2">
                     <MapPin className="text-gold" />
-                    Venue Details
+                    {t('getStarted.venueDetails')}
                   </CardTitle>
                   <p className="text-charcoal/70">
-                    Where will your special day take place?
+                    {t('getStarted.venueDetailsDesc')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
