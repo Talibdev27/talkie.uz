@@ -51,6 +51,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Registration data received:", data);
       
+      // Validate required fields
+      if (!data.email || !data.password || !data.name || !data.bride || !data.groom) {
+        console.log("Missing required fields:", { 
+          email: !!data.email, 
+          password: !!data.password, 
+          name: !!data.name, 
+          bride: !!data.bride, 
+          groom: !!data.groom 
+        });
+        return res.status(400).json({ 
+          message: "Missing required fields: email, password, name, bride, and groom are required" 
+        });
+      }
+
+      // Check if passwords match (if confirmPassword is provided)
+      if (data.confirmPassword && data.password !== data.confirmPassword) {
+        return res.status(400).json({ message: "Passwords don't match" });
+      }
+      
       // First, check if user already exists
       const existingUser = await storage.getUserByEmail(data.email);
       if (existingUser) {
