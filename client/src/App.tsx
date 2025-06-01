@@ -18,7 +18,8 @@ import AdminLogin from "@/pages/admin-login";
 import AdminWeddingEdit from "@/pages/admin-wedding-edit";
 import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
-import { PaymentPage } from "@/pages/payment";
+import Payment from "@/pages/payment";
+import PaymentSuccess from "@/pages/payment-success";
 
 function Router() {
   return (
@@ -35,6 +36,10 @@ function Router() {
 
       {/* Legacy registration (backup) */}
       <Route path="/get-started-legacy" component={GetStarted} />
+
+      {/* Payment flow */}
+      <Route path="/payment" component={Payment} />
+      <Route path="/payment-success" component={PaymentSuccess} />
 
       {/* Wedding creation flow */}
       <Route path="/create-wedding" component={CreateWedding} />
@@ -55,8 +60,7 @@ function Router() {
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />
 
-      {/* Payment Route */}
-      <Route path="/payment" component={PaymentPage} />
+
 
       {/* Fallback to 404 */}
       <Route component={NotFound} />

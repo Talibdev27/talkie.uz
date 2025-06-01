@@ -92,6 +92,19 @@ export default function CreateWedding() {
         if (!currentUserId) {
           throw new Error('Please register or login to create a wedding website');
         }
+
+        // Check if user has paid subscription first
+        const userResponse = await fetch(`/api/users/${currentUserId}`);
+        if (!userResponse.ok) {
+          throw new Error('Failed to verify user status');
+        }
+        
+        const user = await userResponse.json();
+        if (!user.hasPaidSubscription && !user.isAdmin) {
+          // Redirect to payment page
+          setLocation('/payment');
+          return;
+        }
         
         // Create wedding for registered user
         const weddingData = { 

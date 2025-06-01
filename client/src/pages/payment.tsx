@@ -1,254 +1,145 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { CreditCard, Smartphone, ArrowLeft } from "lucide-react";
 
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { CreditCard, Smartphone, Building2, ArrowLeft } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-
-interface PaymentMethod {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  description: string;
-}
-
-export function PaymentPage() {
+export default function Payment() {
   const { t } = useTranslation();
-  const [location, setLocation] = useLocation();
-  
-  // Parse URL parameters manually since wouter doesn't have useSearchParams
-  const searchParams = new URLSearchParams(location.split('?')[1] || '');
-  const [selectedMethod, setSelectedMethod] = useState<string>('uzcard');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [selectedMethod, setSelectedMethod] = useState<'click' | 'payme' | null>(null);
 
-  const planId = searchParams.get('plan');
-  const amount = parseInt(searchParams.get('amount') || '0');
-
-  const paymentMethods: PaymentMethod[] = [
-    {
-      id: 'uzcard',
-      name: 'UzCard',
-      icon: <CreditCard className="w-6 h-6" />,
-      description: 'To\'g\'ridan-to\'g\'ri UzCard bilan to\'lash'
-    },
-    {
-      id: 'humo',
-      name: 'Humo',
-      icon: <CreditCard className="w-6 h-6" />,
-      description: 'Humo kartasi bilan to\'lash'
-    },
-    {
-      id: 'payme',
-      name: 'Payme',
-      icon: <Smartphone className="w-6 h-6" />,
-      description: 'Payme ilovasi orqali to\'lash'
-    },
-    {
-      id: 'click',
-      name: 'Click',
-      icon: <Smartphone className="w-6 h-6" />,
-      description: 'Click ilovasi orqali to\'lash'
-    },
-    {
-      id: 'paycom',
-      name: 'Paycom',
-      icon: <Building2 className="w-6 h-6" />,
-      description: 'Paycom tizimi orqali to\'lash'
-    }
-  ];
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('uz-UZ', {
-      style: 'currency',
-      currency: 'UZS',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const handlePayment = async () => {
-    setLoading(true);
-    
-    try {
-      const paymentData = {
-        planId,
-        amount,
-        method: selectedMethod,
-        cardNumber: selectedMethod.includes('card') || selectedMethod.includes('humo') ? cardNumber : undefined,
-        expiryDate: selectedMethod.includes('card') || selectedMethod.includes('humo') ? expiryDate : undefined,
-        cvv: selectedMethod.includes('card') || selectedMethod.includes('humo') ? cvv : undefined,
-        phoneNumber: ['payme', 'click'].includes(selectedMethod) ? phoneNumber : undefined,
-      };
-
-      const response = await fetch('/api/payments/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentData),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Redirect to payment provider
-        if (result.redirectUrl) {
-          window.location.href = result.redirectUrl;
-        } else {
-          // Handle success
-          setLocation(`/payment-success?order=${result.orderId}`);
-        }
-      } else {
-        alert('To\'lovda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
+  const createPayment = useMutation({
+    mutationFn: async (paymentMethod: 'click' | 'payme') => {
+      const currentUserId = localStorage.getItem('currentUserId');
+      if (!currentUserId) {
+        throw new Error('Please login first');
       }
-    } catch (error) {
-      console.error('Payment error:', error);
-      alert('To\'lovda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  if (!planId || !amount) {
-    return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold mb-4">Noto'g'ri so'rov</h1>
-        <Button onClick={() => setLocation('/')}>Bosh sahifaga qaytish</Button>
-      </div>
-    );
-  }
+      const response = await apiRequest("POST", "/api/create-payment", {
+        userId: parseInt(currentUserId),
+        paymentMethod,
+        amount: 50000 // 50,000 UZS
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      // Redirect to payment gateway
+      window.location.href = data.paymentUrl;
+    },
+    onError: (error: any) => {
+      toast({
+        title: t('payment.error.title'),
+        description: error.message || t('payment.error.description'),
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handlePayment = (method: 'click' | 'payme') => {
+    setSelectedMethod(method);
+    createPayment.mutate(method);
+  };
 
   return (
-    <div className="container mx-auto px-4 py-20">
-      <div className="max-w-2xl mx-auto">
-        <Button 
-          variant="ghost" 
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4">
+      <div className="max-w-2xl mx-auto pt-8">
+        <Button
+          variant="ghost"
+          onClick={() => setLocation("/")}
           className="mb-6"
-          onClick={() => setLocation('/')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Orqaga
+          {t('common.back')}
         </Button>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>To'lovni amalga oshirish</CardTitle>
-            <CardDescription>
-              {planId} rejasi uchun to'lov: {formatPrice(amount)}
-            </CardDescription>
+        <Card className="shadow-xl border-primary/10">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {t('payment.title')}
+            </CardTitle>
+            <p className="text-muted-foreground mt-2">
+              {t('payment.description')}
+            </p>
+            <div className="text-center mt-4">
+              <span className="text-2xl font-bold text-primary">50,000 UZS</span>
+              <p className="text-sm text-muted-foreground">{t('payment.oneTime')}</p>
+            </div>
           </CardHeader>
 
-          <CardContent className="space-y-6">
-            {/* Payment Method Selection */}
-            <div>
-              <Label className="text-base font-semibold mb-4 block">To'lov usulini tanlang</Label>
-              <div className="grid gap-3">
-                {paymentMethods.map((method) => (
-                  <Card 
-                    key={method.id}
-                    className={`cursor-pointer transition-colors ${
-                      selectedMethod === method.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => setSelectedMethod(method.id)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="text-blue-600">{method.icon}</div>
-                        <div>
-                          <div className="font-semibold">{method.name}</div>
-                          <div className="text-sm text-gray-600">{method.description}</div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Payment Details */}
-            {(selectedMethod === 'uzcard' || selectedMethod === 'humo') && (
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">Karta ma'lumotlari</Label>
-                <div className="grid gap-4">
-                  <div>
-                    <Label htmlFor="cardNumber">Karta raqami</Label>
-                    <Input
-                      id="cardNumber"
-                      placeholder="8600 0000 0000 0000"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      maxLength={19}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiry">Amal qilish muddati</Label>
-                      <Input
-                        id="expiry"
-                        placeholder="MM/YY"
-                        value={expiryDate}
-                        onChange={(e) => setExpiryDate(e.target.value)}
-                        maxLength={5}
-                      />
+          <CardContent className="space-y-4">
+            <div className="grid gap-4">
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-20 p-6 hover:border-primary hover:bg-primary/5 transition-all"
+                onClick={() => handlePayment('click')}
+                disabled={createPayment.isPending}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <CreditCard className="w-6 h-6 text-blue-600" />
                     </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        placeholder="123"
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value)}
-                        maxLength={3}
-                        type="password"
-                      />
+                    <div className="text-left">
+                      <h3 className="font-semibold">Click</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('payment.click.description')}
+                      </p>
                     </div>
                   </div>
+                  {selectedMethod === 'click' && createPayment.isPending && (
+                    <div className="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full" />
+                  )}
                 </div>
-              </div>
-            )}
+              </Button>
 
-            {(selectedMethod === 'payme' || selectedMethod === 'click') && (
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">Telefon raqami</Label>
-                <div>
-                  <Label htmlFor="phone">Telefon raqamingiz</Label>
-                  <Input
-                    id="phone"
-                    placeholder="+998 90 123 45 67"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-20 p-6 hover:border-primary hover:bg-primary/5 transition-all"
+                onClick={() => handlePayment('payme')}
+                disabled={createPayment.isPending}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <Smartphone className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-semibold">Payme</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('payment.payme.description')}
+                      </p>
+                    </div>
+                  </div>
+                  {selectedMethod === 'payme' && createPayment.isPending && (
+                    <div className="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full" />
+                  )}
                 </div>
-              </div>
-            )}
-
-            <Separator />
-
-            {/* Payment Summary */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">Jami to'lov:</span>
-                <span className="text-xl font-bold text-blue-600">{formatPrice(amount)}</span>
-              </div>
+              </Button>
             </div>
 
-            <Button 
-              className="w-full"
-              onClick={handlePayment}
-              disabled={loading}
-            >
-              {loading ? 'To\'lov amalga oshirilmoqda...' : `${formatPrice(amount)} to'lash`}
-            </Button>
+            <div className="bg-muted/30 p-4 rounded-lg mt-6">
+              <h4 className="font-semibold mb-2">{t('payment.features.title')}</h4>
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                <li>✓ {t('payment.features.unlimited')}</li>
+                <li>✓ {t('payment.features.customization')}</li>
+                <li>✓ {t('payment.features.rsvp')}</li>
+                <li>✓ {t('payment.features.photos')}</li>
+                <li>✓ {t('payment.features.guestbook')}</li>
+                <li>✓ {t('payment.features.support')}</li>
+              </ul>
+            </div>
+
+            <div className="text-center text-xs text-muted-foreground mt-4">
+              {t('payment.secure')}
+            </div>
           </CardContent>
         </Card>
       </div>

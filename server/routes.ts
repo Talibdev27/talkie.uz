@@ -12,6 +12,33 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import paymentsRouter from './payments';
+
+// Payment helper functions for Click and Payme
+function generatePaymeUrl(orderId: string, amount: number): string {
+  const merchantId = process.env.PAYME_MERCHANT_ID || 'test_merchant';
+  const baseUrl = 'https://checkout.paycom.uz';
+  const params = new URLSearchParams({
+    'm': merchantId,
+    'ac.order_id': orderId,
+    'a': amount.toString(),
+    'c': `${process.env.BASE_URL || 'http://localhost:5000'}/payment-success?order=${orderId}&method=payme`
+  });
+  return `${baseUrl}?${params.toString()}`;
+}
+
+function generateClickUrl(orderId: string, amount: number): string {
+  const merchantId = process.env.CLICK_MERCHANT_ID || 'test_merchant';
+  const baseUrl = 'https://my.click.uz/services/pay';
+  const params = new URLSearchParams({
+    'service_id': merchantId,
+    'merchant_id': merchantId,
+    'amount': amount.toString(),
+    'transaction_param': orderId,
+    'return_url': `${process.env.BASE_URL || 'http://localhost:5000'}/payment-success?order=${orderId}&method=click`
+  });
+  return `${baseUrl}?${params.toString()}`;
+}
+
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
