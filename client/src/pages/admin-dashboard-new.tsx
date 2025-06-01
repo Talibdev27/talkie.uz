@@ -52,9 +52,10 @@ export default function AdminDashboard() {
   // Delete wedding mutation
   const deleteWeddingMutation = useMutation({
     mutationFn: async (weddingId: number) => {
-      return apiRequest(`/api/admin/weddings/${weddingId}`, {
+      const response = await fetch(`/api/admin/weddings/${weddingId}`, {
         method: 'DELETE',
       });
+      return response.json();
     },
     onSuccess: () => {
       toast({

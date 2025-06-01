@@ -407,6 +407,11 @@ export class DatabaseStorage implements IStorage {
     return wedding || undefined;
   }
 
+  async deleteWedding(id: number): Promise<boolean> {
+    const result = await db.delete(weddings).where(eq(weddings.id, id));
+    return result.rowCount > 0;
+  }
+
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
     const [guest] = await db
       .insert(guests)
