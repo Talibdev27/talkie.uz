@@ -2,6 +2,7 @@ import { useLocation, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -378,6 +379,38 @@ export default function AdminWeddingEdit() {
                         </p>
                       )}
                     </div>
+                  </div>
+                </div>
+
+                {/* Love Story Section */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-[#D4B08C]" />
+                    Love Story
+                  </h3>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      Your Love Story (Optional)
+                    </label>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Tell your unique love story. If left empty, the website will show a beautiful photo layout instead.
+                    </p>
+                    {editMode ? (
+                      <Textarea
+                        value={weddingData?.story || ''}
+                        onChange={(e) => handleInputChange('story', e.target.value)}
+                        className="wedding-input min-h-[120px]"
+                        placeholder="Write your love story here... How did you meet? What makes your relationship special?"
+                      />
+                    ) : (
+                      <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                        {wedding.story ? (
+                          <p className="text-gray-800 leading-relaxed">{wedding.story}</p>
+                        ) : (
+                          <p className="text-gray-500 italic">No love story added yet. The website will display a beautiful photo layout.</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
