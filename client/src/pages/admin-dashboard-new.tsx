@@ -23,6 +23,18 @@ export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [weddingToDelete, setWeddingToDelete] = useState<number | null>(null);
   const { toast } = useToast();
+  
+  // Create wedding form state
+  const [newWedding, setNewWedding] = useState({
+    userId: '',
+    bride: '',
+    groom: '',
+    weddingDate: '',
+    venue: '',
+    venueAddress: '',
+    template: 'gardenRomance',
+    story: ''
+  });
 
   // Check admin authentication
   useEffect(() => {
@@ -47,6 +59,48 @@ export default function AdminDashboard() {
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/admin/stats'],
     enabled: isAdmin,
+  });
+
+  // Create wedding mutation
+  const createWeddingMutation = useMutation({
+    mutationFn: async (weddingData: any) => {
+      const response = await fetch('/api/admin/weddings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(weddingData)
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to create wedding');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Wedding Created",
+        description: "Wedding has been successfully created.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/weddings'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+      // Reset form
+      setNewWedding({
+        userId: '',
+        bride: '',
+        groom: '',
+        weddingDate: '',
+        venue: '',
+        venueAddress: '',
+        template: 'gardenRomance',
+        story: ''
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Creation Failed",
+        description: error.message || "Failed to create wedding.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Delete wedding mutation
@@ -79,6 +133,45 @@ export default function AdminDashboard() {
     if (confirm("Are you sure you want to delete this wedding? This action cannot be undone.")) {
       deleteWeddingMutation.mutate(weddingId);
     }
+  };
+
+  const handleCreateWedding = () => {
+    if (!newWedding.userId || !newWedding.bride || !newWedding.groom || !newWedding.weddingDate) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields (User, Bride, Groom, Wedding Date).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const weddingData = {
+      ...newWedding,
+      userId: parseInt(newWedding.userId),
+      weddingDate: new Date(newWedding.weddingDate).toISOString(),
+      primaryColor: "#D4B08C",
+      accentColor: "#89916B",
+      isPublic: true
+    };
+
+    createWeddingMutation.mutate(weddingData);
+  };
+
+  const handleFormChange = (field: string, value: string) => {
+    setNewWedding(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleResetForm = () => {
+    setNewWedding({
+      userId: '',
+      bride: '',
+      groom: '',
+      weddingDate: '',
+      venue: '',
+      venueAddress: '',
+      template: 'gardenRomance',
+      story: ''
+    });
   };
 
   // User management mutations
@@ -514,7 +607,11 @@ export default function AdminDashboard() {
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Select User
                       </label>
-                      <select className="w-full p-3 border border-gray-200 rounded-lg bg-white">
+                      <select 
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                        value={newWedding.userId}
+                        onChange={(e) => handleFormChange('userId', e.target.value)}
+                      >
                         <option value="">Choose a user...</option>
                         {users?.filter((u: User) => !u.email.includes('guest_')).map((user: User) => (
                           <option key={user.id} value={user.id}>
