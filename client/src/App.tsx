@@ -44,10 +44,14 @@ function Router() {
       {/* Individual wedding sites */}
       <Route path="/wedding/:uniqueUrl" component={WeddingSite} />
 
-      {/* Admin login and dashboard - hidden/secure routes */}
+      {/* Admin login and dashboard */}
+      <Route path="/admin" component={AdminLogin} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin/dashboard" component={AdminDashboard} />
+      
+      {/* Legacy admin routes */}
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />
-      <Route path="/system/:uniqueUrl" component={AdminDashboard} />
 
       {/* Payment Route */}
       <Route path="/payment" component={PaymentPage} />

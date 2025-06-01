@@ -404,8 +404,7 @@ const resources = {
       'imageEdit.uploadSuccessDesc': 'Your edited photo has been uploaded successfully',
       'imageEdit.uploadError': 'Upload Failed',
 
-      // Templates
-      'templates.gardenRomance': 'Garden Romance',
+      // Templates (duplicates removed)
       'templates.modernMinimal': 'Modern Minimal',
       'templates.vintageChic': 'Vintage Chic',
       'templates.bohoGarden': 'Boho Garden',
