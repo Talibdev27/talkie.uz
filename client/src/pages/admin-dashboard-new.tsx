@@ -625,21 +625,36 @@ export default function AdminDashboard() {
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Bride's Name
                       </label>
-                      <Input placeholder="Enter bride's name" className="wedding-input" />
+                      <Input 
+                        placeholder="Enter bride's name" 
+                        className="wedding-input"
+                        value={newWedding.bride}
+                        onChange={(e) => handleFormChange('bride', e.target.value)}
+                      />
                     </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Groom's Name
                       </label>
-                      <Input placeholder="Enter groom's name" className="wedding-input" />
+                      <Input 
+                        placeholder="Enter groom's name" 
+                        className="wedding-input"
+                        value={newWedding.groom}
+                        onChange={(e) => handleFormChange('groom', e.target.value)}
+                      />
                     </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Wedding Date
                       </label>
-                      <Input type="date" className="wedding-input" />
+                      <Input 
+                        type="date" 
+                        className="wedding-input"
+                        value={newWedding.weddingDate}
+                        onChange={(e) => handleFormChange('weddingDate', e.target.value)}
+                      />
                     </div>
                   </div>
                   
@@ -648,21 +663,35 @@ export default function AdminDashboard() {
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Venue
                       </label>
-                      <Input placeholder="Wedding venue" className="wedding-input" />
+                      <Input 
+                        placeholder="Wedding venue" 
+                        className="wedding-input"
+                        value={newWedding.venue}
+                        onChange={(e) => handleFormChange('venue', e.target.value)}
+                      />
                     </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Venue Address
                       </label>
-                      <Input placeholder="Full venue address" className="wedding-input" />
+                      <Input 
+                        placeholder="Full venue address" 
+                        className="wedding-input"
+                        value={newWedding.venueAddress}
+                        onChange={(e) => handleFormChange('venueAddress', e.target.value)}
+                      />
                     </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Template
                       </label>
-                      <select className="w-full p-3 border border-gray-200 rounded-lg bg-white">
+                      <select 
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                        value={newWedding.template}
+                        onChange={(e) => handleFormChange('template', e.target.value)}
+                      >
                         <option value="gardenRomance">Garden Romance</option>
                         <option value="modernMinimal">Modern Minimal</option>
                         <option value="vintageChic">Vintage Chic</option>
@@ -678,17 +707,27 @@ export default function AdminDashboard() {
                         className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
                         rows={3}
                         placeholder="Tell their love story..."
+                        value={newWedding.story}
+                        onChange={(e) => handleFormChange('story', e.target.value)}
                       ></textarea>
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-6 flex gap-4">
-                  <Button className="wedding-button">
+                  <Button 
+                    className="wedding-button"
+                    onClick={handleCreateWedding}
+                    disabled={createWeddingMutation.isPending}
+                  >
                     <Calendar className="w-4 h-4 mr-2" />
-                    Create Wedding
+                    {createWeddingMutation.isPending ? 'Creating...' : 'Create Wedding'}
                   </Button>
-                  <Button variant="outline" className="border-gray-200">
+                  <Button 
+                    variant="outline" 
+                    className="border-gray-200"
+                    onClick={handleResetForm}
+                  >
                     Reset Form
                   </Button>
                 </div>
