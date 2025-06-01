@@ -408,8 +408,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteWedding(id: number): Promise<boolean> {
-    const result = await db.delete(weddings).where(eq(weddings.id, id));
-    return result.rowCount > 0;
+    try {
+      // Delete related data first to avoid foreign key constraints
+      await db.delete(guestBookEntries).where(eq(guestBookEntries.weddingId, id));
+      await db.delete(photos).where(eq(photos.weddingId, id));
+      await db.delete(guests).where(eq(guests.weddingId, id));
+      await db.delete(invitations).where(eq(invitations.weddingId, id));
+      await db.delete(guestCollaborators).where(eq(guestCollaborators.weddingId, id));
+      
+      // Now delete the wedding itself
+      const result = await db.delete(weddings).where(eq(weddings.id, id));
+      return (result.rowCount || 0) > 0;
+    } catch (error) {
+      console.error('Delete wedding error:', error);
+      return false;
+    }
   }
 
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
