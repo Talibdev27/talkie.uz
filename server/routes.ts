@@ -231,14 +231,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const uniqueUrl = Math.random().toString(36).substring(2, 15);
 
       const weddingData = {
-        userId: parseInt(userId),
         bride: bride.trim(),
         groom: groom.trim(),
         weddingDate: new Date(weddingDate),
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
         story: story?.trim() || "",
-        template: template || "modernElegance",
+        template: template || "gardenRomance",
         primaryColor: "#D4B08C",
         accentColor: "#89916B",
         backgroundMusicUrl: null,
@@ -248,7 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       console.log("Creating wedding with data:", weddingData);
-      const wedding = await storage.createWedding(weddingData);
+      const wedding = await storage.createWedding(parseInt(userId), weddingData);
 
       console.log("Wedding created successfully:", wedding);
       res.json(wedding);
