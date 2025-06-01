@@ -87,25 +87,15 @@ export default function CreateWedding() {
   const createWedding = useMutation({
     mutationFn: async (data: CreateWeddingFormData) => {
       try {
-        // Create guest user first
-        const guestUserResponse = await fetch('/api/users/guest', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: `guest_${Date.now()}@example.com`,
-            name: `${data.bride} & ${data.groom}`
-          })
-        });
-        
-        if (!guestUserResponse.ok) {
-          throw new Error('Failed to create guest user');
+        // Check if user is logged in
+        const currentUserId = localStorage.getItem('currentUserId');
+        if (!currentUserId) {
+          throw new Error('Please register or login to create a wedding website');
         }
         
-        const guestUser = await guestUserResponse.json();
-        
-        // Create wedding
+        // Create wedding for registered user
         const weddingData = { 
-          userId: guestUser.id,
+          userId: parseInt(currentUserId),
           bride: data.bride,
           groom: data.groom,
           weddingDate: data.weddingDate.toISOString(),
