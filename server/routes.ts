@@ -307,6 +307,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current user
+  app.get("/api/user/current", async (req, res) => {
+    // For now, return the first user as a simple implementation
+    // In a real app, this would check session/authentication
+    try {
+      const users = await storage.getAllUsers();
+      if (users.length > 0) {
+        res.json(users[0]);
+      } else {
+        res.status(404).json({ message: "No user found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Wedding owner update route
+  app.put("/api/weddings/:id", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      // Convert date string to Date object if needed
+      if (updates.weddingDate && typeof updates.weddingDate === 'string') {
+        updates.weddingDate = new Date(updates.weddingDate);
+      }
+      
+      const wedding = await storage.updateWedding(weddingId, updates);
+
+      if (wedding) {
+        res.json(wedding);
+      } else {
+        res.status(404).json({ message: "Wedding not found" });
+      }
+    } catch (error) {
+      console.error('Wedding update error:', error);
+      res.status(400).json({ 
+        message: "Failed to update wedding", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // Delete photo endpoint for wedding owners
+  app.delete("/api/photos/:id", async (req, res) => {
+    try {
+      const photoId = parseInt(req.params.id);
+      const success = await storage.deletePhoto(photoId);
+      
+      if (success) {
+        res.json({ message: "Photo deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Photo not found" });
+      }
+    } catch (error) {
+      console.error('Photo deletion error:', error);
+      res.status(500).json({ message: "Failed to delete photo" });
+    }
+  });
+
   app.get("/api/admin/guests/:weddingId", async (req, res) => {
     try {
       const weddingId = parseInt(req.params.weddingId);

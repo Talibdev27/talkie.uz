@@ -16,6 +16,7 @@ import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
 import AdminWeddingEdit from "@/pages/admin-wedding-edit";
+import WeddingManage from "@/pages/wedding-manage";
 import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
 import Payment from "@/pages/payment";
@@ -49,6 +50,12 @@ function Router() {
 
       {/* Individual wedding sites */}
       <Route path="/wedding/:uniqueUrl" component={WeddingSite} />
+
+      {/* User dashboard */}
+      <Route path="/dashboard" component={UserDashboard} />
+      
+      {/* Wedding management for owners */}
+      <Route path="/manage/:uniqueUrl" component={WeddingManage} />
 
       {/* Admin login and dashboard */}
       <Route path="/admin" component={AdminLogin} />
