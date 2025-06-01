@@ -64,23 +64,24 @@ export default function AdminWeddingEdit() {
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updates: Partial<Wedding>) => {
-      return apiRequest(`/api/admin/weddings/${wedding.id}`, {
-        method: 'PUT',
-        body: updates,
-      });
+      console.log('Updating wedding with data:', updates);
+      console.log('Wedding ID:', wedding?.id);
+      const response = await apiRequest('PUT', `/api/admin/weddings/${wedding?.id}`, updates);
+      return response.json();
     },
     onSuccess: () => {
       toast({
         title: "Wedding Updated",
         description: "Wedding details have been successfully updated.",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/weddings/url', weddingUrl] });
+      queryClient.invalidateQueries({ queryKey: [`/api/weddings/url/${weddingUrl}`] });
       setEditMode(false);
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Wedding update error:', error);
       toast({
         title: "Update Failed",
-        description: "Failed to update wedding details.",
+        description: error.message || "Failed to update wedding details.",
         variant: "destructive",
       });
     },
