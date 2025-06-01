@@ -37,6 +37,12 @@ export default function WeddingSite() {
     enabled: !!wedding?.id,
   });
 
+  const { data: photos = [] } = useQuery({
+    queryKey: ['/api/photos/wedding', wedding?.id],
+    queryFn: () => fetch(`/api/photos/wedding/${wedding?.id}`).then(res => res.json()),
+    enabled: !!wedding?.id,
+  });
+
   if (isLoading) {
     return <WeddingPageLoading message={t('common.loading')} />;
   }
@@ -196,14 +202,24 @@ export default function WeddingSite() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
-                  <p className="text-charcoal opacity-70">
-                    {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
-                  </p>
+              {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                <div className="rounded-xl shadow-lg w-full aspect-[4/3] overflow-hidden">
+                  <img 
+                    src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
+                    alt={`${wedding.bride} & ${wedding.groom}`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </div>
+              ) : (
+                <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
+                  <div className="text-center p-8">
+                    <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
+                    <p className="text-charcoal opacity-70">
+                      {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="space-y-6">
               <div className="text-center">
