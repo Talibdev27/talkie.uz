@@ -379,6 +379,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // RSVP management endpoints for admin
+  app.get("/api/admin/rsvp-stats", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      let totalRSVPs = 0;
+      let confirmedRSVPs = 0;
+      let pendingRSVPs = 0;
+      let declinedRSVPs = 0;
+      let maybeRSVPs = 0;
+
+      for (const user of users) {
+        const userWeddings = await storage.getWeddingsByUserId(user.id);
+        
+        for (const wedding of userWeddings) {
+          const guests = await storage.getGuestsByWeddingId(wedding.id);
+          totalRSVPs += guests.length;
+          
+          guests.forEach(guest => {
+            switch (guest.rsvpStatus) {
+              case 'confirmed':
+                confirmedRSVPs++;
+                break;
+              case 'pending':
+                pendingRSVPs++;
+                break;
+              case 'declined':
+                declinedRSVPs++;
+                break;
+              case 'maybe':
+                maybeRSVPs++;
+                break;
+            }
+          });
+        }
+      }
+
+      res.json({
+        totalRSVPs,
+        confirmedRSVPs,
+        pendingRSVPs,
+        declinedRSVPs,
+        maybeRSVPs
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.get("/api/admin/rsvp", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const allGuests = [];
+
+      for (const user of users) {
+        const userWeddings = await storage.getWeddingsByUserId(user.id);
+        
+        for (const wedding of userWeddings) {
+          const guests = await storage.getGuestsByWeddingId(wedding.id);
+          allGuests.push(...guests.map(guest => ({
+            ...guest,
+            wedding: {
+              id: wedding.id,
+              bride: wedding.bride,
+              groom: wedding.groom,
+              weddingDate: wedding.weddingDate,
+              venue: wedding.venue
+            }
+          })));
+        }
+      }
+
+      res.json(allGuests);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.post("/api/users/guest", async (req, res) => {
     try {
       // Generate temporary guest user for immediate wedding creation

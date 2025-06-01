@@ -61,6 +61,16 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
+  const { data: rsvpStats, isLoading: rsvpStatsLoading } = useQuery({
+    queryKey: ['/api/admin/rsvp-stats'],
+    enabled: isAdmin,
+  });
+
+  const { data: allRSVPs, isLoading: rsvpLoading } = useQuery({
+    queryKey: ['/api/admin/rsvp'],
+    enabled: isAdmin,
+  });
+
   // Create wedding mutation
   const createWeddingMutation = useMutation({
     mutationFn: async (weddingData: any) => {
@@ -340,9 +350,10 @@ export default function AdminDashboard() {
 
         {/* Management Tabs */}
         <Tabs defaultValue="weddings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="weddings">Wedding Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="rsvp">RSVP Management</TabsTrigger>
             <TabsTrigger value="create">Create Wedding</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
@@ -528,6 +539,123 @@ export default function AdminDashboard() {
                     )}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* RSVP Management */}
+          <TabsContent value="rsvp" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-[#2C3338]">
+                    <Calendar className="h-5 w-5 text-[#89916B]" />
+                    RSVP Overview
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {rsvpStatsLoading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="animate-pulse bg-gray-100 p-4 rounded-lg h-20"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-green-700">Confirmed</span>
+                      </div>
+                      <p className="text-2xl font-bold text-green-600 mt-1">{rsvpStats?.confirmedRSVPs || 0}</p>
+                    </div>
+                    <div className="bg-yellow-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-yellow-700">Pending</span>
+                      </div>
+                      <p className="text-2xl font-bold text-yellow-600 mt-1">{rsvpStats?.pendingRSVPs || 0}</p>
+                    </div>
+                    <div className="bg-red-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-red-700">Declined</span>
+                      </div>
+                      <p className="text-2xl font-bold text-red-600 mt-1">{rsvpStats?.declinedRSVPs || 0}</p>
+                    </div>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-blue-700">Maybe</span>
+                      </div>
+                      <p className="text-2xl font-bold text-blue-600 mt-1">{rsvpStats?.maybeRSVPs || 0}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-[#2C3338] mb-4">Recent RSVP Responses</h3>
+                  {rsvpLoading ? (
+                    <div className="space-y-3">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="animate-pulse flex space-x-4 p-4 border rounded-lg">
+                          <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                            <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : allRSVPs && allRSVPs.length > 0 ? (
+                    <div className="space-y-3">
+                      {allRSVPs.slice(0, 5).map((rsvp: any) => (
+                        <div key={rsvp.id} className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 bg-[#89916B] rounded-full flex items-center justify-center">
+                              <span className="text-white font-semibold">
+                                {rsvp.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-[#2C3338]">{rsvp.name}</h4>
+                              <p className="text-sm text-[#2C3338]/70">
+                                {rsvp.wedding?.bride} & {rsvp.wedding?.groom} wedding
+                              </p>
+                              <p className="text-xs text-[#2C3338]/50">
+                                RSVP: {rsvp.rsvpStatus} • {new Date(rsvp.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge 
+                              variant="outline" 
+                              className={
+                                rsvp.rsvpStatus === 'confirmed' 
+                                  ? "bg-green-50 text-green-700 border-green-200"
+                                  : rsvp.rsvpStatus === 'pending'
+                                  ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                  : rsvp.rsvpStatus === 'declined'
+                                  ? "bg-red-50 text-red-700 border-red-200"
+                                  : "bg-blue-50 text-blue-700 border-blue-200"
+                              }
+                            >
+                              {rsvp.rsvpStatus.charAt(0).toUpperCase() + rsvp.rsvpStatus.slice(1)}
+                            </Badge>
+                            <Button variant="outline" size="sm">
+                              View Details
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-[#2C3338]/70">
+                      No RSVP responses yet.
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
