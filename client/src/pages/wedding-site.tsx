@@ -193,46 +193,73 @@ export default function WeddingSite() {
             <h2 className={`text-3xl lg:text-4xl font-playfair font-bold ${config.textColor} mb-6`}>
               {t('wedding.ourStory')}
             </h2>
-            {wedding.story && (
-              <div className={`prose prose-lg max-w-none ${config.textColor} opacity-80 leading-relaxed`}>
-                <p>{wedding.story}</p>
-              </div>
-            )}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
-                <div className="rounded-xl shadow-lg w-full aspect-[4/5] overflow-hidden">
-                  <img 
-                    src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
-                    alt={`${wedding.bride} & ${wedding.groom}`}
-                    className="w-full h-full object-cover object-top"
-                  />
+          {wedding.story && wedding.story.trim() ? (
+            // When there's a custom love story, show it prominently with photo
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                  <div className="rounded-xl shadow-lg w-full aspect-[4/5] overflow-hidden">
+                    <img 
+                      src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
+                      alt={`${wedding.bride} & ${wedding.groom}`}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                ) : (
+                  <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
+                    <div className="text-center p-8">
+                      <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
+                      <p className="text-charcoal opacity-70">
+                        {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-6">
+                <div className={`prose prose-lg max-w-none ${config.textColor} opacity-80 leading-relaxed`}>
+                  <p className="text-lg">{wedding.story}</p>
                 </div>
-              ) : (
-                <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
-                    <p className="text-charcoal opacity-70">
-                      {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
+              </div>
+            </div>
+          ) : (
+            // When there's no custom story, show a beautiful couple photo section
+            <div className="max-w-3xl mx-auto">
+              {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                <div className="text-center">
+                  <div className="rounded-2xl shadow-2xl w-full max-w-md mx-auto aspect-[4/5] overflow-hidden mb-8">
+                    <img 
+                      src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
+                      alt={`${wedding.bride} & ${wedding.groom}`}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <Heart className="h-12 w-12 text-romantic-gold mx-auto" />
+                    <h3 className="text-2xl font-playfair font-semibold text-charcoal">
+                      {wedding.bride} & {wedding.groom}
+                    </h3>
+                    <p className="text-lg text-charcoal opacity-70 max-w-md mx-auto leading-relaxed">
+                      Two hearts, one beautiful journey together
                     </p>
                   </div>
                 </div>
+              ) : (
+                // Fallback when no photo and no story
+                <div className="text-center py-16">
+                  <Heart className="h-20 w-20 text-romantic-gold mx-auto mb-6" />
+                  <h3 className="text-3xl font-playfair font-semibold text-charcoal mb-4">
+                    {wedding.bride} & {wedding.groom}
+                  </h3>
+                  <p className="text-xl text-charcoal opacity-70 max-w-lg mx-auto leading-relaxed">
+                    Celebrating love, laughter, and happily ever after
+                  </p>
+                </div>
               )}
             </div>
-            <div className="space-y-6">
-              <div className="text-center">
-                <Heart className="h-12 w-12 text-romantic-gold mx-auto mb-4" />
-                <h3 className="text-xl font-playfair font-semibold text-charcoal mb-4">
-                  {t('demo.howWeMet')}
-                </h3>
-                <p className="text-charcoal opacity-70 leading-relaxed">
-                  {t('demo.howWeMetText')}
-                </p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
