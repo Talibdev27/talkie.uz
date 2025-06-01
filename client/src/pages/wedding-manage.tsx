@@ -272,6 +272,17 @@ export default function WeddingManage() {
                     className="wedding-input"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="weddingTime">Ceremony Time</Label>
+                  <Input
+                    id="weddingTime"
+                    value={weddingData?.weddingTime || ''}
+                    onChange={(e) => setWeddingData(prev => prev ? {...prev, weddingTime: e.target.value} : null)}
+                    disabled={!editMode}
+                    className="wedding-input"
+                    placeholder="e.g., 4:00 PM, 16:00, 2:30 PM"
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">

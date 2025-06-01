@@ -327,6 +327,24 @@ export default function AdminWeddingEdit() {
                         </p>
                       )}
                     </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Ceremony Time
+                      </label>
+                      {editMode ? (
+                        <Input
+                          value={weddingData?.weddingTime || ''}
+                          onChange={(e) => handleInputChange('weddingTime', e.target.value)}
+                          className="wedding-input"
+                          placeholder="e.g., 4:00 PM, 16:00, 2:30 PM"
+                        />
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">
+                          {wedding.weddingTime || '4:00 PM'}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   <div className="space-y-4">

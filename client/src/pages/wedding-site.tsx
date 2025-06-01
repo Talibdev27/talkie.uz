@@ -335,7 +335,7 @@ export default function WeddingSite() {
                   {formatDate(wedding.weddingDate)}
                 </p>
                 <p className="text-charcoal opacity-70 mt-2">
-                  {t('wedding.ceremonyTime')}
+                  Ceremony begins at {wedding.weddingTime || '4:00 PM'}
                 </p>
               </CardContent>
             </Card>
