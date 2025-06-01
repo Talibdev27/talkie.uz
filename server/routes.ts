@@ -281,7 +281,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
+      console.log('Updating wedding ID:', weddingId);
+      console.log('Update data:', JSON.stringify(updates, null, 2));
+      
       const wedding = await storage.updateWedding(weddingId, updates);
+      console.log('Update result:', wedding);
 
       if (wedding) {
         res.json(wedding);
@@ -289,7 +293,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(404).json({ message: "Wedding not found" });
       }
     } catch (error) {
-      res.status(400).json({ message: "Failed to update wedding" });
+      console.error('Wedding update error:', error);
+      res.status(400).json({ 
+        message: "Failed to update wedding", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
   });
 

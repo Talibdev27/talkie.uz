@@ -64,9 +64,11 @@ export default function AdminWeddingEdit() {
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updates: Partial<Wedding>) => {
-      console.log('Updating wedding with data:', updates);
+      // Filter out non-updatable fields
+      const { id, userId, uniqueUrl, createdAt, ...updateData } = updates;
+      console.log('Updating wedding with filtered data:', updateData);
       console.log('Wedding ID:', wedding?.id);
-      const response = await apiRequest('PUT', `/api/admin/weddings/${wedding?.id}`, updates);
+      const response = await apiRequest('PUT', `/api/admin/weddings/${wedding?.id}`, updateData);
       return response.json();
     },
     onSuccess: () => {
