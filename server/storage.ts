@@ -19,6 +19,8 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserById(id: number): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
+  updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined>;
+  deleteUser(id: number): Promise<boolean>;
 
   // Weddings
   createWedding(userId: number, wedding: InsertWedding): Promise<Wedding>;
@@ -373,6 +375,33 @@ export class DatabaseStorage implements IStorage {
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users);
+  }
+
+  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    try {
+      // First, delete all weddings and related data for this user
+      const userWeddings = await db.select().from(weddings).where(eq(weddings.userId, id));
+      
+      for (const wedding of userWeddings) {
+        await this.deleteWedding(wedding.id);
+      }
+      
+      // Then delete the user
+      const result = await db.delete(users).where(eq(users.id, id));
+      return (result.rowCount || 0) > 0;
+    } catch (error) {
+      console.error('Delete user error:', error);
+      return false;
+    }
   }
 
   async createWedding(userId: number, insertWedding: any): Promise<Wedding> {

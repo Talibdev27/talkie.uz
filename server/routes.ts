@@ -189,6 +189,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!weddingData.userId) {
         return res.status(400).json({ message: "User ID is required" });
       }
+
+      // Verify the target user exists and is not a guest user
+      const targetUser = await storage.getUserById(weddingData.userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "Target user not found" });
+      }
+
+      // Prevent creating weddings for guest users
+      if (targetUser.email.includes('guest_')) {
+        return res.status(403).json({ 
+          message: "Cannot create weddings for guest users. Please select a registered user." 
+        });
+      }
       
       const wedding = await storage.createWedding(weddingData.userId, weddingData);
       res.status(201).json(wedding);
@@ -247,6 +260,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(guest);
     } catch (error) {
       res.status(400).json({ message: "Failed to create guest" });
+    }
+  });
+
+  // User management routes for admin
+  app.put("/api/admin/users/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const user = await storage.updateUser(userId, updates);
+      
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const success = await storage.deleteUser(userId);
+      
+      if (success) {
+        res.json({ message: "User deleted successfully" });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete user" });
     }
   });
 
@@ -317,6 +363,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         console.log("Missing userId in request");
         return res.status(400).json({ message: "User ID required" });
+      }
+
+      // Check if user exists and is not a guest user
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Prevent guest users from creating weddings
+      if (user.email.includes('guest_')) {
+        return res.status(403).json({ 
+          message: "Guest users cannot create weddings. Please register for a full account." 
+        });
       }
 
       // Validate required fields - only bride, groom, and weddingDate are required
