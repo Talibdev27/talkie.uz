@@ -817,7 +817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No photo file provided" });
       }
 
-      const { weddingId, caption, isHero } = req.body;
+      const { weddingId, caption, isHero, photoType } = req.body;
 
       if (!weddingId) {
         return res.status(400).json({ message: "Wedding ID is required" });
@@ -828,7 +828,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         weddingId: parseInt(weddingId),
         url: `/uploads/${req.file.filename}`,
         caption: caption || null,
-        isHero: isHero === 'true'
+        isHero: isHero === 'true',
+        photoType: photoType || 'memory' // Default to memory if not specified
       };
 
       const photo = await storage.createPhoto(photoData);

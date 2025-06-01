@@ -434,6 +434,46 @@ export default function AdminWeddingEdit() {
                         <Heart className="h-4 w-4" />
                         Couple Photo (How We Met Section)
                       </h3>
+                      
+                      {/* Upload Section for Couple Photo */}
+                      <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                        <div className="text-center">
+                          <Heart className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                          <h4 className="font-medium text-gray-700 mb-2">Upload Couple Photo</h4>
+                          <p className="text-sm text-gray-500 mb-3">This photo will appear next to the "How We Met" section</p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const formData = new FormData();
+                                formData.append('photo', file);
+                                formData.append('photoType', 'couple');
+                                formData.append('weddingId', wedding?.id?.toString() || '');
+                                
+                                // Upload photo
+                                fetch('/api/photos/upload', {
+                                  method: 'POST',
+                                  body: formData,
+                                }).then(() => {
+                                  queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                });
+                              }
+                            }}
+                            className="hidden"
+                            id="couple-photo-upload"
+                          />
+                          <label
+                            htmlFor="couple-photo-upload"
+                            className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Choose Couple Photo
+                          </label>
+                        </div>
+                      </div>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
                           photos.filter((photo: any) => photo.photoType === 'couple').map((photo: any) => (
@@ -481,6 +521,47 @@ export default function AdminWeddingEdit() {
                         <Camera className="h-4 w-4" />
                         Our Memories Gallery
                       </h3>
+                      
+                      {/* Upload Section for Memory Photos */}
+                      <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                        <div className="text-center">
+                          <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                          <h4 className="font-medium text-gray-700 mb-2">Upload Memory Photos</h4>
+                          <p className="text-sm text-gray-500 mb-3">These photos will appear in the "Our Memories" gallery section</p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files || []);
+                              files.forEach(file => {
+                                const formData = new FormData();
+                                formData.append('photo', file);
+                                formData.append('photoType', 'memory');
+                                formData.append('weddingId', wedding?.id?.toString() || '');
+                                
+                                // Upload photo
+                                fetch('/api/photos/upload', {
+                                  method: 'POST',
+                                  body: formData,
+                                }).then(() => {
+                                  queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+                                });
+                              });
+                            }}
+                            className="hidden"
+                            id="memory-photos-upload"
+                          />
+                          <label
+                            htmlFor="memory-photos-upload"
+                            className="inline-flex items-center px-4 py-2 bg-[#D4B08C] text-white rounded-lg hover:bg-[#C19B75] cursor-pointer"
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Choose Memory Photos
+                          </label>
+                        </div>
+                      </div>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0 ? (
                           photos.filter((photo: any) => photo.photoType === 'memory').map((photo: any) => (
