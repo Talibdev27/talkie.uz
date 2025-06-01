@@ -55,7 +55,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/:weddingUrl" component={AdminWeddingEdit} />
-      
+
       {/* Legacy admin routes */}
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />

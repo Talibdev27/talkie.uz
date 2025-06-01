@@ -75,9 +75,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Parse and validate the combined data
       const data = req.body;
-      
+
       console.log("Registration data received:", data);
-      
+
       // Validate required fields
       if (!data.email || !data.password || !data.name || !data.bride || !data.groom) {
         console.log("Missing required fields:", { 
@@ -96,7 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (data.confirmPassword && data.password !== data.confirmPassword) {
         return res.status(400).json({ message: "Passwords don't match" });
       }
-      
+
       // First, check if user already exists
       const existingUser = await storage.getUserByEmail(data.email);
       if (existingUser) {
@@ -161,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/login", async (req, res) => {
     try {
       const { username, password } = req.body;
-      
+
       // For now, use hardcoded admin credentials
       if (username === 'Talibdev' && password === 'Dilnoza2003') {
         res.json({
@@ -196,54 +196,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all weddings across all users
       const users = await storage.getAllUsers();
       const allWeddings = [];
-      
+
       for (const user of users) {
         const userWeddings = await storage.getWeddingsByUserId(user.id);
         allWeddings.push(...userWeddings);
       }
-      
+
       res.json(allWeddings);
     } catch (error) {
       res.status(500).json({ message: "Server error" });
     }
   });
 
+  // Admin wedding creation route
   app.post("/api/admin/weddings", async (req, res) => {
     try {
-      const weddingData = req.body;
-      
-      // Admin can create weddings for any user
-      if (!weddingData.userId) {
-        return res.status(400).json({ message: "User ID is required" });
+      console.log("Admin wedding creation request:", req.body);
+
+      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story } = req.body;
+
+      // Validate required fields
+      if (!userId || !bride || !groom || !weddingDate) {
+        console.log("Missing required fields:", { userId: !!userId, bride: !!bride, groom: !!groom, weddingDate: !!weddingDate });
+        return res.status(400).json({ message: "Missing required fields: userId, bride, groom, and weddingDate are required" });
       }
 
-      // Verify the target user exists and is not a guest user
-      const targetUser = await storage.getUserById(weddingData.userId);
-      if (!targetUser) {
-        return res.status(404).json({ message: "Target user not found" });
+      // Check if user exists
+      const user = await storage.getUserById(parseInt(userId));
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
 
-      // Prevent creating weddings for guest users
-      if (targetUser.email.includes('guest_')) {
-        return res.status(403).json({ 
-          message: "Cannot create weddings for guest users. Please select a registered user." 
-        });
-      }
-      
-      const wedding = await storage.createWedding(weddingData.userId, weddingData);
-      res.status(201).json(wedding);
+      // Generate unique URL
+      const uniqueUrl = Math.random().toString(36).substring(2, 15);
+
+      const weddingData = {
+        userId: parseInt(userId),
+        bride: bride.trim(),
+        groom: groom.trim(),
+        weddingDate: new Date(weddingDate),
+        venue: venue?.trim() || "",
+        venueAddress: venueAddress?.trim() || "",
+        story: story?.trim() || "",
+        template: template || "modernElegance",
+        primaryColor: "#D4B08C",
+        accentColor: "#89916B",
+        backgroundMusicUrl: null,
+        venueCoordinates: null,
+        isPublic: true,
+        uniqueUrl
+      };
+
+      console.log("Creating wedding with data:", weddingData);
+      const wedding = await storage.createWedding(weddingData);
+
+      console.log("Wedding created successfully:", wedding);
+      res.json(wedding);
     } catch (error) {
-      res.status(400).json({ message: "Failed to create wedding" });
+      console.error("Admin wedding creation error:", error);
+      res.status(500).json({ 
+        message: "Failed to create wedding", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
   });
 
   app.delete("/api/admin/weddings/:id", async (req, res) => {
     try {
       const weddingId = parseInt(req.params.id);
-      
+
       // Delete wedding from storage
       const success = await storage.deleteWedding ? await storage.deleteWedding(weddingId) : true;
-      
+
       if (success) {
         res.json({ message: "Wedding deleted successfully" });
       } else {
@@ -259,7 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
       const wedding = await storage.updateWedding(weddingId, updates);
-      
+
       if (wedding) {
         res.json(wedding);
       } else {
@@ -295,9 +319,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.id);
       const updates = req.body;
-      
+
       const user = await storage.updateUser(userId, updates);
-      
+
       if (user) {
         res.json(user);
       } else {
@@ -312,7 +336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.id);
       const success = await storage.deleteUser(userId);
-      
+
       if (success) {
         res.json({ message: "User deleted successfully" });
       } else {
@@ -328,22 +352,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const users = await storage.getAllUsers();
       const realUsers = users.filter(u => !u.email.includes('guest_'));
       const guestUsers = users.filter(u => u.email.includes('guest_'));
-      
+
       let totalWeddings = 0;
       let publicWeddings = 0;
       let totalGuests = 0;
-      
+
       for (const user of users) {
         const userWeddings = await storage.getWeddingsByUserId(user.id);
         totalWeddings += userWeddings.length;
         publicWeddings += userWeddings.filter(w => w.isPublic).length;
-        
+
         for (const wedding of userWeddings) {
           const guests = await storage.getGuestsByWeddingId(wedding.id);
           totalGuests += guests.length;
         }
       }
-      
+
       res.json({
         totalUsers: realUsers.length,
         guestUsers: guestUsers.length,
@@ -385,7 +409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.id);
       const user = await storage.getUserById(userId);
-      
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -403,7 +427,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/create-payment", async (req, res) => {
     try {
       const { userId, paymentMethod, amount = 50000 } = req.body; // 50,000 UZS default price
-      
+
       if (!userId) {
         return res.status(400).json({ message: "User ID required" });
       }
@@ -419,7 +443,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const orderId = `wedding_${userId}_${Date.now()}`;
-      
+
       let paymentUrl;
       if (paymentMethod === 'click') {
         paymentUrl = generateClickUrl(orderId, amount);
@@ -444,14 +468,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/verify-payment", async (req, res) => {
     try {
       const { orderId, paymentMethod } = req.body;
-      
+
       if (!orderId) {
         return res.status(400).json({ message: "Order ID required" });
       }
 
       // Extract user ID from order ID
       const userId = parseInt(orderId.split('_')[1]);
-      
+
       // Update user payment status
       const user = await storage.updateUser(userId, {
         hasPaidSubscription: true,
@@ -652,7 +676,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { weddingId, caption, isHero } = req.body;
-      
+
       if (!weddingId) {
         return res.status(400).json({ message: "Wedding ID is required" });
       }
@@ -771,11 +795,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const { status, errorMessage } = req.body;
       const invitation = await storage.updateInvitationStatus(id, status, errorMessage);
-      
+
       if (!invitation) {
         return res.status(404).json({ message: "Invitation not found" });
       }
-      
+
       res.json(invitation);
     } catch (error) {
       res.status(500).json({ message: "Server error" });
@@ -786,11 +810,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const sent = await storage.sendInvitationReminder(id);
-      
+
       if (!sent) {
         return res.status(404).json({ message: "Invitation not found" });
       }
-      
+
       res.json({ message: "Reminder sent successfully" });
     } catch (error) {
       res.status(500).json({ message: "Server error" });
@@ -823,11 +847,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const { status } = req.body;
       const collaborator = await storage.updateCollaboratorStatus(id, status);
-      
+
       if (!collaborator) {
         return res.status(404).json({ message: "Collaborator not found" });
       }
-      
+
       res.json(collaborator);
     } catch (error) {
       res.status(500).json({ message: "Server error" });
@@ -838,11 +862,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, weddingId } = req.body;
       const collaborator = await storage.acceptCollaboratorInvite(email, weddingId);
-      
+
       if (!collaborator) {
         return res.status(404).json({ message: "Collaborator invitation not found" });
       }
-      
+
       res.json(collaborator);
     } catch (error) {
       res.status(500).json({ message: "Server error" });

@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [weddingToDelete, setWeddingToDelete] = useState<number | null>(null);
   const { toast } = useToast();
-  
+
   // Create wedding form state
   const [newWedding, setNewWedding] = useState({
     userId: '',
@@ -135,26 +135,38 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleCreateWedding = () => {
-    if (!newWedding.userId || !newWedding.bride || !newWedding.groom || !newWedding.weddingDate) {
+  const handleCreateWedding = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate required fields
+    const errors = [];
+    if (!newWedding.userId) errors.push("User ID");
+    if (!newWedding.bride?.trim()) errors.push("Bride's Name");
+    if (!newWedding.groom?.trim()) errors.push("Groom's Name");
+    if (!newWedding.weddingDate) errors.push("Wedding Date");
+
+    if (errors.length > 0) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields (User, Bride, Groom, Wedding Date).",
+        title: "Validation Error",
+        description: `Please fill in the following required fields: ${errors.join(", ")}`,
         variant: "destructive",
       });
       return;
     }
 
-    const weddingData = {
-      ...newWedding,
-      userId: parseInt(newWedding.userId),
-      weddingDate: new Date(newWedding.weddingDate).toISOString(),
-      primaryColor: "#D4B08C",
-      accentColor: "#89916B",
-      isPublic: true
-    };
+    // Validate date format
+    const dateObj = new Date(newWedding.weddingDate);
+    if (isNaN(dateObj.getTime())) {
+      toast({
+        title: "Invalid Date",
+        description: "Please enter a valid wedding date.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    createWeddingMutation.mutate(weddingData);
+    console.log("Submitting wedding data:", newWedding);
+    createWeddingMutation.mutate(newWedding);
   };
 
   const handleFormChange = (field: string, value: string) => {
@@ -295,7 +307,7 @@ export default function AdminDashboard() {
               <p className="text-[#2C3338]/70 text-sm">Total Weddings</p>
             </CardContent>
           </Card>
-          
+
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-[#89916B] mx-auto mb-2" />
@@ -304,7 +316,7 @@ export default function AdminDashboard() {
               <p className="text-xs text-[#2C3338]/50">({stats?.guestUsers || 0} guest accounts)</p>
             </CardContent>
           </Card>
-          
+
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <Heart className="h-8 w-8 text-[#D4B08C] mx-auto mb-2" />
@@ -312,7 +324,7 @@ export default function AdminDashboard() {
               <p className="text-[#2C3338]/70 text-sm">Public Weddings</p>
             </CardContent>
           </Card>
-          
+
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <BarChart3 className="h-8 w-8 text-[#89916B] mx-auto mb-2" />
@@ -620,7 +632,7 @@ export default function AdminDashboard() {
                         ))}
                       </select>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Bride's Name
@@ -632,7 +644,7 @@ export default function AdminDashboard() {
                         onChange={(e) => handleFormChange('bride', e.target.value)}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Groom's Name
@@ -644,7 +656,7 @@ export default function AdminDashboard() {
                         onChange={(e) => handleFormChange('groom', e.target.value)}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Wedding Date
@@ -657,7 +669,7 @@ export default function AdminDashboard() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
@@ -670,7 +682,7 @@ export default function AdminDashboard() {
                         onChange={(e) => handleFormChange('venue', e.target.value)}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Venue Address
@@ -682,7 +694,7 @@ export default function AdminDashboard() {
                         onChange={(e) => handleFormChange('venueAddress', e.target.value)}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Template
@@ -698,7 +710,7 @@ export default function AdminDashboard() {
                         <option value="beachBliss">Beach Bliss</option>
                       </select>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Love Story (Optional)
@@ -713,7 +725,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 flex gap-4">
                   <Button 
                     className="wedding-button"
