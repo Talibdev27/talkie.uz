@@ -14,7 +14,8 @@ import {
   Calendar,
   MapPin,
   Eye,
-  Settings
+  Settings,
+  Camera
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
