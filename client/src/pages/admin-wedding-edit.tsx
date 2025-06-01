@@ -57,7 +57,7 @@ export default function AdminWeddingEdit() {
 
   // Fetch photos for this wedding
   const { data: photos, isLoading: photosLoading } = useQuery({
-    queryKey: ['/api/photos/wedding', wedding?.id],
+    queryKey: [`/api/photos/wedding/${wedding?.id}`],
     enabled: isAdmin && !!wedding?.id,
   });
 
