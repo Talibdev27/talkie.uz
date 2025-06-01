@@ -39,6 +39,11 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['/api/admin/stats'],
+    enabled: isAdmin,
+  });
+
   const handleLogout = () => {
     localStorage.removeItem('isAdmin');
     localStorage.removeItem('adminUser');
@@ -94,7 +99,7 @@ export default function AdminDashboard() {
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <Globe className="h-8 w-8 text-[#D4B08C] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">{weddings?.length || 0}</p>
+              <p className="text-2xl font-bold text-[#2C3338]">{stats?.totalWeddings || 0}</p>
               <p className="text-[#2C3338]/70 text-sm">Total Weddings</p>
             </CardContent>
           </Card>
@@ -102,17 +107,16 @@ export default function AdminDashboard() {
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-[#89916B] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">{users?.length || 0}</p>
-              <p className="text-[#2C3338]/70 text-sm">Registered Users</p>
+              <p className="text-2xl font-bold text-[#2C3338]">{stats?.totalUsers || 0}</p>
+              <p className="text-[#2C3338]/70 text-sm">Real Users</p>
+              <p className="text-xs text-[#2C3338]/50">({stats?.guestUsers || 0} guest accounts)</p>
             </CardContent>
           </Card>
           
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <Heart className="h-8 w-8 text-[#D4B08C] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">
-                {weddings?.filter((w: Wedding) => w.isPublic).length || 0}
-              </p>
+              <p className="text-2xl font-bold text-[#2C3338]">{stats?.publicWeddings || 0}</p>
               <p className="text-[#2C3338]/70 text-sm">Public Weddings</p>
             </CardContent>
           </Card>
@@ -132,9 +136,10 @@ export default function AdminDashboard() {
 
         {/* Management Tabs */}
         <Tabs defaultValue="weddings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="weddings">Wedding Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="create">Create Wedding</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
@@ -363,6 +368,107 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Create Wedding Tab */}
+          <TabsContent value="create" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-[#D4B08C]" />
+                  Create New Wedding
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Select User
+                      </label>
+                      <select className="w-full p-3 border border-gray-200 rounded-lg bg-white">
+                        <option value="">Choose a user...</option>
+                        {users?.filter((u: User) => !u.email.includes('guest_')).map((user: User) => (
+                          <option key={user.id} value={user.id}>
+                            {user.name} ({user.email})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Bride's Name
+                      </label>
+                      <Input placeholder="Enter bride's name" className="wedding-input" />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Groom's Name
+                      </label>
+                      <Input placeholder="Enter groom's name" className="wedding-input" />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Wedding Date
+                      </label>
+                      <Input type="date" className="wedding-input" />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Venue
+                      </label>
+                      <Input placeholder="Wedding venue" className="wedding-input" />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Venue Address
+                      </label>
+                      <Input placeholder="Full venue address" className="wedding-input" />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Template
+                      </label>
+                      <select className="w-full p-3 border border-gray-200 rounded-lg bg-white">
+                        <option value="gardenRomance">Garden Romance</option>
+                        <option value="modernMinimal">Modern Minimal</option>
+                        <option value="vintageChic">Vintage Chic</option>
+                        <option value="beachBliss">Beach Bliss</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Love Story (Optional)
+                      </label>
+                      <textarea 
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                        rows={3}
+                        placeholder="Tell their love story..."
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-6 flex gap-4">
+                  <Button className="wedding-button">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Create Wedding
+                  </Button>
+                  <Button variant="outline" className="border-gray-200">
+                    Reset Form
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

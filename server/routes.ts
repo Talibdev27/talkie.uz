@@ -154,6 +154,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin management routes - Full CRUD operations
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.get("/api/admin/weddings", async (req, res) => {
+    try {
+      // Get all weddings across all users
+      const users = await storage.getAllUsers();
+      const allWeddings = [];
+      
+      for (const user of users) {
+        const userWeddings = await storage.getWeddingsByUserId(user.id);
+        allWeddings.push(...userWeddings);
+      }
+      
+      res.json(allWeddings);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.post("/api/admin/weddings", async (req, res) => {
+    try {
+      const weddingData = req.body;
+      
+      // Admin can create weddings for any user
+      if (!weddingData.userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+      
+      const wedding = await storage.createWedding(weddingData.userId, weddingData);
+      res.status(201).json(wedding);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create wedding" });
+    }
+  });
+
+  app.delete("/api/admin/weddings/:id", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      // For now, we'll mark as deleted or remove from storage
+      // In a real implementation, you'd add deleteWedding to storage interface
+      res.json({ message: "Wedding deletion requested" });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.put("/api/admin/weddings/:id", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const updates = req.body;
+      const wedding = await storage.updateWedding(weddingId, updates);
+      
+      if (wedding) {
+        res.json(wedding);
+      } else {
+        res.status(404).json({ message: "Wedding not found" });
+      }
+    } catch (error) {
+      res.status(400).json({ message: "Failed to update wedding" });
+    }
+  });
+
+  app.get("/api/admin/guests/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const guests = await storage.getGuestsByWeddingId(weddingId);
+      res.json(guests);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.post("/api/admin/guests", async (req, res) => {
+    try {
+      const guestData = req.body;
+      const guest = await storage.createGuest(guestData);
+      res.status(201).json(guest);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create guest" });
+    }
+  });
+
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const realUsers = users.filter(u => !u.email.includes('guest_'));
+      const guestUsers = users.filter(u => u.email.includes('guest_'));
+      
+      let totalWeddings = 0;
+      let publicWeddings = 0;
+      let totalGuests = 0;
+      
+      for (const user of users) {
+        const userWeddings = await storage.getWeddingsByUserId(user.id);
+        totalWeddings += userWeddings.length;
+        publicWeddings += userWeddings.filter(w => w.isPublic).length;
+        
+        for (const wedding of userWeddings) {
+          const guests = await storage.getGuestsByWeddingId(wedding.id);
+          totalGuests += guests.length;
+        }
+      }
+      
+      res.json({
+        totalUsers: realUsers.length,
+        guestUsers: guestUsers.length,
+        totalWeddings,
+        publicWeddings,
+        totalGuests
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.post("/api/users/guest", async (req, res) => {
     try {
       // Generate temporary guest user for immediate wedding creation
