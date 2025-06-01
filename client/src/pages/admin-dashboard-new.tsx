@@ -212,7 +212,7 @@ export default function AdminDashboard() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setLocation(`/admin/${wedding.uniqueUrl}`)}
+                            onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
                           >
                             <Settings className="h-4 w-4" />
                           </Button>

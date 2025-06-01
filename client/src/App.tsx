@@ -15,6 +15,7 @@ import UserDashboard from "@/pages/user-dashboard";
 import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard-new";
 import AdminLogin from "@/pages/admin-login";
+import AdminWeddingEdit from "@/pages/admin-wedding-edit";
 import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
 import { PaymentPage } from "@/pages/payment";
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/admin" component={AdminLogin} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/:weddingUrl" component={AdminWeddingEdit} />
       
       {/* Legacy admin routes */}
       <Route path="/system/auth" component={AdminLogin} />
