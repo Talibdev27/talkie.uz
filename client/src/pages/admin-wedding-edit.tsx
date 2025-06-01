@@ -45,7 +45,7 @@ export default function AdminWeddingEdit() {
 
   // Fetch wedding details
   const { data: wedding, isLoading: weddingLoading } = useQuery({
-    queryKey: ['/api/weddings/url', weddingUrl],
+    queryKey: [`/api/weddings/url/${weddingUrl}`],
     enabled: isAdmin && !!weddingUrl,
   });
 
