@@ -203,11 +203,11 @@ export default function WeddingSite() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
-                <div className="rounded-xl shadow-lg w-full aspect-[4/3] overflow-hidden">
+                <div className="rounded-xl shadow-lg w-full aspect-[4/5] overflow-hidden">
                   <img 
                     src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
                     alt={`${wedding.bride} & ${wedding.groom}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                   />
                 </div>
               ) : (
