@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
 } from "lucide-react";
 import type { Wedding, User } from "@shared/schema";
 
@@ -791,7 +791,7 @@ export default function AdminDashboard() {
                     {/* Memory Photos Section */}
                     <div>
                       <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
-                        <Image className="h-4 w-4" />
+                        <Images className="h-4 w-4" />
                         Our Memories Gallery
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -848,7 +848,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="bg-green-50 p-4 rounded-lg">
                         <div className="flex items-center gap-2">
-                          <Image className="h-4 w-4 text-green-600" />
+                          <Images className="h-4 w-4 text-green-600" />
                           <span className="text-sm font-medium text-green-700">Memory Photos</span>
                         </div>
                         <p className="text-2xl font-bold text-green-600 mt-1">
