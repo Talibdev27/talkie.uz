@@ -8,6 +8,10 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   name: text("name").notNull(),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  hasPaidSubscription: boolean("has_paid_subscription").default(false).notNull(),
+  paymentMethod: text("payment_method"), // 'click', 'payme', or null
+  paymentOrderId: text("payment_order_id"),
+  paymentDate: timestamp("payment_date"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

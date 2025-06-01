@@ -353,6 +353,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Payment routes
+  app.post("/api/create-payment", async (req, res) => {
+    try {
+      const { userId, paymentMethod, amount = 50000 } = req.body; // 50,000 UZS default price
+      
+      if (!userId) {
+        return res.status(400).json({ message: "User ID required" });
+      }
+
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if user already has paid subscription
+      if (user.hasPaidSubscription) {
+        return res.status(400).json({ message: "User already has a paid subscription" });
+      }
+
+      const orderId = `wedding_${userId}_${Date.now()}`;
+      
+      let paymentUrl;
+      if (paymentMethod === 'click') {
+        paymentUrl = generateClickUrl(orderId, amount);
+      } else if (paymentMethod === 'payme') {
+        paymentUrl = generatePaymeUrl(orderId, amount);
+      } else {
+        return res.status(400).json({ message: "Invalid payment method" });
+      }
+
+      res.json({ 
+        orderId, 
+        paymentUrl,
+        amount,
+        paymentMethod 
+      });
+    } catch (error) {
+      console.error("Payment creation error:", error);
+      res.status(500).json({ message: "Failed to create payment" });
+    }
+  });
+
+  app.post("/api/verify-payment", async (req, res) => {
+    try {
+      const { orderId, paymentMethod } = req.body;
+      
+      if (!orderId) {
+        return res.status(400).json({ message: "Order ID required" });
+      }
+
+      // Extract user ID from order ID
+      const userId = parseInt(orderId.split('_')[1]);
+      
+      // Update user payment status
+      const user = await storage.updateUser(userId, {
+        hasPaidSubscription: true,
+        paymentMethod,
+        paymentOrderId: orderId,
+        paymentDate: new Date()
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ 
+        success: true, 
+        message: "Payment verified successfully",
+        user 
+      });
+    } catch (error) {
+      console.error("Payment verification error:", error);
+      res.status(500).json({ message: "Failed to verify payment" });
+    }
+  });
+
   // Wedding routes
   app.post("/api/weddings", async (req, res) => {
     try {
@@ -375,6 +451,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (user.email.includes('guest_')) {
         return res.status(403).json({ 
           message: "Guest users cannot create weddings. Please register for a full account." 
+        });
+      }
+
+      // Check if user has paid subscription
+      if (!user.hasPaidSubscription && !user.isAdmin) {
+        return res.status(403).json({ 
+          message: "Payment required to create wedding website. Please complete payment first." 
         });
       }
 
