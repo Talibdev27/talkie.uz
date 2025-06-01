@@ -25,6 +25,7 @@ export interface IStorage {
   getWeddingByUrl(uniqueUrl: string): Promise<Wedding | undefined>;
   getWeddingsByUserId(userId: number): Promise<Wedding[]>;
   updateWedding(id: number, updates: Partial<InsertWedding>): Promise<Wedding | undefined>;
+  deleteWedding(id: number): Promise<boolean>;
 
   // Guests
   createGuest(guest: InsertGuest): Promise<Guest>;

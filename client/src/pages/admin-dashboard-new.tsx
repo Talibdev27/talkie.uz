@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +21,8 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [weddingToDelete, setWeddingToDelete] = useState<number | null>(null);
+  const { toast } = useToast();
 
   // Check admin authentication
   useEffect(() => {
@@ -43,6 +48,37 @@ export default function AdminDashboard() {
     queryKey: ['/api/admin/stats'],
     enabled: isAdmin,
   });
+
+  // Delete wedding mutation
+  const deleteWeddingMutation = useMutation({
+    mutationFn: async (weddingId: number) => {
+      return apiRequest(`/api/admin/weddings/${weddingId}`, {
+        method: 'DELETE',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Wedding Deleted",
+        description: "Wedding has been successfully deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/weddings'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+      setWeddingToDelete(null);
+    },
+    onError: () => {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete wedding.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteWedding = (weddingId: number) => {
+    if (confirm("Are you sure you want to delete this wedding? This action cannot be undone.")) {
+      deleteWeddingMutation.mutate(weddingId);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAdmin');
@@ -215,6 +251,15 @@ export default function AdminDashboard() {
                             onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
                           >
                             <Settings className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteWedding(wedding.id)}
+                            disabled={deleteWeddingMutation.isPending}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>

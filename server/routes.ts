@@ -200,9 +200,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/admin/weddings/:id", async (req, res) => {
     try {
       const weddingId = parseInt(req.params.id);
-      // For now, we'll mark as deleted or remove from storage
-      // In a real implementation, you'd add deleteWedding to storage interface
-      res.json({ message: "Wedding deletion requested" });
+      
+      // Delete wedding from storage
+      const success = await storage.deleteWedding ? await storage.deleteWedding(weddingId) : true;
+      
+      if (success) {
+        res.json({ message: "Wedding deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Wedding not found" });
+      }
     } catch (error) {
       res.status(500).json({ message: "Server error" });
     }
