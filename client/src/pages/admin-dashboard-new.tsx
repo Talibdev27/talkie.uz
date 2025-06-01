@@ -81,6 +81,68 @@ export default function AdminDashboard() {
     }
   };
 
+  // User management mutations
+  const updateUserMutation = useMutation({
+    mutationFn: async ({ userId, updates }: { userId: number; updates: any }) => {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "User Updated",
+        description: "User privileges updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+    },
+    onError: () => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update user privileges.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE',
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "User Deleted",
+        description: "User has been successfully deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+    },
+    onError: () => {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete user.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleToggleAdmin = (userId: number, isAdmin: boolean) => {
+    if (confirm(`Are you sure you want to ${isAdmin ? 'grant admin privileges to' : 'remove admin privileges from'} this user?`)) {
+      updateUserMutation.mutate({ userId, updates: { isAdmin } });
+    }
+  };
+
+  const handleDeleteUser = (userId: number) => {
+    if (confirm("Are you sure you want to delete this user? This will also delete all their weddings and cannot be undone.")) {
+      deleteUserMutation.mutate(userId);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('isAdmin');
     localStorage.removeItem('adminUser');
@@ -331,6 +393,26 @@ export default function AdminDashboard() {
                           <Badge variant="outline">
                             {weddings?.filter((w: Wedding) => w.userId === user.id).length || 0} weddings
                           </Badge>
+                          <Badge variant={user.isAdmin ? "default" : "secondary"}>
+                            {user.isAdmin ? "Admin" : "User"}
+                          </Badge>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleToggleAdmin(user.id, !user.isAdmin)}
+                            disabled={updateUserMutation.isPending}
+                            className="text-xs"
+                          >
+                            {user.isAdmin ? "Remove Admin" : "Make Admin"}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteUser(user.id)}
+                            disabled={deleteUserMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
                     ))}
