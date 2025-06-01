@@ -66,6 +66,12 @@ export default function AdminWeddingEdit() {
     mutationFn: async (updates: Partial<Wedding>) => {
       // Filter out non-updatable fields
       const { id, userId, uniqueUrl, createdAt, ...updateData } = updates;
+      
+      // Convert date string back to Date object if it exists
+      if (updateData.weddingDate && typeof updateData.weddingDate === 'string') {
+        updateData.weddingDate = new Date(updateData.weddingDate);
+      }
+      
       console.log('Updating wedding with filtered data:', updateData);
       console.log('Wedding ID:', wedding?.id);
       const response = await apiRequest('PUT', `/api/admin/weddings/${wedding?.id}`, updateData);
