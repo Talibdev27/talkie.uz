@@ -54,6 +54,12 @@ export default function AdminWeddingEdit() {
     enabled: isAdmin && !!wedding?.id,
   });
 
+  // Fetch photos for this wedding
+  const { data: photos, isLoading: photosLoading } = useQuery({
+    queryKey: ['/api/photos/wedding', wedding?.id],
+    enabled: isAdmin && !!wedding?.id,
+  });
+
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updates: Partial<Wedding>) => {
@@ -94,6 +100,55 @@ export default function AdminWeddingEdit() {
   const handleInputChange = (field: keyof Wedding, value: string) => {
     setWeddingData(prev => prev ? { ...prev, [field]: value } : null);
   };
+
+  // Photo management mutations
+  const deletePhotoMutation = useMutation({
+    mutationFn: async (photoId: number) => {
+      const response = await fetch(`/api/admin/photos/${photoId}`, {
+        method: 'DELETE',
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Photo Deleted",
+        description: "Photo has been successfully deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+    },
+    onError: () => {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete photo.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const addPhotoMutation = useMutation({
+    mutationFn: async (photoData: any) => {
+      const response = await fetch('/api/photos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(photoData),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Photo Added",
+        description: "Photo has been successfully added.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/photos/wedding', wedding?.id] });
+    },
+    onError: () => {
+      toast({
+        title: "Upload Failed",
+        description: "Failed to add photo.",
+        variant: "destructive",
+      });
+    },
+  });
 
   if (!isAdmin) {
     return null;
@@ -196,8 +251,9 @@ export default function AdminWeddingEdit() {
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="details">Wedding Details</TabsTrigger>
+            <TabsTrigger value="photos">Photo Management</TabsTrigger>
             <TabsTrigger value="guests">Guest Management</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -349,6 +405,154 @@ export default function AdminWeddingEdit() {
                 ) : (
                   <div className="text-center py-8 text-[#2C3338]/70">
                     No guests added yet
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="photos" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Camera className="h-5 w-5 text-[#D4B08C]" />
+                  Photo Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {photosLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
+                    <p className="text-[#2C3338]/70">Loading photos...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-8">
+                    {/* Couple Photo Section */}
+                    <div>
+                      <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                        <Heart className="h-4 w-4" />
+                        Couple Photo (How We Met Section)
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                          photos.filter((photo: any) => photo.photoType === 'couple').map((photo: any) => (
+                            <div key={photo.id} className="border rounded-lg p-4 space-y-3">
+                              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <img 
+                                  src={photo.url} 
+                                  alt={photo.caption || "Couple photo"}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                {photo.caption && (
+                                  <p className="text-sm text-gray-600">{photo.caption}</p>
+                                )}
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(photo.uploadedAt).toLocaleDateString()}
+                                  </span>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletePhotoMutation.mutate(photo.id)}
+                                    disabled={deletePhotoMutation.isPending}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-span-2 text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+                            <Heart className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                            <p>No couple photo uploaded yet</p>
+                            <p className="text-sm text-gray-400 mt-1">This photo will appear next to the "How We Met" section</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Memory Photos Section */}
+                    <div>
+                      <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                        <Camera className="h-4 w-4" />
+                        Our Memories Gallery
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0 ? (
+                          photos.filter((photo: any) => photo.photoType === 'memory').map((photo: any) => (
+                            <div key={photo.id} className="border rounded-lg p-3 space-y-2">
+                              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <img 
+                                  src={photo.url} 
+                                  alt={photo.caption || "Memory photo"}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                {photo.caption && (
+                                  <p className="text-xs text-gray-600 truncate">{photo.caption}</p>
+                                )}
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(photo.uploadedAt).toLocaleDateString()}
+                                  </span>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletePhotoMutation.mutate(photo.id)}
+                                    disabled={deletePhotoMutation.isPending}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-span-4 text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+                            <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                            <p>No memory photos uploaded yet</p>
+                            <p className="text-sm text-gray-400 mt-1">These photos will appear in the "Our Memories" gallery section</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Photo Statistics */}
+                    {photos && photos.length > 0 && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t">
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Heart className="h-4 w-4 text-blue-600" />
+                            <span className="text-sm font-medium text-blue-700">Couple Photos</span>
+                          </div>
+                          <p className="text-2xl font-bold text-blue-600 mt-1">
+                            {photos.filter((photo: any) => photo.photoType === 'couple').length}
+                          </p>
+                        </div>
+                        <div className="bg-green-50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Camera className="h-4 w-4 text-green-600" />
+                            <span className="text-sm font-medium text-green-700">Memory Photos</span>
+                          </div>
+                          <p className="text-2xl font-bold text-green-600 mt-1">
+                            {photos.filter((photo: any) => photo.photoType === 'memory').length}
+                          </p>
+                        </div>
+                        <div className="bg-purple-50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Camera className="h-4 w-4 text-purple-600" />
+                            <span className="text-sm font-medium text-purple-700">Total Photos</span>
+                          </div>
+                          <p className="text-2xl font-bold text-purple-600 mt-1">
+                            {photos.length}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
