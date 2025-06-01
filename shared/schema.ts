@@ -62,6 +62,7 @@ export const photos = pgTable("photos", {
   url: text("url").notNull(),
   caption: text("caption"),
   isHero: boolean("is_hero").notNull().default(false),
+  photoType: text("photo_type").$type<"couple" | "memory" | "hero">().notNull().default("memory"),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
 });
 

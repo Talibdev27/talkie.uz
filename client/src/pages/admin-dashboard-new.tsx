@@ -71,6 +71,11 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
+  const { data: allPhotos, isLoading: photosLoading } = useQuery({
+    queryKey: ['/api/admin/photos'],
+    enabled: isAdmin,
+  });
+
   // Create wedding mutation
   const createWeddingMutation = useMutation({
     mutationFn: async (weddingData: any) => {
@@ -246,6 +251,55 @@ export default function AdminDashboard() {
     },
   });
 
+  // Photo management mutations
+  const deletePhotoMutation = useMutation({
+    mutationFn: async (photoId: number) => {
+      const response = await fetch(`/api/admin/photos/${photoId}`, {
+        method: 'DELETE',
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Photo Deleted",
+        description: "Photo has been successfully deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/photos'] });
+    },
+    onError: () => {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete photo.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const addPhotoMutation = useMutation({
+    mutationFn: async (photoData: any) => {
+      const response = await fetch('/api/admin/photos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(photoData),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Photo Added",
+        description: "Photo has been successfully added.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/photos'] });
+    },
+    onError: () => {
+      toast({
+        title: "Upload Failed",
+        description: "Failed to add photo.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleToggleAdmin = (userId: number, isAdmin: boolean) => {
     if (confirm(`Are you sure you want to ${isAdmin ? 'grant admin privileges to' : 'remove admin privileges from'} this user?`)) {
       updateUserMutation.mutate({ userId, updates: { isAdmin } });
@@ -350,10 +404,11 @@ export default function AdminDashboard() {
 
         {/* Management Tabs */}
         <Tabs defaultValue="weddings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="weddings">Wedding Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="rsvp">RSVP Management</TabsTrigger>
+            <TabsTrigger value="photos">Photo Management</TabsTrigger>
             <TabsTrigger value="create">Create Wedding</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
@@ -656,6 +711,168 @@ export default function AdminDashboard() {
                     </div>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Photo Management */}
+          <TabsContent value="photos" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-semibold text-[#2C3338] flex items-center gap-2">
+                    <Camera className="h-5 w-5" />
+                    Photo Management
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {photosLoading ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="animate-pulse flex space-x-4 p-4 border rounded-lg">
+                        <div className="w-16 h-16 bg-gray-200 rounded"></div>
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : allPhotos && allPhotos.length > 0 ? (
+                  <div className="space-y-6">
+                    {/* Couple Photos Section */}
+                    <div>
+                      <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                        <Heart className="h-4 w-4" />
+                        Couple Photos (How We Met Section)
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {allPhotos
+                          .filter((photo: any) => photo.photoType === 'couple')
+                          .map((photo: any) => (
+                            <div key={photo.id} className="border rounded-lg p-4 space-y-3">
+                              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <img 
+                                  src={photo.url} 
+                                  alt={photo.caption || "Couple photo"}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium">
+                                  {photo.wedding?.bride} & {photo.wedding?.groom}
+                                </p>
+                                {photo.caption && (
+                                  <p className="text-xs text-gray-600">{photo.caption}</p>
+                                )}
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(photo.uploadedAt).toLocaleDateString()}
+                                  </span>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletePhotoMutation.mutate(photo.id)}
+                                    disabled={deletePhotoMutation.isPending}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      {allPhotos.filter((photo: any) => photo.photoType === 'couple').length === 0 && (
+                        <p className="text-center text-gray-500 py-8">No couple photos uploaded yet.</p>
+                      )}
+                    </div>
+
+                    {/* Memory Photos Section */}
+                    <div>
+                      <h3 className="font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                        <Image className="h-4 w-4" />
+                        Our Memories Gallery
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {allPhotos
+                          .filter((photo: any) => photo.photoType === 'memory')
+                          .map((photo: any) => (
+                            <div key={photo.id} className="border rounded-lg p-3 space-y-2">
+                              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <img 
+                                  src={photo.url} 
+                                  alt={photo.caption || "Memory photo"}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs font-medium">
+                                  {photo.wedding?.bride} & {photo.wedding?.groom}
+                                </p>
+                                {photo.caption && (
+                                  <p className="text-xs text-gray-600 truncate">{photo.caption}</p>
+                                )}
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(photo.uploadedAt).toLocaleDateString()}
+                                  </span>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletePhotoMutation.mutate(photo.id)}
+                                    disabled={deletePhotoMutation.isPending}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      {allPhotos.filter((photo: any) => photo.photoType === 'memory').length === 0 && (
+                        <p className="text-center text-gray-500 py-8">No memory photos uploaded yet.</p>
+                      )}
+                    </div>
+
+                    {/* Photo Statistics */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t">
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Heart className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-700">Couple Photos</span>
+                        </div>
+                        <p className="text-2xl font-bold text-blue-600 mt-1">
+                          {allPhotos.filter((photo: any) => photo.photoType === 'couple').length}
+                        </p>
+                      </div>
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Image className="h-4 w-4 text-green-600" />
+                          <span className="text-sm font-medium text-green-700">Memory Photos</span>
+                        </div>
+                        <p className="text-2xl font-bold text-green-600 mt-1">
+                          {allPhotos.filter((photo: any) => photo.photoType === 'memory').length}
+                        </p>
+                      </div>
+                      <div className="bg-purple-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Camera className="h-4 w-4 text-purple-600" />
+                          <span className="text-sm font-medium text-purple-700">Total Photos</span>
+                        </div>
+                        <p className="text-2xl font-bold text-purple-600 mt-1">
+                          {allPhotos.length}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500 mb-2">No photos uploaded yet</p>
+                    <p className="text-sm text-gray-400">Photos will appear here once couples start uploading them</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

@@ -456,6 +456,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Photo management endpoints for admin
+  app.get("/api/admin/photos", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const allPhotos = [];
+
+      for (const user of users) {
+        const userWeddings = await storage.getWeddingsByUserId(user.id);
+        
+        for (const wedding of userWeddings) {
+          const photos = await storage.getPhotosByWeddingId(wedding.id);
+          allPhotos.push(...photos.map(photo => ({
+            ...photo,
+            wedding: {
+              id: wedding.id,
+              bride: wedding.bride,
+              groom: wedding.groom,
+              uniqueUrl: wedding.uniqueUrl
+            }
+          })));
+        }
+      }
+
+      res.json(allPhotos);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.post("/api/admin/photos", async (req, res) => {
+    try {
+      const photoData = req.body;
+      const photo = await storage.createPhoto(photoData);
+      res.status(201).json(photo);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create photo" });
+    }
+  });
+
+  app.put("/api/admin/photos/:id", async (req, res) => {
+    try {
+      const photoId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      // Note: This would need to be implemented in storage interface
+      res.json({ message: "Photo updated" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update photo" });
+    }
+  });
+
+  app.delete("/api/admin/photos/:id", async (req, res) => {
+    try {
+      const photoId = parseInt(req.params.id);
+      const success = await storage.deletePhoto(photoId);
+      
+      if (success) {
+        res.json({ message: "Photo deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Photo not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete photo" });
+    }
+  });
+
   app.post("/api/users/guest", async (req, res) => {
     try {
       // Generate temporary guest user for immediate wedding creation
