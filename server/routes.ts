@@ -284,6 +284,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Updating wedding ID:', weddingId);
       console.log('Update data:', JSON.stringify(updates, null, 2));
       
+      // Convert date string to Date object if needed
+      if (updates.weddingDate && typeof updates.weddingDate === 'string') {
+        updates.weddingDate = new Date(updates.weddingDate);
+        console.log('Converted wedding date to:', updates.weddingDate);
+      }
+      
       const wedding = await storage.updateWedding(weddingId, updates);
       console.log('Update result:', wedding);
 
