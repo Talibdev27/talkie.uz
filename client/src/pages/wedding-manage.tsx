@@ -284,6 +284,22 @@ export default function WeddingManage() {
                   />
                 </div>
 
+                {/* Guest Welcome Message */}
+                <div className="space-y-2">
+                  <Label htmlFor="welcomeMessage">Guest Welcome Message (Optional)</Label>
+                  <Textarea
+                    id="welcomeMessage"
+                    value={weddingData?.welcomeMessage || ''}
+                    onChange={(e) => setWeddingData(prev => prev ? {...prev, welcomeMessage: e.target.value} : null)}
+                    disabled={!editMode}
+                    className="wedding-input min-h-[100px]"
+                    placeholder="Write a special welcome message for your guests..."
+                  />
+                  <p className="text-sm text-gray-500">
+                    This message will appear as a formal invitation section on your wedding website.
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="venue">Venue</Label>

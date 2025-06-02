@@ -431,6 +431,38 @@ export default function AdminWeddingEdit() {
                     )}
                   </div>
                 </div>
+
+                {/* Guest Welcome Message Section */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-[#D4B08C]" />
+                    Guest Welcome Message
+                  </h3>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      Welcome Message for Guests (Optional)
+                    </label>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Add a special welcome message for your guests. This will appear as a formal invitation section on your wedding website.
+                    </p>
+                    {editMode ? (
+                      <Textarea
+                        value={weddingData?.welcomeMessage || ''}
+                        onChange={(e) => handleInputChange('welcomeMessage', e.target.value)}
+                        className="wedding-input min-h-[120px]"
+                        placeholder="Dear Guests! We are honored to invite you to celebrate as esteemed guests at the wedding of [Bride] and [Groom]. On this joyous day, filled with kindness in our hearts, join us alongside loved ones!"
+                      />
+                    ) : (
+                      <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                        {wedding.welcomeMessage ? (
+                          <p className="text-gray-800 leading-relaxed whitespace-pre-line">{wedding.welcomeMessage}</p>
+                        ) : (
+                          <p className="text-gray-500 italic">No welcome message added yet.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -27,6 +27,7 @@ export const weddings = pgTable("weddings", {
   venueAddress: text("venue_address").notNull(),
   venueCoordinates: jsonb("venue_coordinates").$type<{ lat: number; lng: number }>(),
   story: text("story"),
+  welcomeMessage: text("welcome_message"),
   template: text("template").notNull().default("garden-romance"),
   primaryColor: text("primary_color").notNull().default("#D4B08C"),
   accentColor: text("accent_color").notNull().default("#89916B"),
