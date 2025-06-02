@@ -389,7 +389,7 @@ export default function WeddingSite() {
                 {/* Show address text for Google Maps URLs */}
                 {wedding.venueAddress && wedding.venueAddress.includes('maps.app.goo.gl') && (
                   <p className="text-charcoal opacity-70 mt-2">
-                    Click below to view location
+                    {t('wedding.clickToViewLocation')}
                   </p>
                 )}
                 <Button 

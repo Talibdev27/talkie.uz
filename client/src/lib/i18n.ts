@@ -41,6 +41,7 @@ const resources = {
       'wedding.when': 'When',
       'wedding.where': 'Where',
       'wedding.ceremonyTime': 'Ceremony begins at 4:00 PM',
+      'wedding.clickToViewLocation': 'Click below to view location',
       'wedding.viewOnMap': 'View on Map',
       'wedding.guestBookSubtitle': 'Leave us a message to make our day even more special',
       'wedding.messagesFromLovedOnes': 'Messages from our loved ones',
@@ -702,6 +703,7 @@ const resources = {
       'wedding.when': 'Qachon',
       'wedding.where': 'Qayerda',
       'wedding.ceremonyTime': 'Marosim soat 16:00 da boshlanadi',
+      'wedding.clickToViewLocation': 'Joyni ko\'rish uchun pastga bosing',
       'wedding.viewOnMap': 'Xaritada ko\'rish',
       'wedding.guestBookSubtitle': 'Bizning kunimizni yanada o\'ziga xos qilish uchun xabar qoldiring',
       'wedding.messagesFromLovedOnes': 'Yaqinlarimizdan xabarlar',
@@ -1073,6 +1075,7 @@ const resources = {
       'wedding.when': 'Когда',
       'wedding.where': 'Где',
       'wedding.ceremonyTime': 'Церемония начинается в 16:00',
+      'wedding.clickToViewLocation': 'Нажмите ниже, чтобы посмотреть место',
       'wedding.viewOnMap': 'Посмотреть на карте',
       'wedding.guestBookSubtitle': 'Оставьте нам сообщение, чтобы сделать наш день еще более особенным',
       'wedding.messagesFromLovedOnes': 'Сообщения от наших близких',
@@ -1313,7 +1316,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en',
+    lng: 'uz',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
