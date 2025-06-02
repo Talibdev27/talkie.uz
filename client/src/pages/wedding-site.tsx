@@ -380,10 +380,34 @@ export default function WeddingSite() {
                 <p className="text-lg text-charcoal font-medium">
                   {wedding.venue}
                 </p>
-                <p className="text-charcoal opacity-70 mt-2">
-                  {wedding.venueAddress}
-                </p>
-                <Button variant="outline" className="mt-4 wedding-button-outline">
+                {/* Only show address if it's not a Google Maps URL */}
+                {wedding.venueAddress && !wedding.venueAddress.includes('maps.app.goo.gl') && (
+                  <p className="text-charcoal opacity-70 mt-2">
+                    {wedding.venueAddress}
+                  </p>
+                )}
+                {/* Show address text for Google Maps URLs */}
+                {wedding.venueAddress && wedding.venueAddress.includes('maps.app.goo.gl') && (
+                  <p className="text-charcoal opacity-70 mt-2">
+                    Click below to view location
+                  </p>
+                )}
+                <Button 
+                  variant="outline" 
+                  className="mt-4 wedding-button-outline"
+                  onClick={() => {
+                    if (wedding.venueAddress) {
+                      // Check if it's already a URL
+                      if (wedding.venueAddress.startsWith('http')) {
+                        window.open(wedding.venueAddress, '_blank');
+                      } else {
+                        // If it's just an address, create a Google Maps search URL
+                        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.venueAddress)}`;
+                        window.open(googleMapsUrl, '_blank');
+                      }
+                    }
+                  }}
+                >
                   {t('wedding.viewOnMap')}
                 </Button>
               </CardContent>
