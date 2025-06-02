@@ -34,14 +34,23 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      // Simulate user authentication - in production, this would connect to your user database
+      // Check if user has existing weddings
+      const weddingsResponse = await fetch('/api/user/weddings');
+      const weddings = await weddingsResponse.json();
+      
       toast({
         title: "Login Successful",
-        description: "Welcome back! Redirecting to your dashboard...",
+        description: "Welcome back! Redirecting...",
       });
       
-      // Redirect to user dashboard or wedding management
-      setLocation('/create-wedding');
+      // Smart redirect based on user's wedding status
+      if (weddings && weddings.length > 0) {
+        // User has existing weddings - go to dashboard
+        setLocation('/dashboard');
+      } else {
+        // New user with no weddings - go to creation flow
+        setLocation('/create-wedding');
+      }
     } catch (error) {
       toast({
         title: "Login Failed",
@@ -74,7 +83,7 @@ export default function UserLogin() {
         description: "Welcome to our wedding platform! You can now create your wedding website.",
       });
       
-      // Redirect to wedding creation
+      // New users go directly to wedding creation
       setLocation('/create-wedding');
     } catch (error) {
       toast({
