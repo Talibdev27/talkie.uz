@@ -32,6 +32,9 @@ function Router() {
       <Route path="/login" component={UserLogin} />
       <Route path="/register" component={UserLogin} />
 
+      {/* User Dashboard */}
+      <Route path="/dashboard" component={UserDashboard} />
+
       {/* Enhanced Progressive Onboarding */}
       <Route path="/get-started" component={ProgressiveOnboarding} />
 

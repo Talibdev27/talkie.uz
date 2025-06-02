@@ -20,7 +20,7 @@ interface Wedding {
 export default function UserDashboard() {
   const [, navigate] = useLocation();
 
-  const { data: weddings = [], isLoading } = useQuery({
+  const { data: weddings = [], isLoading } = useQuery<Wedding[]>({
     queryKey: ['/api/user/weddings']
   });
 
