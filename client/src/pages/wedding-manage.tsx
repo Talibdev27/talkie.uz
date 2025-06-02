@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'wouter';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,8 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { formatDate } from '@/lib/utils';
-import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, Trash2 } from 'lucide-react';
-import type { Wedding, Photo } from '@shared/schema';
+import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, Trash2, Users, ExternalLink } from 'lucide-react';
+import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
   const { t } = useTranslation();
@@ -223,8 +223,9 @@ export default function WeddingManage() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-3">
             <TabsTrigger value="details">Wedding Details</TabsTrigger>
+            <TabsTrigger value="guests">Guest Management</TabsTrigger>
             <TabsTrigger value="photos">Photo Management</TabsTrigger>
           </TabsList>
 
@@ -350,6 +351,165 @@ export default function WeddingManage() {
                     </Button>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Guest Management Tab */}
+          <TabsContent value="guests" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-[#D4B08C]" />
+                  Guest Management
+                </CardTitle>
+                <CardDescription>
+                  Manage your wedding guests, track RSVPs, and view guest messages
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {guestsLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
+                    <p className="text-[#2C3338]/70">Loading guests...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Guest Statistics */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                        <div className="text-2xl font-bold text-green-600">
+                          {guests?.filter(guest => guest.rsvpStatus === 'confirmed').length || 0}
+                        </div>
+                        <div className="text-sm text-green-700">Confirmed</div>
+                      </div>
+                      <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                        <div className="text-2xl font-bold text-yellow-600">
+                          {guests?.filter(guest => guest.rsvpStatus === 'pending').length || 0}
+                        </div>
+                        <div className="text-sm text-yellow-700">Pending</div>
+                      </div>
+                      <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                        <div className="text-2xl font-bold text-red-600">
+                          {guests?.filter(guest => guest.rsvpStatus === 'declined').length || 0}
+                        </div>
+                        <div className="text-sm text-red-700">Declined</div>
+                      </div>
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {guests?.length || 0}
+                        </div>
+                        <div className="text-sm text-blue-700">Total Guests</div>
+                      </div>
+                    </div>
+
+                    {/* Guest List */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-semibold text-[#2C3338]">Guest List</h3>
+                        <div className="flex gap-2">
+                          <select 
+                            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                            defaultValue="all"
+                          >
+                            <option value="all">All Guests</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="pending">Pending</option>
+                            <option value="declined">Declined</option>
+                            <option value="maybe">Maybe</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {guests && guests.length > 0 ? (
+                        <div className="space-y-3">
+                          {guests.map((guest) => (
+                            <div key={guest.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3">
+                                    <div className="flex-1">
+                                      <h4 className="font-medium text-[#2C3338]">{guest.name}</h4>
+                                      {guest.email && (
+                                        <p className="text-sm text-gray-600">{guest.email}</p>
+                                      )}
+                                      {guest.phone && (
+                                        <p className="text-sm text-gray-600">{guest.phone}</p>
+                                      )}
+                                    </div>
+                                    <div className="text-right">
+                                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        guest.rsvpStatus === 'confirmed' 
+                                          ? 'bg-green-100 text-green-800'
+                                          : guest.rsvpStatus === 'declined'
+                                          ? 'bg-red-100 text-red-800'
+                                          : guest.rsvpStatus === 'maybe'
+                                          ? 'bg-blue-100 text-blue-800'
+                                          : 'bg-yellow-100 text-yellow-800'
+                                      }`}>
+                                        {guest.rsvpStatus === 'confirmed' && 'Confirmed'}
+                                        {guest.rsvpStatus === 'declined' && 'Declined'}
+                                        {guest.rsvpStatus === 'maybe' && 'Maybe'}
+                                        {guest.rsvpStatus === 'pending' && 'Pending'}
+                                      </span>
+                                      {guest.respondedAt && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                          {new Date(guest.respondedAt).toLocaleDateString()}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {guest.message && (
+                                    <div className="mt-3 p-3 bg-gray-50 rounded-md">
+                                      <p className="text-sm text-gray-700">
+                                        <span className="font-medium">Message: </span>
+                                        {guest.message}
+                                      </p>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-500">
+                                    {guest.guestCount && guest.guestCount > 1 && (
+                                      <span className="bg-gray-100 px-2 py-1 rounded">
+                                        +{guest.guestCount - 1} guests
+                                      </span>
+                                    )}
+                                    {guest.dietaryRestrictions && (
+                                      <span className="bg-gray-100 px-2 py-1 rounded">
+                                        Dietary: {guest.dietaryRestrictions}
+                                      </span>
+                                    )}
+                                    {guest.specialRequests && (
+                                      <span className="bg-gray-100 px-2 py-1 rounded">
+                                        Special: {guest.specialRequests}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-12 bg-gray-50 rounded-lg">
+                          <Users className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                          <h3 className="text-lg font-medium text-gray-900 mb-2">No Guests Yet</h3>
+                          <p className="text-gray-500 mb-4">
+                            Guests will appear here when they RSVP through your wedding website.
+                          </p>
+                          <Button
+                            variant="outline"
+                            onClick={() => window.open(`/wedding/${wedding?.uniqueUrl}`, '_blank')}
+                          >
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            View Wedding Site
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
