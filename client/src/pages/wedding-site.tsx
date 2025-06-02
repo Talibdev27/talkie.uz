@@ -330,36 +330,6 @@ export default function WeddingSite() {
         </section>
       ) : null}
 
-      {/* Guest Welcome Section - Only show if there's a welcome message */}
-      {wedding.welcomeMessage && wedding.welcomeMessage.trim() ? (
-        <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-                Dear Guests!
-              </h2>
-              <div className="max-w-3xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20">
-                  <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
-                    {wedding.welcomeMessage.split('\n').map((paragraph, index) => (
-                      <p key={index} className="mb-4 last:mb-0 text-lg">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                  <div className="mt-8 flex justify-center">
-                    <div className="w-24 h-0.5 bg-romantic-gold"></div>
-                  </div>
-                  <p className="mt-6 text-romantic-gold font-playfair font-semibold text-xl">
-                    {wedding.bride} & {wedding.groom}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
       {/* RSVP Section */}
       <section id="rsvp" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
