@@ -55,10 +55,54 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
 
   if (memoryPhotos.length === 0) {
     return (
-      <div className={`text-center py-12 ${className}`}>
-        <div className="text-gray-500">
-          <p className="text-lg font-medium mb-2">{t('photos.noPhotosYet')}</p>
-          <p className="text-sm">{t('photos.photosWillAppear')}</p>
+      <div className={`${className}`}>
+        {/* Beautiful empty state layout */}
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 items-center">
+            {/* Left decorative element */}
+            <div className="hidden md:block">
+              <div className="w-full h-64 bg-gradient-to-br from-romantic-gold/10 to-sage-green/10 rounded-2xl shadow-lg flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="w-16 h-16 bg-romantic-gold/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-romantic-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-charcoal opacity-60">Moments</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Center content */}
+            <div className="text-center py-16">
+              <div className="w-20 h-20 bg-romantic-gold/10 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-10 h-10 text-romantic-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-playfair font-semibold text-charcoal mb-3">
+                Creating Beautiful Memories
+              </h3>
+              <p className="text-charcoal opacity-70 max-w-sm mx-auto leading-relaxed">
+                Every moment of our journey is precious. Soon this space will be filled with the beautiful memories we create together.
+              </p>
+            </div>
+
+            {/* Right decorative element */}
+            <div className="hidden md:block">
+              <div className="w-full h-64 bg-gradient-to-bl from-sage-green/10 to-romantic-gold/10 rounded-2xl shadow-lg flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="w-16 h-16 bg-sage-green/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-sage-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-charcoal opacity-60">Dreams</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
