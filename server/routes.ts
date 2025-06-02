@@ -420,6 +420,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user's own weddings - simplified for now
+  app.get("/api/user/weddings", async (req, res) => {
+    try {
+      // For now, return weddings for user ID 1 (you logged in as this user)
+      const userId = 1; // This should come from session/auth later
+      const weddings = await storage.getWeddingsByUserId(userId);
+      res.json(weddings);
+    } catch (error: any) {
+      console.error('Get user weddings error:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.get("/api/admin/stats", async (req, res) => {
     try {
       const users = await storage.getAllUsers();
