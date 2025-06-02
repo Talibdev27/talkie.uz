@@ -168,6 +168,11 @@ export default function WeddingSite() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-center space-x-8 py-4">
             {/* Only show navigation items for sections that exist */}
+            {wedding.welcomeMessage && wedding.welcomeMessage.trim() && (
+              <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                Dear Guests
+              </a>
+            )}
             {((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
               <a href="#story" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
                 {t('wedding.ourStory')}
@@ -176,11 +181,6 @@ export default function WeddingSite() {
             {((photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner) && (
               <a href="#photos" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
                 {t('wedding.photos')}
-              </a>
-            )}
-            {wedding.welcomeMessage && wedding.welcomeMessage.trim() && (
-              <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                Dear Guests
               </a>
             )}
             <a href="#rsvp" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
@@ -195,6 +195,36 @@ export default function WeddingSite() {
           </div>
         </div>
       </nav>
+
+      {/* Guest Welcome Section - Only show if there's a welcome message */}
+      {wedding.welcomeMessage && wedding.welcomeMessage.trim() ? (
+        <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
+                Dear Guests!
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20">
+                  <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
+                    {wedding.welcomeMessage.split('\n').map((paragraph, index) => (
+                      <p key={index} className="mb-4 last:mb-0 text-lg">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                  <div className="mt-8 flex justify-center">
+                    <div className="w-24 h-0.5 bg-romantic-gold"></div>
+                  </div>
+                  <p className="mt-6 text-romantic-gold font-playfair font-semibold text-xl">
+                    {wedding.bride} & {wedding.groom}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Our Story Section - Only show if there's a story or couple photo */}
       {(wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0) ? (
