@@ -167,12 +167,17 @@ export default function WeddingSite() {
       <nav className="sticky top-0 bg-white shadow-md z-40">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-center space-x-8 py-4">
-            <a href="#story" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-              {t('wedding.ourStory')}
-            </a>
-            <a href="#photos" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-              {t('wedding.photos')}
-            </a>
+            {/* Only show navigation items for sections that exist */}
+            {((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
+              <a href="#story" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                {t('wedding.ourStory')}
+              </a>
+            )}
+            {((photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner) && (
+              <a href="#photos" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                {t('wedding.photos')}
+              </a>
+            )}
             <a href="#rsvp" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
               {t('wedding.rsvp')}
             </a>
@@ -186,48 +191,48 @@ export default function WeddingSite() {
         </div>
       </nav>
 
-      {/* Our Story Section */}
-      <section id="story" className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className={`text-3xl lg:text-4xl font-playfair font-bold ${config.textColor} mb-6`}>
-              {t('wedding.ourStory')}
-            </h2>
-          </div>
+      {/* Our Story Section - Only show if there's a story or couple photo */}
+      {(wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0) ? (
+        <section id="story" className="py-20">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className={`text-3xl lg:text-4xl font-playfair font-bold ${config.textColor} mb-6`}>
+                {t('wedding.ourStory')}
+              </h2>
+            </div>
 
-          {wedding.story && wedding.story.trim() ? (
-            // When there's a custom love story, show it prominently with photo
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
-                  <div className="rounded-xl shadow-lg w-full aspect-[4/5] overflow-hidden">
-                    <img 
-                      src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
-                      alt={`${wedding.bride} & ${wedding.groom}`}
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                ) : (
-                  <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
-                    <div className="text-center p-8">
-                      <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
-                      <p className="text-charcoal opacity-70">
-                        {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
-                      </p>
+            {wedding.story && wedding.story.trim() ? (
+              // When there's a custom love story, show it prominently with photo
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                    <div className="rounded-xl shadow-lg w-full aspect-[4/5] overflow-hidden">
+                      <img 
+                        src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
+                        alt={`${wedding.bride} & ${wedding.groom}`}
+                        className="w-full h-full object-cover object-top"
+                      />
                     </div>
+                  ) : (
+                    <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
+                      <div className="text-center p-8">
+                        <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
+                        <p className="text-charcoal opacity-70">
+                          {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-6">
+                  <div className={`prose prose-lg max-w-none ${config.textColor} opacity-80 leading-relaxed`}>
+                    <p className="text-lg">{wedding.story}</p>
                   </div>
-                )}
-              </div>
-              <div className="space-y-6">
-                <div className={`prose prose-lg max-w-none ${config.textColor} opacity-80 leading-relaxed`}>
-                  <p className="text-lg">{wedding.story}</p>
                 </div>
               </div>
-            </div>
-          ) : (
-            // When there's no custom story, show a beautiful couple photo section
-            <div className="max-w-3xl mx-auto">
-              {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+            ) : (
+              // When there's no custom story but couple photo exists, show beautiful photo layout
+              <div className="max-w-3xl mx-auto">
                 <div className="text-center">
                   <div className="rounded-2xl shadow-2xl w-full max-w-md mx-auto aspect-[4/5] overflow-hidden mb-8">
                     <img 
@@ -246,58 +251,49 @@ export default function WeddingSite() {
                     </p>
                   </div>
                 </div>
-              ) : (
-                // Fallback when no photo and no story
-                <div className="text-center py-16">
-                  <Heart className="h-20 w-20 text-romantic-gold mx-auto mb-6" />
-                  <h3 className="text-3xl font-playfair font-semibold text-charcoal mb-4">
-                    {wedding.bride} & {wedding.groom}
-                  </h3>
-                  <p className="text-xl text-charcoal opacity-70 max-w-lg mx-auto leading-relaxed">
-                    Celebrating love, laughter, and happily ever after
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Photo Gallery Section */}
-      <section id="photos" className="py-20 bg-soft-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-              {t('wedding.photos')}
-            </h2>
-            <p className="mt-4 text-lg text-charcoal opacity-70">
-              {t('wedding.capturingJourney')}
-            </p>
-            
-            {/* Enhanced Photo Upload Options - Only visible to wedding owners */}
-            {isOwner && (
-              <div className="mt-6 flex gap-3 justify-center">
-                <PhotoUpload 
-                  weddingId={wedding.id} 
-                  isOwner={true}
-                  onSuccess={() => {
-                    // Photos will automatically refresh via React Query
-                  }}
-                />
-                <SmartImageUpload 
-                  weddingId={wedding.id} 
-                  isOwner={true}
-                  onSuccess={() => {
-                    // Photos will automatically refresh via React Query
-                  }}
-                />
               </div>
             )}
           </div>
-          
-          <PhotoGallery weddingId={wedding.id} />
-        </div>
-      </section>
+        </section>
+      ) : null}
+
+      {/* Photo Gallery Section - Only show if there are memory photos or if owner can upload */}
+      {(photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner ? (
+        <section id="photos" className="py-20 bg-soft-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+                {t('wedding.photos')}
+              </h2>
+              <p className="mt-4 text-lg text-charcoal opacity-70">
+                {t('wedding.capturingJourney')}
+              </p>
+              
+              {/* Enhanced Photo Upload Options - Only visible to wedding owners */}
+              {isOwner && (
+                <div className="mt-6 flex gap-3 justify-center">
+                  <PhotoUpload 
+                    weddingId={wedding.id} 
+                    isOwner={true}
+                    onSuccess={() => {
+                      // Photos will automatically refresh via React Query
+                    }}
+                  />
+                  <SmartImageUpload 
+                    weddingId={wedding.id} 
+                    isOwner={true}
+                    onSuccess={() => {
+                      // Photos will automatically refresh via React Query
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            
+            <PhotoGallery weddingId={wedding.id} />
+          </div>
+        </section>
+      ) : null}
 
       {/* RSVP Section */}
       <section id="rsvp" className="py-20 bg-white">
