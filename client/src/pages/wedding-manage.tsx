@@ -44,6 +44,12 @@ export default function WeddingManage() {
     enabled: !!wedding?.id,
   });
 
+  // Fetch guests for this wedding
+  const { data: guests, isLoading: guestsLoading } = useQuery<Guest[]>({
+    queryKey: [`/api/guests/wedding/${wedding?.id}`],
+    enabled: !!wedding?.id,
+  });
+
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updates: Partial<Wedding>) => {
