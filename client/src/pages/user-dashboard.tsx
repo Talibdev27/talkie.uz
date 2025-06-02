@@ -117,7 +117,7 @@ export default function UserDashboard() {
                         View
                       </Button>
                     </Link>
-                    <Link href={`/manage-wedding/${wedding.uniqueUrl}`}>
+                    <Link href={`/manage/${wedding.uniqueUrl}`}>
                       <Button variant="outline" size="sm" className="flex-1">
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
