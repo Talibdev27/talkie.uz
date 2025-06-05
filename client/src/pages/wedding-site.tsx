@@ -191,7 +191,7 @@ export default function WeddingSite() {
                 Dear Guests
               </a>
             )}
-            {((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
+            {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
               <a href="#story" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
                 {t('wedding.ourStory')}
               </a>
@@ -244,8 +244,8 @@ export default function WeddingSite() {
         </section>
       ) : null}
 
-      {/* Our Story Section - Only show if there's a story or couple photo */}
-      {(wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0) ? (
+      {/* Our Story Section - Only show if there's a story or couple photo, but hide for Standard template */}
+      {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) ? (
         <section id="story" className="py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
