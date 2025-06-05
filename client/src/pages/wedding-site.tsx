@@ -157,19 +157,23 @@ export default function WeddingSite() {
         <img
           src={heroImage}
           alt="Wedding couple"
-          className="w-full h-full object-cover"
+          className={`w-full h-full ${currentTemplate === 'standard' ? 'object-cover object-center' : 'object-cover'}`}
+          style={currentTemplate === 'standard' ? {
+            filter: 'brightness(0.8) contrast(1.1)',
+            objectPosition: 'center 30%'
+          } : {}}
         />
-        <div className={`absolute inset-0 ${config.overlayBg}`}></div>
+        <div className={`absolute inset-0 ${currentTemplate === 'standard' ? 'bg-gradient-to-b from-black/20 via-black/30 to-black/50' : config.overlayBg}`}></div>
         <div className="absolute inset-0 flex items-center justify-center text-center text-white">
-          <div className="max-w-2xl px-4">
-            <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-4 text-shadow">
+          <div className={`max-w-2xl px-4 ${currentTemplate === 'standard' ? 'bg-black/40 backdrop-blur-sm rounded-2xl py-8 px-8' : ''}`}>
+            <h1 className={`text-4xl md:text-6xl font-playfair font-bold mb-4 ${currentTemplate === 'standard' ? 'text-white drop-shadow-2xl' : 'text-shadow'}`}>
               {wedding.bride} & {wedding.groom}
             </h1>
-            <p className="text-xl md:text-2xl font-cormorant mb-8 text-shadow">
+            <p className={`text-xl md:text-2xl font-cormorant mb-8 ${currentTemplate === 'standard' ? 'text-white/90 drop-shadow-xl' : 'text-shadow'}`}>
               {formatDate(wedding.weddingDate)}
             </p>
             <CountdownTimer targetDate={wedding.weddingDate} className="mb-8" />
-            <div className="flex items-center justify-center text-white opacity-90">
+            <div className={`flex items-center justify-center ${currentTemplate === 'standard' ? 'text-white/90' : 'text-white opacity-90'}`}>
               <MapPin className="h-5 w-5 mr-2" />
               <span className="text-lg">{wedding.venue}</span>
             </div>
