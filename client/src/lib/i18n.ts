@@ -33,7 +33,7 @@ const resources = {
 
       // Wedding Site
       'wedding.ourStory': 'Our Love Story',
-      'wedding.rsvp': 'RSVP',
+      'wedding.rsvp': 'Iltimos, qatnashishingizni bildiring',
       'wedding.photos': 'Our Memories',
       'wedding.guestBook': 'Guest Book',
       'wedding.weddingDetails': 'Wedding Details',
