@@ -32,6 +32,7 @@ const resources = {
       'demo.howWeMetText': 'Every love story is special, and ours began in the most unexpected way...',
 
       // Wedding Site
+      'wedding.dearGuests': 'Dear Guests',
       'wedding.ourStory': 'Our Love Story',
       'wedding.rsvp': 'Iltimos, qatnashishingizni bildiring',
       'wedding.photos': 'Our Memories',
@@ -694,6 +695,7 @@ const resources = {
       'photoUpload.maxFiles': 'Ko\'p fayllarni yuklash',
 
       // Wedding Site
+      'wedding.dearGuests': 'Hurmatli mehmonlar',
       'wedding.ourStory': 'Bizning sevgi hikoyamiz',
       'wedding.rsvp': 'Tasdiq',
       'wedding.photos': 'Bizning xotiralarimiz',

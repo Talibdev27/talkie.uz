@@ -188,7 +188,7 @@ export default function WeddingSite() {
             {/* Only show navigation items for sections that exist */}
             {wedding.welcomeMessage && wedding.welcomeMessage.trim() && (
               <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                Dear Guests
+                {t('wedding.dearGuests')}
               </a>
             )}
             {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
@@ -222,7 +222,7 @@ export default function WeddingSite() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-                Dear Guests!
+                {t('wedding.dearGuests')}!
               </h2>
               <div className="max-w-3xl mx-auto">
                 <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20">
