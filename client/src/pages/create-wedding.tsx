@@ -20,9 +20,15 @@ import { Heart, Calendar, MapPin, Camera, Music, Palette, ChevronLeft, ChevronRi
 import { CreateWeddingLoading } from "@/components/ui/loading";
 
 const createWeddingSchema = insertWeddingSchema.extend({
-  weddingDate: insertWeddingSchema.shape.weddingDate.transform((val) => 
-    typeof val === 'string' ? new Date(val) : val
-  ),
+  weddingDate: insertWeddingSchema.shape.weddingDate
+    .transform((val) => typeof val === 'string' ? new Date(val) : val)
+    .refine((date) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date >= today;
+    }, {
+      message: "Wedding date must be today or in the future",
+    }),
 });
 
 type CreateWeddingFormData = InsertWedding & {

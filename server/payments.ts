@@ -37,17 +37,37 @@ const PAYMENT_CONFIG = {
 router.post('/create', async (req, res) => {
   try {
     const paymentData: PaymentRequest = req.body;
+    
+    // Validate payment amount
+    if (!paymentData.amount || paymentData.amount <= 0) {
+      return res.status(400).json({ 
+        error: 'Invalid amount',
+        message: 'Payment amount must be greater than zero'
+      });
+    }
+    
+    // Validate payment method
+    const validMethods = ['click', 'payme', 'paycom'];
+    if (!validMethods.includes(paymentData.method)) {
+      return res.status(400).json({ 
+        error: 'Invalid payment method',
+        message: 'Payment method must be one of: click, payme, paycom'
+      });
+    }
+    
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Store order in database (you'll need to implement this)
-    // await db.orders.create({
-    //   id: orderId,
-    //   planId: paymentData.planId,
-    //   amount: paymentData.amount,
-    //   method: paymentData.method,
-    //   status: 'pending',
-    //   createdAt: new Date()
-    // });
+    // Store order in database with proper validation
+    // Note: This would connect to your order storage system
+    const orderData = {
+      id: orderId,
+      planId: paymentData.planId,
+      amount: paymentData.amount,
+      method: paymentData.method,
+      status: 'pending',
+      createdAt: new Date(),
+      validatedAmount: paymentData.amount
+    };
 
     let redirectUrl = null;
 

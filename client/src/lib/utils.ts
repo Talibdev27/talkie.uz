@@ -5,9 +5,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: Date | string): string {
+export function formatDate(date: Date | string, locale?: string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('en-US', {
+  
+  // Use current locale or fallback to Uzbek
+  const currentLocale = locale || localStorage.getItem('i18nextLng') || 'uz';
+  
+  // Custom Uzbek month names
+  if (currentLocale === 'uz') {
+    const months = [
+      'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+      'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+    ];
+    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+  
+  // Use browser locale for other languages
+  return d.toLocaleDateString(currentLocale === 'en' ? 'en-US' : 'ru-RU', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
