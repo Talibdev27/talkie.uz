@@ -58,6 +58,20 @@ const templateOptions = [
     nameRu: "Пляжное блаженство",
     image: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&h=300&fit=crop"
   },
+  {
+    id: "classicTradition",
+    name: "Classic Tradition",
+    nameUz: "Klassik an'ana",
+    nameRu: "Классическая традиция",
+    image: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=400&h=300&fit=crop"
+  },
+  {
+    id: "bohoChic",
+    name: "Boho Chic",
+    nameUz: "Boho chik",
+    nameRu: "Бохо шик",
+    image: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=400&h=300&fit=crop"
+  },
 ];
 
 export default function CreateWedding() {

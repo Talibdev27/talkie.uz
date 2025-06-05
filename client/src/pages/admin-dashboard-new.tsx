@@ -887,9 +887,11 @@ export default function AdminDashboard() {
                         onChange={(e) => handleFormChange('template', e.target.value)}
                       >
                         <option value="gardenRomance">Garden Romance</option>
-                        <option value="modernMinimal">Modern Minimal</option>
-                        <option value="vintageChic">Vintage Chic</option>
+                        <option value="modernElegance">Modern Elegance</option>
+                        <option value="rusticCharm">Rustic Charm</option>
                         <option value="beachBliss">Beach Bliss</option>
+                        <option value="classicTradition">Classic Tradition</option>
+                        <option value="bohoChic">Boho Chic</option>
                       </select>
                     </div>
 
