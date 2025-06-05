@@ -162,8 +162,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
 
-      // For now, use hardcoded admin credentials
-      if (username === 'Talibdev' && password === 'Dilnoza2003') {
+      // Use environment variables for admin credentials
+      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
         res.json({
           user: {
             id: 1,
