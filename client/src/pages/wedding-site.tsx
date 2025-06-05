@@ -120,6 +120,15 @@ export default function WeddingSite() {
       textColor: "text-orange-900",
       cardBg: "bg-orange-50/95 border border-orange-200",
       overlayBg: "bg-orange-900/40"
+    },
+    standard: {
+      heroImage: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-white to-gray-50",
+      primaryColor: "#4A5568",
+      accentColor: "#68D391",
+      textColor: "text-gray-800",
+      cardBg: "bg-white shadow-md border border-gray-100",
+      overlayBg: "bg-gray-900/30"
     }
   };
 

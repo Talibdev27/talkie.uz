@@ -892,6 +892,7 @@ export default function AdminDashboard() {
                         <option value="beachBliss">Beach Bliss</option>
                         <option value="classicTradition">Classic Tradition</option>
                         <option value="bohoChic">Boho Chic</option>
+                        <option value="standard">Standard</option>
                       </select>
                     </div>
 

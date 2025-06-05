@@ -72,6 +72,13 @@ const templateOptions = [
     nameRu: "Бохо шик",
     image: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=400&h=300&fit=crop"
   },
+  {
+    id: "standard",
+    name: "Standard",
+    nameUz: "Standart",
+    nameRu: "Стандартный",
+    image: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=300&fit=crop"
+  },
 ];
 
 export default function CreateWedding() {
