@@ -135,6 +135,11 @@ export default function WeddingSite() {
   const currentTemplate = wedding.template || 'gardenRomance';
   const config = templateConfigs[currentTemplate as keyof typeof templateConfigs] || templateConfigs.gardenRomance;
 
+  // For Standard template, use the first uploaded photo as hero image
+  const heroImage = currentTemplate === 'standard' && photos.length > 0 
+    ? photos[0].url 
+    : config.heroImage;
+
   const customStyles = {
     '--primary': config.primaryColor,
     '--accent': config.accentColor,
@@ -150,8 +155,8 @@ export default function WeddingSite() {
       {/* Hero Section */}
       <section className="relative h-screen overflow-hidden">
         <img
-          src={config.heroImage}
-          alt="Wedding venue"
+          src={heroImage}
+          alt="Wedding couple"
           className="w-full h-full object-cover"
         />
         <div className={`absolute inset-0 ${config.overlayBg}`}></div>
