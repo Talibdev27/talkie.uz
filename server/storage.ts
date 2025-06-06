@@ -173,6 +173,7 @@ export class MemStorage implements IStorage {
       primaryColor: insertWedding.primaryColor || "#D4B08C",
       accentColor: insertWedding.accentColor || "#89916B",
       backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
+      welcomeMessage: insertWedding.welcomeMessage || "",
       isPublic: insertWedding.isPublic ?? true,
       createdAt: new Date(),
     };
@@ -210,17 +211,10 @@ export class MemStorage implements IStorage {
       message: insertGuest.message ?? null,
       weddingId: insertGuest.weddingId,
       phone: insertGuest.phone ?? null,
-      rsvpStatus: insertGuest.rsvpStatus ?? "pending",
+      rsvpStatus: (insertGuest.rsvpStatus as any) ?? "pending",
       plusOne: insertGuest.plusOne ?? false,
       plusOneName: insertGuest.plusOneName ?? null,
       dietaryRestrictions: insertGuest.dietaryRestrictions ?? null,
-      songRequest: insertGuest.songRequest ?? null,
-      accommodation: insertGuest.accommodation ?? null,
-      transportation: insertGuest.transportation ?? null,
-      specialNeeds: insertGuest.specialNeeds ?? null,
-      tablePreference: insertGuest.tablePreference ?? null,
-      giftPreference: insertGuest.giftPreference ?? null,
-      contactPreference: insertGuest.contactPreference ?? null,
       notes: insertGuest.notes ?? null,
       createdAt: new Date(),
       respondedAt: null,
@@ -515,9 +509,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
+    const guestData = {
+      name: insertGuest.name,
+      weddingId: insertGuest.weddingId,
+      email: insertGuest.email ?? null,
+      message: insertGuest.message ?? null,
+      phone: insertGuest.phone ?? null,
+      rsvpStatus: (insertGuest.rsvpStatus as "pending" | "confirmed" | "declined" | "maybe") ?? "pending",
+      plusOne: insertGuest.plusOne ?? false,
+      plusOneName: insertGuest.plusOneName ?? null,
+      dietaryRestrictions: insertGuest.dietaryRestrictions ?? null,
+      notes: insertGuest.notes ?? null
+    };
     const [guest] = await db
       .insert(guests)
-      .values(insertGuest)
+      .values([guestData])
       .returning();
     return guest;
   }
@@ -536,9 +542,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
+    const photoData = {
+      weddingId: insertPhoto.weddingId,
+      url: insertPhoto.url,
+      caption: insertPhoto.caption ?? null,
+      isHero: insertPhoto.isHero ?? false,
+      photoType: (insertPhoto.photoType as "couple" | "memory" | "hero") ?? "memory"
+    };
     const [photo] = await db
       .insert(photos)
-      .values(insertPhoto)
+      .values([photoData])
       .returning();
     return photo;
   }
@@ -549,7 +562,7 @@ export class DatabaseStorage implements IStorage {
 
   async deletePhoto(id: number): Promise<boolean> {
     const result = await db.delete(photos).where(eq(photos.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async createGuestBookEntry(insertEntry: InsertGuestBookEntry): Promise<GuestBookEntry> {
