@@ -604,7 +604,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
                     <Calendar className="h-5 w-5 text-[#89916B]" />
-                    RSVP Overview
+                    RSVP Management by Wedding
                   </CardTitle>
                 </div>
               </CardHeader>
@@ -648,65 +648,125 @@ export default function AdminDashboard() {
                   </div>
                 )}
 
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-[#2C3338] mb-4">Recent RSVP Responses</h3>
-                  {rsvpLoading ? (
-                    <div className="space-y-3">
-                      {[...Array(3)].map((_, i) => (
-                        <div key={i} className="animate-pulse flex space-x-4 p-4 border rounded-lg">
-                          <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                          <div className="flex-1 space-y-2">
-                            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-                            <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                <div className="space-y-6">
+                  <h3 className="font-semibold text-[#2C3338] mb-4">RSVPs Organized by Wedding</h3>
+                  {weddingsLoading || rsvpLoading ? (
+                    <div className="space-y-4">
+                      {[...Array(2)].map((_, i) => (
+                        <div key={i} className="animate-pulse p-4 border rounded-lg">
+                          <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+                          <div className="space-y-3">
+                            {[...Array(3)].map((_, j) => (
+                              <div key={j} className="flex space-x-4">
+                                <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                                <div className="flex-1 space-y-2">
+                                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                                  <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ))}
                     </div>
-                  ) : allRSVPs && allRSVPs.length > 0 ? (
-                    <div className="space-y-3">
-                      {allRSVPs.slice(0, 5).map((rsvp: any) => (
-                        <div key={rsvp.id} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-10 h-10 bg-[#89916B] rounded-full flex items-center justify-center">
-                              <span className="text-white font-semibold">
-                                {rsvp.name.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-[#2C3338]">{rsvp.name}</h4>
-                              <p className="text-sm text-[#2C3338]/70">
-                                {rsvp.wedding?.bride} & {rsvp.wedding?.groom} wedding
-                              </p>
-                              <p className="text-xs text-[#2C3338]/50">
-                                RSVP: {rsvp.rsvpStatus} • {new Date(rsvp.createdAt).toLocaleDateString()}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Badge 
-                              variant="outline" 
-                              className={
-                                rsvp.rsvpStatus === 'confirmed' 
-                                  ? "bg-green-50 text-green-700 border-green-200"
-                                  : rsvp.rsvpStatus === 'pending'
-                                  ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                                  : rsvp.rsvpStatus === 'declined'
-                                  ? "bg-red-50 text-red-700 border-red-200"
-                                  : "bg-blue-50 text-blue-700 border-blue-200"
-                              }
-                            >
-                              {rsvp.rsvpStatus.charAt(0).toUpperCase() + rsvp.rsvpStatus.slice(1)}
-                            </Badge>
-                            <Button variant="outline" size="sm">
-                              View Details
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                  ) : weddings && weddings.length > 0 ? (
+                    <div className="space-y-6">
+                      {weddings.map((wedding: Wedding) => {
+                        const weddingGuests = allRSVPs?.filter((rsvp: any) => rsvp.weddingId === wedding.id) || [];
+                        const confirmedGuests = weddingGuests.filter((g: any) => g.rsvpStatus === 'confirmed');
+                        const pendingGuests = weddingGuests.filter((g: any) => g.rsvpStatus === 'pending');
+                        const declinedGuests = weddingGuests.filter((g: any) => g.rsvpStatus === 'declined');
+                        
+                        return (
+                          <Card key={wedding.id} className="border-l-4 border-l-[#D4B08C]">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h4 className="font-semibold text-[#2C3338] text-lg">
+                                    {wedding.bride} & {wedding.groom}
+                                  </h4>
+                                  <p className="text-sm text-[#2C3338]/70">
+                                    {wedding.venue} • {new Date(wedding.weddingDate).toLocaleDateString()}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <div className="text-center">
+                                    <div className="text-xs text-green-600 font-medium">Confirmed</div>
+                                    <div className="text-lg font-bold text-green-600">{confirmedGuests.length}</div>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="text-xs text-yellow-600 font-medium">Pending</div>
+                                    <div className="text-lg font-bold text-yellow-600">{pendingGuests.length}</div>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="text-xs text-red-600 font-medium">Declined</div>
+                                    <div className="text-lg font-bold text-red-600">{declinedGuests.length}</div>
+                                  </div>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setLocation(`/manage/${wedding.uniqueUrl}`)}
+                                  >
+                                    <Settings className="h-4 w-4 mr-1" />
+                                    Manage
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              {weddingGuests.length > 0 ? (
+                                <div className="space-y-3">
+                                  {weddingGuests.map((guest: any) => (
+                                    <div key={guest.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                      <div className="flex items-center space-x-3">
+                                        <div className="w-8 h-8 bg-[#89916B] rounded-full flex items-center justify-center">
+                                          <span className="text-white font-semibold text-sm">
+                                            {guest.name ? guest.name.charAt(0).toUpperCase() : 'G'}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <h5 className="font-medium text-[#2C3338]">{guest.name || 'Guest'}</h5>
+                                          <p className="text-sm text-[#2C3338]/70">{guest.email}</p>
+                                          {guest.message && (
+                                            <p className="text-xs text-[#2C3338]/60 mt-1 italic">"{guest.message}"</p>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <Badge 
+                                          variant="outline" 
+                                          className={
+                                            guest.rsvpStatus === 'confirmed' 
+                                              ? "bg-green-50 text-green-700 border-green-200"
+                                              : guest.rsvpStatus === 'pending'
+                                              ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                              : guest.rsvpStatus === 'declined'
+                                              ? "bg-red-50 text-red-700 border-red-200"
+                                              : "bg-blue-50 text-blue-700 border-blue-200"
+                                          }
+                                        >
+                                          {guest.rsvpStatus?.charAt(0).toUpperCase() + guest.rsvpStatus?.slice(1) || 'Unknown'}
+                                        </Badge>
+                                        <span className="text-xs text-[#2C3338]/50">
+                                          {guest.createdAt ? new Date(guest.createdAt).toLocaleDateString() : ''}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="text-center py-6 text-[#2C3338]/70">
+                                  No RSVP responses for this wedding yet.
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="text-center py-8 text-[#2C3338]/70">
-                      No RSVP responses yet.
+                      No weddings found.
                     </div>
                   )}
                 </div>
