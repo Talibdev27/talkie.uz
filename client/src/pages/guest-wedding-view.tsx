@@ -9,6 +9,7 @@ import { RSVPForm } from '@/components/rsvp-form';
 import { LanguageToggle } from '@/components/language-toggle';
 import { SocialShare } from '@/components/social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
+import { GuestBookForm } from '@/components/guest-book-form';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -292,8 +293,16 @@ export default function GuestWeddingView() {
             </p>
           </div>
 
+          {/* Guest Book Form */}
+          <div className="mb-12">
+            <GuestBookForm 
+              weddingId={wedding.id} 
+              coupleName={`${wedding.bride} & ${wedding.groom}`}
+            />
+          </div>
+
           {/* Guest Book Messages Display */}
-          <div className="space-y-6 mb-12">
+          <div className="space-y-6">
             {guestBookEntries.length === 0 ? (
               <div className="text-center py-12">
                 <MessageSquare className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
@@ -307,7 +316,7 @@ export default function GuestWeddingView() {
                   <CardContent className="p-6">
                     <p className="text-charcoal mb-4 italic">"{entry.message}"</p>
                     <div className="flex justify-between items-center text-sm">
-                      <span className="font-medium text-charcoal">{entry.name}</span>
+                      <span className="font-medium text-charcoal">{entry.guestName}</span>
                       <span className="text-charcoal opacity-60">
                         {formatDate(entry.createdAt)}
                       </span>

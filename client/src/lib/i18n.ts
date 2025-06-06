@@ -898,6 +898,24 @@ const resources = {
       'guestList.phone': 'Telefon',
       'guestList.enterPhone': 'Telefon raqamini kiriting',
       'guestList.category': 'Kategoriya',
+
+      // Guest Book
+      'guestBook.leaveMessage': 'Xabar qoldiring',
+      'guestBook.shareThoughts': '{{couple}} uchun o\'z fikrlaringizni baham ko\'ring',
+      'guestBook.yourName': 'Ismingiz',
+      'guestBook.namePlaceholder': 'To\'liq ismingizni kiriting',
+      'guestBook.yourMessage': 'Xabaringiz',
+      'guestBook.messagePlaceholder': 'Go\'zal xabar yoki tilak yozing...',
+      'guestBook.submit': 'Xabar yuborish',
+      'guestBook.success': 'Muvaffaqiyat!',
+      'guestBook.thankYou': 'Xabaringiz uchun rahmat!',
+      'guestBook.error': 'Xatolik',
+      'guestBook.tryAgain': 'Iltimos, qaytadan urinib ko\'ring',
+      'guestBook.thankYouTitle': 'Rahmat!',
+      'guestBook.messageSaved': 'Sizning xabaringiz saqlandi va juftlik tomonidan ko\'riladi.',
+
+      // Common
+      'common.sending': 'Yuborilmoqda...',
       'guestList.selectCategory': 'Kategoriyani tanlang',
       'guestList.family': 'Oila',
       'guestList.friends': 'Do\'stlar',
