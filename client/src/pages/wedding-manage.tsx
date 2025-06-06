@@ -432,7 +432,7 @@ export default function WeddingManage() {
                           <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                         </div>
                         <div className="text-xs text-blue-600 mt-1">
-                          {guests?.reduce((acc, guest) => acc + (guest.guestCount || 1), 0) || 0} total attendees
+                          {guests?.reduce((acc, guest) => acc + (guest.additionalGuests || 0) + 1, 0) || 0} total attendees
                         </div>
                       </div>
                     </div>
