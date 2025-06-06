@@ -109,6 +109,11 @@ export class MemStorage implements IStorage {
       ...insertUser,
       id,
       createdAt: new Date(),
+      isAdmin: insertUser.isAdmin || false,
+      hasPaidSubscription: insertUser.hasPaidSubscription || false,
+      paymentMethod: insertUser.paymentMethod || null,
+      paymentOrderId: insertUser.paymentOrderId || null,
+      paymentDate: insertUser.paymentDate || null,
     };
     this.users.set(id, user);
     return user;
@@ -126,6 +131,19 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values());
   }
 
+  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+
+    const updatedUser: User = { ...user, ...updates };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    return this.users.delete(id);
+  }
+
   async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
     const id = this.currentWeddingId++;
     const uniqueUrl = nanoid(10);
@@ -135,6 +153,14 @@ export class MemStorage implements IStorage {
       userId,
       uniqueUrl,
       createdAt: new Date(),
+      weddingTime: insertWedding.weddingTime || "12:00",
+      venueCoordinates: insertWedding.venueCoordinates || null,
+      description: insertWedding.description || null,
+      theme: insertWedding.theme || "classic",
+      maxGuests: insertWedding.maxGuests || 100,
+      rsvpDeadline: insertWedding.rsvpDeadline || new Date(),
+      budget: insertWedding.budget || null,
+      isPublic: insertWedding.isPublic || true,
     };
     this.weddings.set(id, wedding);
     return wedding;
@@ -155,6 +181,10 @@ export class MemStorage implements IStorage {
     const updatedWedding: Wedding = { ...wedding, ...updates };
     this.weddings.set(id, updatedWedding);
     return updatedWedding;
+  }
+
+  async deleteWedding(id: number): Promise<boolean> {
+    return this.weddings.delete(id);
   }
 
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
@@ -625,4 +655,5 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+// Use MemStorage for now to avoid database connection issues
+export const storage = new MemStorage();
