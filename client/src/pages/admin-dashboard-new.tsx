@@ -56,7 +56,13 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
-  const { data: stats = {}, isLoading: statsLoading } = useQuery<{
+  const { data: stats = {
+    totalUsers: 0,
+    guestUsers: 0,
+    totalWeddings: 0,
+    publicWeddings: 0,
+    privateWeddings: 0
+  }, isLoading: statsLoading } = useQuery<{
     totalUsers: number;
     guestUsers: number;
     totalWeddings: number;
@@ -67,7 +73,13 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
-  const { data: rsvpStats = {}, isLoading: rsvpStatsLoading } = useQuery<{
+  const { data: rsvpStats = {
+    totalRSVPs: 0,
+    confirmedRSVPs: 0,
+    pendingRSVPs: 0,
+    declinedRSVPs: 0,
+    maybeRSVPs: 0
+  }, isLoading: rsvpStatsLoading } = useQuery<{
     totalRSVPs: number;
     confirmedRSVPs: number;
     pendingRSVPs: number;

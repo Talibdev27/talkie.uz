@@ -39,7 +39,7 @@ export default function WeddingManage() {
   });
 
   // Fetch photos for this wedding
-  const { data: photos, isLoading: photosLoading } = useQuery({
+  const { data: photos = [], isLoading: photosLoading } = useQuery<Photo[]>({
     queryKey: [`/api/photos/wedding/${wedding?.id}`],
     enabled: !!wedding?.id,
   });
@@ -632,7 +632,7 @@ export default function WeddingManage() {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                        {photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
                           photos.filter((photo: any) => photo.photoType === 'couple').map((photo: any) => (
                             <div key={photo.id} className="border rounded-lg p-4 space-y-3">
                               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
@@ -721,7 +721,7 @@ export default function WeddingManage() {
                       </div>
                       
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0 ? (
+                        {photos.filter((photo: any) => photo.photoType === 'memory').length > 0 ? (
                           photos.filter((photo: any) => photo.photoType === 'memory').map((photo: any) => (
                             <div key={photo.id} className="border rounded-lg p-2 space-y-2">
                               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
