@@ -124,12 +124,12 @@ export default function WeddingSite() {
     },
     standard: {
       heroImage: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-      bgGradient: "from-white to-gray-50",
-      primaryColor: "#4A5568",
-      accentColor: "#68D391",
-      textColor: "text-gray-800",
-      cardBg: "bg-white shadow-md border border-gray-100",
-      overlayBg: "bg-gray-900/30"
+      bgGradient: "from-slate-900 via-purple-900 to-slate-900",
+      primaryColor: "#E2E8F0",
+      accentColor: "#F472B6",
+      textColor: "text-white",
+      cardBg: "bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl",
+      overlayBg: "bg-gradient-to-b from-black/40 via-purple-900/50 to-black/70"
     }
   };
 
@@ -164,30 +164,71 @@ export default function WeddingSite() {
             objectPosition: 'center 30%'
           } : {}}
         />
-        <div className={`absolute inset-0 ${currentTemplate === 'standard' ? 'bg-gradient-to-b from-black/20 via-black/30 to-black/50' : config.overlayBg}`}></div>
+        <div className={`absolute inset-0 ${currentTemplate === 'standard' ? config.overlayBg : config.overlayBg}`}></div>
+        
+        {/* Animated background elements for standard template */}
+        {currentTemplate === 'standard' && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Floating particles */}
+            <div className="absolute top-20 left-10 w-2 h-2 bg-pink-400 rounded-full animate-pulse opacity-60"></div>
+            <div className="absolute top-40 right-20 w-1 h-1 bg-purple-300 rounded-full animate-ping opacity-40"></div>
+            <div className="absolute bottom-40 left-20 w-3 h-3 bg-indigo-400 rounded-full animate-bounce opacity-50"></div>
+            <div className="absolute bottom-20 right-10 w-1 h-1 bg-pink-300 rounded-full animate-pulse opacity-60"></div>
+            <div className="absolute top-60 left-1/3 w-2 h-2 bg-purple-400 rounded-full animate-ping opacity-30"></div>
+            <div className="absolute bottom-60 right-1/3 w-1 h-1 bg-indigo-300 rounded-full animate-bounce opacity-40"></div>
+            
+            {/* Geometric shapes */}
+            <div className="absolute top-1/4 left-5 w-16 h-16 border border-pink-300/20 rotate-45 animate-spin opacity-30" style={{animationDuration: '20s'}}></div>
+            <div className="absolute bottom-1/4 right-5 w-12 h-12 border border-purple-300/20 rotate-12 animate-pulse opacity-40"></div>
+            
+            {/* Gradient orbs */}
+            <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-gradient-to-r from-pink-400/10 to-purple-400/10 rounded-full blur-xl animate-pulse"></div>
+            <div className="absolute bottom-1/3 left-1/4 w-24 h-24 bg-gradient-to-r from-indigo-400/10 to-pink-400/10 rounded-full blur-xl animate-bounce opacity-60" style={{animationDuration: '3s'}}></div>
+          </div>
+        )}
+        
         <div className="absolute inset-0 flex items-center justify-center text-center text-white">
-          <div className={`max-w-2xl px-4 ${currentTemplate === 'standard' ? 'bg-black/40 backdrop-blur-sm rounded-2xl py-8 px-8' : ''}`}>
-            <h1 className={`text-4xl md:text-6xl font-playfair font-bold mb-4 ${currentTemplate === 'standard' ? 'text-white drop-shadow-2xl' : 'text-shadow'}`}>
+          <div className={`max-w-3xl px-6 ${currentTemplate === 'standard' ? 'bg-white/5 backdrop-blur-xl rounded-3xl py-12 px-12 border border-white/10 shadow-2xl' : ''}`}>
+            {/* Decorative elements for standard template */}
+            {currentTemplate === 'standard' && (
+              <>
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent rounded-full"></div>
+                <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent rounded-full"></div>
+              </>
+            )}
+            
+            <h1 className={`text-5xl md:text-7xl font-playfair font-bold mb-6 ${currentTemplate === 'standard' ? 'text-white drop-shadow-2xl bg-gradient-to-r from-white to-pink-200 bg-clip-text text-transparent animate-pulse' : 'text-shadow'}`}>
               {wedding.bride} & {wedding.groom}
             </h1>
-            <p className={`text-xl md:text-2xl font-cormorant mb-8 ${currentTemplate === 'standard' ? 'text-white/90 drop-shadow-xl' : 'text-shadow'}`}>
+            
+            <div className={`w-24 h-0.5 mx-auto mb-6 ${currentTemplate === 'standard' ? 'bg-gradient-to-r from-pink-400 to-purple-400' : 'bg-white/50'}`}></div>
+            
+            <p className={`text-2xl md:text-3xl font-cormorant mb-8 ${currentTemplate === 'standard' ? 'text-white/95 drop-shadow-xl font-light tracking-wide' : 'text-shadow'}`}>
               {formatDate(wedding.weddingDate)}
             </p>
             
-            {/* Ceremony Time */}
-            <div className={`flex items-center justify-center mb-4 ${currentTemplate === 'standard' ? 'text-white/90' : 'text-white opacity-90'}`}>
-              <Clock className="h-5 w-5 mr-2" />
-              <span className="text-lg">{wedding.weddingTime}</span>
+            {/* Ceremony Time with enhanced styling */}
+            <div className={`flex items-center justify-center mb-8 ${currentTemplate === 'standard' ? 'bg-white/10 rounded-full px-6 py-3 backdrop-blur-sm border border-white/20' : 'text-white opacity-90'}`}>
+              <Clock className={`h-6 w-6 mr-3 ${currentTemplate === 'standard' ? 'text-pink-300' : ''}`} />
+              <span className={`text-xl font-medium ${currentTemplate === 'standard' ? 'text-white/95' : ''}`}>
+                {wedding.weddingTime}
+              </span>
             </div>
             
-            <CountdownTimer targetDate={wedding.weddingDate} className="mb-8" />
+            <CountdownTimer 
+              targetDate={wedding.weddingDate} 
+              className="mb-10" 
+              isStandardTemplate={currentTemplate === 'standard'} 
+            />
             
-            {/* Location with Dialog */}
+            {/* Location with Dialog - Enhanced styling */}
             <Dialog>
               <DialogTrigger asChild>
-                <button className={`flex items-center justify-center hover:scale-105 transition-transform cursor-pointer ${currentTemplate === 'standard' ? 'text-white/90 hover:text-white' : 'text-white opacity-90 hover:opacity-100'}`}>
-                  <MapPin className="h-5 w-5 mr-2" />
-                  <span className="text-lg">{wedding.venue}</span>
+                <button className={`group flex items-center justify-center transition-all duration-300 ${currentTemplate === 'standard' ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 hover:from-pink-500/30 hover:to-purple-500/30 rounded-full px-8 py-4 backdrop-blur-sm border border-white/30 hover:border-white/50 hover:scale-105 transform' : 'text-white opacity-90 hover:opacity-100 hover:scale-105 transition-transform'} cursor-pointer`}>
+                  <MapPin className={`h-6 w-6 mr-3 ${currentTemplate === 'standard' ? 'text-pink-300 group-hover:text-pink-200' : ''}`} />
+                  <span className={`text-xl font-medium ${currentTemplate === 'standard' ? 'text-white/95 group-hover:text-white' : ''}`}>
+                    {wedding.venue}
+                  </span>
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
