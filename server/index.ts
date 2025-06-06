@@ -6,9 +6,6 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Trust proxy for rate limiting in hosted environments
-app.set('trust proxy', true);
-
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
@@ -23,26 +20,32 @@ app.use(helmet({
   },
 }));
 
-// Rate limiting for authentication endpoints
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
-  message: { message: "Too many authentication attempts, please try again later" },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// Rate limiting for authentication endpoints only in production
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+  
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // limit each IP to 10 requests per windowMs
+    message: { message: "Too many authentication attempts, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.ip === '127.0.0.1' || req.ip === '::1', // Skip localhost
+  });
 
-// General rate limiter
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+  // General rate limiter - more lenient
+  const generalLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 1000, // limit each IP to 1000 requests per minute
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.ip === '127.0.0.1' || req.ip === '::1', // Skip localhost
+  });
 
-app.use('/api/admin/login', authLimiter);
-app.use('/api/get-started', authLimiter);
-app.use(generalLimiter);
+  app.use('/api/admin/login', authLimiter);
+  app.use('/api/get-started', authLimiter);
+  app.use('/api', generalLimiter);
+}
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
