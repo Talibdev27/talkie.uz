@@ -46,32 +46,44 @@ export default function AdminDashboard() {
     setIsAdmin(true);
   }, [setLocation]);
 
-  const { data: weddings, isLoading: weddingsLoading } = useQuery({
+  const { data: weddings = [], isLoading: weddingsLoading } = useQuery<Wedding[]>({
     queryKey: ['/api/admin/weddings'],
     enabled: isAdmin,
   });
 
-  const { data: users, isLoading: usersLoading } = useQuery({
+  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
     queryKey: ['/api/admin/users'],
     enabled: isAdmin,
   });
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {}, isLoading: statsLoading } = useQuery<{
+    totalUsers: number;
+    guestUsers: number;
+    totalWeddings: number;
+    publicWeddings: number;
+    privateWeddings: number;
+  }>({
     queryKey: ['/api/admin/stats'],
     enabled: isAdmin,
   });
 
-  const { data: rsvpStats, isLoading: rsvpStatsLoading } = useQuery({
+  const { data: rsvpStats = {}, isLoading: rsvpStatsLoading } = useQuery<{
+    totalRSVPs: number;
+    confirmedRSVPs: number;
+    pendingRSVPs: number;
+    declinedRSVPs: number;
+    maybeRSVPs: number;
+  }>({
     queryKey: ['/api/admin/rsvp-stats'],
     enabled: isAdmin,
   });
 
-  const { data: allRSVPs, isLoading: rsvpLoading } = useQuery({
+  const { data: allRSVPs = [], isLoading: rsvpLoading } = useQuery<any[]>({
     queryKey: ['/api/admin/rsvp'],
     enabled: isAdmin,
   });
 
-  const { data: allPhotos, isLoading: photosLoading } = useQuery({
+  const { data: allPhotos = [], isLoading: photosLoading } = useQuery<any[]>({
     queryKey: ['/api/admin/photos'],
     enabled: isAdmin,
   });
@@ -322,16 +334,16 @@ export default function AdminDashboard() {
     return null; // Redirecting to login
   }
 
-  const filteredWeddings = weddings?.filter((wedding: Wedding) => 
+  const filteredWeddings = weddings.filter((wedding: Wedding) => 
     wedding.bride.toLowerCase().includes(searchTerm.toLowerCase()) ||
     wedding.groom.toLowerCase().includes(searchTerm.toLowerCase()) ||
     wedding.venue.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  );
 
-  const filteredUsers = users?.filter((user: User) => 
+  const filteredUsers = users.filter((user: User) => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white">
@@ -367,7 +379,7 @@ export default function AdminDashboard() {
           <Card className="wedding-card">
             <CardContent className="p-6 text-center">
               <Globe className="h-8 w-8 text-[#D4B08C] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">{stats?.totalWeddings || 0}</p>
+              <p className="text-2xl font-bold text-[#2C3338]">{stats.totalWeddings || 0}</p>
               <p className="text-[#2C3338]/70 text-sm">Total Weddings</p>
             </CardContent>
           </Card>

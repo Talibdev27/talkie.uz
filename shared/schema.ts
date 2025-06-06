@@ -45,6 +45,7 @@ export const guests = pgTable("guests", {
   rsvpStatus: text("rsvp_status").$type<"pending" | "confirmed" | "declined" | "maybe">().notNull().default("pending"),
   plusOne: boolean("plus_one").notNull().default(false),
   plusOneName: text("plus_one_name"),
+  additionalGuests: integer("additional_guests").notNull().default(0),
   message: text("message"),
   category: text("category").notNull().default("family"), // family, friends, colleagues, etc.
   side: text("side").$type<"bride" | "groom" | "both">().notNull().default("both"),
