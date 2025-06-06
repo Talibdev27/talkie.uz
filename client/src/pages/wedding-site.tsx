@@ -183,13 +183,14 @@ export default function WeddingSite() {
             <CountdownTimer targetDate={wedding.weddingDate} className="mb-6" />
             
             {/* Location with Dialog */}
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className={`flex items-center justify-center hover:scale-105 transition-transform cursor-pointer ${currentTemplate === 'standard' ? 'text-white/90 hover:text-white' : 'text-white opacity-90 hover:opacity-100'}`}>
-                  <MapPin className="h-5 w-5 mr-2" />
-                  <span className="text-lg">{wedding.venue}</span>
-                </button>
-              </DialogTrigger>
+            <div className="flex justify-center">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className={`flex items-center justify-center hover:scale-105 transition-transform cursor-pointer ${currentTemplate === 'standard' ? 'text-white/90 hover:text-white' : 'text-white opacity-90 hover:opacity-100'}`}>
+                    <MapPin className="h-5 w-5 mr-2" />
+                    <span className="text-lg">{wedding.venue}</span>
+                  </button>
+                </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
@@ -266,7 +267,8 @@ export default function WeddingSite() {
                   )}
                 </div>
               </DialogContent>
-            </Dialog>
+              </Dialog>
+            </div>
           </div>
         </div>
       </section>
