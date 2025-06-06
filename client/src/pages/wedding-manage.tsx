@@ -767,6 +767,147 @@ export default function WeddingManage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Guest Book Tab */}
+          <TabsContent value="guestbook" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
+                  Guest Book Messages
+                </CardTitle>
+                <p className="text-sm text-[#2C3338]/70">
+                  View all the wonderful messages your guests have left for you
+                </p>
+              </CardHeader>
+              <CardContent>
+                {guestBookLoading ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="animate-pulse bg-gray-100 p-4 rounded-lg h-24"></div>
+                    ))}
+                  </div>
+                ) : guestBookEntries.length === 0 ? (
+                  <div className="text-center py-12">
+                    <MessageSquare className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-[#2C3338] mb-2">No messages yet</h3>
+                    <p className="text-[#2C3338]/70">
+                      Guest messages will appear here when visitors leave notes in your guest book
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {guestBookEntries.map((entry: any) => (
+                      <Card key={entry.id} className="border border-[#D4B08C]/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-start space-x-4">
+                            <div className="w-12 h-12 bg-[#D4B08C]/10 rounded-full flex items-center justify-center flex-shrink-0">
+                              <MessageSquare className="h-6 w-6 text-[#D4B08C]" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-medium text-[#2C3338]">{entry.guestName}</h4>
+                                <span className="text-sm text-[#2C3338]/50">
+                                  {new Date(entry.createdAt).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <p className="text-[#2C3338]/80 italic leading-relaxed">
+                                "{entry.message}"
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Guest Book Tab */}
+          <TabsContent value="guestbook" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
+                  Guest Book Messages
+                </CardTitle>
+                <p className="text-sm text-[#2C3338]/70 mt-2">
+                  View all the heartfelt messages your guests have left for you
+                </p>
+              </CardHeader>
+              <CardContent>
+                {guestBookLoading ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="bg-gray-100 h-20 rounded-lg"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : guestBookEntries.length === 0 ? (
+                  <div className="text-center py-12">
+                    <MessageSquare className="h-16 w-16 text-[#D4B08C] mx-auto mb-4 opacity-50" />
+                    <h3 className="text-xl font-semibold text-[#2C3338] mb-2">No messages yet</h3>
+                    <p className="text-[#2C3338]/70 mb-4">
+                      Your guests haven't left any messages in the guest book yet.
+                    </p>
+                    <p className="text-sm text-[#2C3338]/60">
+                      Share your wedding URL to encourage guests to leave heartfelt messages!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="text-sm text-[#2C3338]/70">
+                        {guestBookEntries.length} {guestBookEntries.length === 1 ? 'message' : 'messages'} total
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {guestBookEntries.map((entry: any) => (
+                        <Card key={entry.id} className="border border-[#D4B08C]/20 bg-gradient-to-r from-white to-[#F8F1F1]/30">
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-4">
+                              <div className="flex-shrink-0">
+                                <div className="w-10 h-10 bg-[#D4B08C]/20 rounded-full flex items-center justify-center">
+                                  <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
+                                </div>
+                              </div>
+                              <div className="flex-1">
+                                <div className="mb-3">
+                                  <p className="text-[#2C3338] leading-relaxed italic">
+                                    "{entry.message}"
+                                  </p>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-semibold text-[#D4B08C]">
+                                      {entry.guestName}
+                                    </span>
+                                  </div>
+                                  <span className="text-xs text-[#2C3338]/60">
+                                    {new Date(entry.createdAt).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
