@@ -832,6 +832,12 @@ const resources = {
       'footer.privacyPolicy': 'Maxfiylik siyosati',
       'footer.termsOfService': 'Xizmat shartlari',
       'footer.description': 'Juftliklarga butun dunyo bo\'ylab yaqinlari bilan maxsus kunlarini baham ko\'rishga yordam beradigan chiroyli, shaxsiy to\'y veb-saytlarini yaratish.',
+      'footer.wantToCreate': 'O\'zingizning chiroyli to\'y veb-saytingizni yaratishni xohlaysizmi?',
+      'footer.createdWithTaklif': 'Bu ajoyib to\'y veb-sayti Taklif - eng yaxshi to\'y veb-sayti platformasi bilan yaratilgan.',
+      'footer.contactOnTelegram': 'Telegram orqali bog\'laning',
+      'footer.followOnInstagram': 'Instagram\'da kuzating',
+      'footer.poweredBy': 'Taklif tomonidan ishlab chiqarilgan',
+      'footer.premiumWeddingWebsites': 'Premium to\'y veb-saytlari',
 
       // Common
       'common.save': 'Saqlash',
