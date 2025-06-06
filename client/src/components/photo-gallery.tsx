@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -313,6 +313,9 @@ export function PhotoGallery({ weddingId, className = '' }: PhotoGalleryProps) {
       {/* Photo Modal */}
       <Dialog open={selectedPhotoIndex !== null} onOpenChange={closeModal}>
         <DialogContent className="max-w-4xl w-full p-0 bg-black">
+          <DialogTitle className="sr-only">
+            Photo Gallery - {selectedPhotoIndex !== null ? `Photo ${selectedPhotoIndex + 1}` : 'Photo View'}
+          </DialogTitle>
           {selectedPhotoIndex !== null && (() => {
             const memoryPhotos = photos.filter(photo => photo.photoType === 'memory');
             const currentPhoto = memoryPhotos[selectedPhotoIndex];
