@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { formatDate } from '@/lib/utils';
 import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, Trash2, Users, ExternalLink, MessageSquare } from 'lucide-react';
+import { LanguageToggle } from '@/components/language-toggle';
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
@@ -178,25 +179,26 @@ export default function WeddingManage() {
                 className="border-gray-200"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
+                {t('manage.backToDashboard')}
               </Button>
               <div>
                 <h1 className="text-2xl font-bold text-[#2C3338]">
-                  Manage Wedding: {wedding.bride} & {wedding.groom}
+                  {t('manage.manageWedding')}: {wedding.bride} & {wedding.groom}
                 </h1>
                 <p className="text-[#2C3338]/70">
-                  {wedding.isPublic ? 'Public' : 'Private'} • {wedding.uniqueUrl}
+                  {wedding.isPublic ? t('dashboard.public') : t('dashboard.private')} • {wedding.uniqueUrl}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <LanguageToggle />
               <Button
                 variant="outline"
                 onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
                 className="border-gray-200"
               >
                 <Eye className="w-4 h-4 mr-2" />
-                View Site
+                {t('manage.viewSite')}
               </Button>
               {editMode ? (
                 <>
@@ -236,10 +238,10 @@ export default function WeddingManage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="details" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 lg:grid-cols-4">
-            <TabsTrigger value="details">Wedding Details</TabsTrigger>
-            <TabsTrigger value="guests">Guest Management</TabsTrigger>
-            <TabsTrigger value="photos">Photo Management</TabsTrigger>
-            <TabsTrigger value="guestbook">Guest Book</TabsTrigger>
+            <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
+            <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
+            <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
+            <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
           </TabsList>
 
           {/* Wedding Details Tab */}
@@ -248,13 +250,13 @@ export default function WeddingManage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5 text-[#D4B08C]" />
-                  Wedding Information
+                  {t('manage.weddingInformation')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="bride">Bride's Name</Label>
+                    <Label htmlFor="bride">{t('manage.brideName')}</Label>
                     <Input
                       id="bride"
                       value={weddingData?.bride || ''}
@@ -264,7 +266,7 @@ export default function WeddingManage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="groom">Groom's Name</Label>
+                    <Label htmlFor="groom">{t('manage.groomName')}</Label>
                     <Input
                       id="groom"
                       value={weddingData?.groom || ''}
@@ -276,7 +278,7 @@ export default function WeddingManage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="weddingDate">Wedding Date</Label>
+                  <Label htmlFor="weddingDate">{t('manage.weddingDate')}</Label>
                   <Input
                     id="weddingDate"
                     type="date"
@@ -287,30 +289,30 @@ export default function WeddingManage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="weddingTime">Ceremony Time</Label>
+                  <Label htmlFor="weddingTime">{t('manage.ceremonyTime')}</Label>
                   <Input
                     id="weddingTime"
                     value={weddingData?.weddingTime || ''}
                     onChange={(e) => setWeddingData(prev => prev ? {...prev, weddingTime: e.target.value} : null)}
                     disabled={!editMode}
                     className="wedding-input"
-                    placeholder="e.g., 4:00 PM, 16:00, 2:30 PM"
+                    placeholder="16:00, 4:00 PM"
                   />
                 </div>
 
                 {/* Guest Welcome Message */}
                 <div className="space-y-2">
-                  <Label htmlFor="welcomeMessage">Guest Welcome Message (Optional)</Label>
+                  <Label htmlFor="welcomeMessage">{t('manage.guestWelcomeMessage')}</Label>
                   <Textarea
                     id="welcomeMessage"
                     value={weddingData?.welcomeMessage || ''}
                     onChange={(e) => setWeddingData(prev => prev ? {...prev, welcomeMessage: e.target.value} : null)}
                     disabled={!editMode}
                     className="wedding-input min-h-[100px]"
-                    placeholder="Write a special welcome message for your guests..."
+                    placeholder={t('manage.welcomeMessagePlaceholder')}
                   />
                   <p className="text-sm text-gray-500">
-                    This message will appear as a formal invitation section on your wedding website.
+                    {t('manage.welcomeMessageDescription')}
                   </p>
                 </div>
 
