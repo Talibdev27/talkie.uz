@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { LanguageToggle } from "@/components/language-toggle";
 import { Heart, Calendar, MapPin, Users, Eye, Edit, Plus, ExternalLink } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { format } from "date-fns";
@@ -18,6 +20,7 @@ interface Wedding {
 }
 
 export default function UserDashboard() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
 
   const { data: weddings = [], isLoading } = useQuery<Wedding[]>({
@@ -39,14 +42,19 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-soft-white to-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-playfair font-bold text-charcoal mb-4">
-            My Wedding Websites
-          </h1>
-          <p className="text-lg text-charcoal opacity-70">
-            Manage your beautiful wedding websites
-          </p>
+        {/* Header with Language Toggle */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex-1">
+            <h1 className="text-4xl font-playfair font-bold text-charcoal mb-4">
+              {t('dashboard.myWeddingWebsites')}
+            </h1>
+            <p className="text-lg text-charcoal opacity-70">
+              {t('dashboard.manageWebsites')}
+            </p>
+          </div>
+          <div className="ml-4">
+            <LanguageToggle />
+          </div>
         </div>
 
         {/* Create New Wedding Button */}
