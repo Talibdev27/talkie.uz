@@ -180,7 +180,7 @@ export default function WeddingSite() {
               <span className="text-lg">{wedding.weddingTime}</span>
             </div>
             
-            <CountdownTimer targetDate={wedding.weddingDate} className="mb-8" />
+            <CountdownTimer targetDate={wedding.weddingDate} className="mb-6" />
             
             {/* Location with Dialog */}
             <Dialog>
