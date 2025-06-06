@@ -101,27 +101,43 @@ app.use((req, res, next) => {
     // It is the only port that is not firewalled.
     const port = 5000;
     
-    // Start server first, then setup Vite to avoid startup timeout
-    server.listen({
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    }, async () => {
-      log(`serving on port ${port}`);
-      
-      // Setup Vite after server is listening to prevent startup delays
-      try {
-        if (app.get("env") === "development") {
-          await setupVite(app, server);
-          log("Vite development server ready");
-        } else {
-          serveStatic(app);
-        }
-      } catch (error) {
-        console.error('Vite setup error:', error);
-        // Continue running even if Vite fails
-      }
-    });
+    // Start server with proper error handling
+    const startServer = () => {
+      return new Promise<void>((resolve, reject) => {
+        const serverInstance = server.listen({
+          port,
+          host: "0.0.0.0",
+        }, async () => {
+          log(`serving on port ${port}`);
+          
+          // Setup Vite after server is listening to prevent startup delays
+          try {
+            if (app.get("env") === "development") {
+              await setupVite(app, server);
+              log("Vite development server ready");
+            } else {
+              serveStatic(app);
+            }
+            resolve();
+          } catch (error) {
+            console.error('Vite setup error:', error);
+            resolve(); // Continue even if Vite fails
+          }
+        });
+
+        serverInstance.on('error', (error: any) => {
+          if (error.code === 'EADDRINUSE') {
+            console.error(`Port ${port} is already in use`);
+            reject(error);
+          } else {
+            console.error('Server error:', error);
+            reject(error);
+          }
+        });
+      });
+    };
+
+    await startServer();
   } catch (error) {
     console.error('Server startup error:', error);
     process.exit(1);
