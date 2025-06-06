@@ -4,6 +4,7 @@ import { useParams } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { PhotoUpload } from '@/components/photo-upload';
@@ -14,7 +15,7 @@ import { LanguageToggle } from '@/components/language-toggle';
 import { SocialShare } from '@/components/social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
-import { MapPin, Heart, MessageSquare, Calendar, Music } from 'lucide-react';
+import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
 export default function WeddingSite() {
@@ -172,11 +173,100 @@ export default function WeddingSite() {
             <p className={`text-xl md:text-2xl font-cormorant mb-8 ${currentTemplate === 'standard' ? 'text-white/90 drop-shadow-xl' : 'text-shadow'}`}>
               {formatDate(wedding.weddingDate)}
             </p>
-            <CountdownTimer targetDate={wedding.weddingDate} className="mb-8" />
-            <div className={`flex items-center justify-center ${currentTemplate === 'standard' ? 'text-white/90' : 'text-white opacity-90'}`}>
-              <MapPin className="h-5 w-5 mr-2" />
-              <span className="text-lg">{wedding.venue}</span>
+            
+            {/* Ceremony Time */}
+            <div className={`flex items-center justify-center mb-4 ${currentTemplate === 'standard' ? 'text-white/90' : 'text-white opacity-90'}`}>
+              <Clock className="h-5 w-5 mr-2" />
+              <span className="text-lg">{wedding.weddingTime}</span>
             </div>
+            
+            <CountdownTimer targetDate={wedding.weddingDate} className="mb-8" />
+            
+            {/* Location with Dialog */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className={`flex items-center justify-center hover:scale-105 transition-transform cursor-pointer ${currentTemplate === 'standard' ? 'text-white/90 hover:text-white' : 'text-white opacity-90 hover:opacity-100'}`}>
+                  <MapPin className="h-5 w-5 mr-2" />
+                  <span className="text-lg">{wedding.venue}</span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Wedding Location
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-lg">{wedding.venue}</h3>
+                    <p className="text-gray-600">{wedding.venueAddress}</p>
+                    <p className="text-gray-600 flex items-center gap-2 mt-2">
+                      <Clock className="h-4 w-4" />
+                      Ceremony begins at {wedding.weddingTime}
+                    </p>
+                  </div>
+                  
+                  {/* Map iframe */}
+                  {wedding.venueCoordinates && (
+                    <div className="space-y-3">
+                      <div className="w-full h-96 rounded-lg overflow-hidden border">
+                        <iframe
+                          src={`https://www.openstreetmap.org/export/embed.html?bbox=${wedding.venueCoordinates.lng-0.01},${wedding.venueCoordinates.lat-0.01},${wedding.venueCoordinates.lng+0.01},${wedding.venueCoordinates.lat+0.01}&layer=mapnik&marker=${wedding.venueCoordinates.lat},${wedding.venueCoordinates.lng}`}
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen
+                          loading="lazy"
+                        />
+                      </div>
+                      
+                      {/* Action buttons */}
+                      <div className="flex gap-2 flex-wrap">
+                        <Button 
+                          onClick={() => {
+                            if (wedding.venueCoordinates) {
+                              window.open(`https://www.google.com/maps/dir/?api=1&destination=${wedding.venueCoordinates.lat},${wedding.venueCoordinates.lng}`, '_blank');
+                            }
+                          }}
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Get Directions
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => {
+                            if (wedding.venueCoordinates) {
+                              window.open(`https://maps.apple.com/?daddr=${wedding.venueCoordinates.lat},${wedding.venueCoordinates.lng}`, '_blank');
+                            }
+                          }}
+                          className="flex items-center gap-2"
+                        >
+                          <MapPin className="h-4 w-4" />
+                          Open in Apple Maps
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Fallback if no coordinates */}
+                  {!wedding.venueCoordinates && (
+                    <div className="text-center py-8">
+                      <MapPin className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                      <p className="text-gray-600 mb-4">Map coordinates not available</p>
+                      <Button 
+                        onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(wedding.venueAddress)}`, '_blank')}
+                        className="flex items-center gap-2 mx-auto"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Search on Google Maps
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </section>
