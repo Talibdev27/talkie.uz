@@ -50,6 +50,12 @@ export default function WeddingManage() {
     enabled: !!wedding?.id,
   });
 
+  // Fetch guest book entries for this wedding
+  const { data: guestBookEntries = [], isLoading: guestBookLoading } = useQuery<any[]>({
+    queryKey: [`/api/guest-book/wedding/${wedding?.id}`],
+    enabled: !!wedding?.id,
+  });
+
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updates: Partial<Wedding>) => {
@@ -229,10 +235,11 @@ export default function WeddingManage() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-4">
             <TabsTrigger value="details">Wedding Details</TabsTrigger>
             <TabsTrigger value="guests">Guest Management</TabsTrigger>
             <TabsTrigger value="photos">Photo Management</TabsTrigger>
+            <TabsTrigger value="guestbook">Guest Book</TabsTrigger>
           </TabsList>
 
           {/* Wedding Details Tab */}
