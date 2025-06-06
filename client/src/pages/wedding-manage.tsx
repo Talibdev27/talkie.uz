@@ -208,7 +208,7 @@ export default function WeddingManage() {
                     className="wedding-button"
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Save Changes
+                    {t('manage.saveChanges')}
                   </Button>
                   <Button
                     variant="outline"
@@ -218,7 +218,7 @@ export default function WeddingManage() {
                     }}
                     className="border-gray-200"
                   >
-                    Cancel
+                    {t('manage.cancel')}
                   </Button>
                 </>
               ) : (
@@ -227,7 +227,7 @@ export default function WeddingManage() {
                   className="wedding-button"
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Wedding
+                  {t('manage.editWeddingButton')}
                 </Button>
               )}
             </div>
