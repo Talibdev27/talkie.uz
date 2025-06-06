@@ -216,6 +216,13 @@ export class MemStorage implements IStorage {
       plusOneName: insertGuest.plusOneName ?? null,
       dietaryRestrictions: insertGuest.dietaryRestrictions ?? null,
       notes: insertGuest.notes ?? null,
+      additionalGuests: 0,
+      category: "family",
+      side: "bride",
+      address: null,
+      invitationSent: false,
+      invitationSentAt: null,
+      addedBy: "system",
       createdAt: new Date(),
       respondedAt: null,
     };
@@ -243,8 +250,12 @@ export class MemStorage implements IStorage {
   async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
     const id = this.currentPhotoId++;
     const photo: Photo = {
-      ...insertPhoto,
       id,
+      weddingId: insertPhoto.weddingId,
+      url: insertPhoto.url,
+      caption: insertPhoto.caption ?? null,
+      isHero: insertPhoto.isHero ?? false,
+      photoType: (insertPhoto.photoType as "couple" | "memory" | "hero") ?? "memory",
       uploadedAt: new Date(),
     };
     this.photos.set(id, photo);
@@ -280,8 +291,17 @@ export class MemStorage implements IStorage {
   async createInvitation(insertInvitation: InsertInvitation): Promise<Invitation> {
     const id = this.currentInvitationId++;
     const invitation: Invitation = {
-      ...insertInvitation,
       id,
+      weddingId: insertInvitation.weddingId,
+      guestId: insertInvitation.guestId,
+      status: insertInvitation.status ?? "pending",
+      invitationType: insertInvitation.invitationType ?? "email",
+      invitationTemplate: insertInvitation.invitationTemplate ?? "default",
+      sentAt: insertInvitation.sentAt ?? null,
+      deliveredAt: insertInvitation.deliveredAt ?? null,
+      openedAt: insertInvitation.openedAt ?? null,
+      errorMessage: insertInvitation.errorMessage ?? null,
+      reminderSentAt: insertInvitation.reminderSentAt ?? null,
       createdAt: new Date(),
     };
     this.invitations.set(id, invitation);
@@ -332,9 +352,15 @@ export class MemStorage implements IStorage {
   async createGuestCollaborator(insertCollaborator: InsertGuestCollaborator): Promise<GuestCollaborator> {
     const id = this.currentCollaboratorId++;
     const collaborator: GuestCollaborator = {
-      ...insertCollaborator,
       id,
+      email: insertCollaborator.email,
+      name: insertCollaborator.name,
+      weddingId: insertCollaborator.weddingId,
+      status: insertCollaborator.status ?? "pending",
+      role: insertCollaborator.role ?? "viewer",
       invitedAt: new Date(),
+      acceptedAt: insertCollaborator.acceptedAt ?? null,
+      lastActiveAt: insertCollaborator.lastActiveAt ?? null,
     };
     this.guestCollaborators.set(id, collaborator);
     return collaborator;

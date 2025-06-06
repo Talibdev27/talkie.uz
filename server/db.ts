@@ -23,11 +23,11 @@ export const pool = new Pool({
 
 export const db = drizzle({ client: pool, schema });
 
-// Test connection on module load with timeout
+// Test connection with shorter timeout to prevent startup delays
 const testConnection = async () => {
   try {
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+      setTimeout(() => reject(new Error('Database connection timeout')), 2000)
     );
     
     const connectionTest = pool.query('SELECT 1');
@@ -39,4 +39,5 @@ const testConnection = async () => {
   }
 };
 
+// Don't await - allow server to start while connection is tested in background
 testConnection();

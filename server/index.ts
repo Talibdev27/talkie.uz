@@ -110,26 +110,14 @@ app.use((req, res, next) => {
     // It is the only port that is not firewalled.
     const port = 5000;
     
-    // Add timeout handling for server startup
-    const startServer = () => {
-      return new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Server startup timeout'));
-        }, 15000);
-        
-        server.listen({
-          port,
-          host: "0.0.0.0",
-          reusePort: true,
-        }, () => {
-          clearTimeout(timeout);
-          log(`serving on port ${port}`);
-          resolve();
-        });
-      });
-    };
-    
-    await startServer();
+    // Start server with immediate port binding
+    server.listen({
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    }, () => {
+      log(`serving on port ${port}`);
+    });
   } catch (error) {
     console.error('Server startup error:', error);
     process.exit(1);
