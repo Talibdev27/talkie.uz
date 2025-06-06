@@ -81,65 +81,38 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  try {
-    const server = await registerRoutes(app);
+  const server = await registerRoutes(app);
 
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
 
-      // Log the error for debugging but don't throw after response
-      console.error('Error:', err);
-      
-      if (!res.headersSent) {
-        res.status(status).json({ message });
-      }
-    });
-
-    // ALWAYS serve the app on port 5000
-    // this serves both the API and the client.
-    // It is the only port that is not firewalled.
-    const port = 5000;
+    // Log the error for debugging but don't throw after response
+    console.error('Error:', err);
     
-    // Start server with proper error handling
-    const startServer = () => {
-      return new Promise<void>((resolve, reject) => {
-        const serverInstance = server.listen({
-          port,
-          host: "0.0.0.0",
-        }, async () => {
-          log(`serving on port ${port}`);
-          
-          // Setup Vite after server is listening to prevent startup delays
-          try {
-            if (app.get("env") === "development") {
-              await setupVite(app, server);
-              log("Vite development server ready");
-            } else {
-              serveStatic(app);
-            }
-            resolve();
-          } catch (error) {
-            console.error('Vite setup error:', error);
-            resolve(); // Continue even if Vite fails
-          }
-        });
+    if (!res.headersSent) {
+      res.status(status).json({ message });
+    }
+  });
 
-        serverInstance.on('error', (error: any) => {
-          if (error.code === 'EADDRINUSE') {
-            console.error(`Port ${port} is already in use`);
-            reject(error);
-          } else {
-            console.error('Server error:', error);
-            reject(error);
-          }
-        });
-      });
-    };
-
-    await startServer();
-  } catch (error) {
-    console.error('Server startup error:', error);
-    process.exit(1);
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
   }
+
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = 5000;
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
+    log(`serving on port ${port}`);
+  });
 })();

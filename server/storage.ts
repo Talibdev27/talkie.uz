@@ -106,15 +106,8 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
     const user: User = {
+      ...insertUser,
       id,
-      email: insertUser.email,
-      password: insertUser.password,
-      name: insertUser.name,
-      isAdmin: insertUser.isAdmin ?? false,
-      hasPaidSubscription: insertUser.hasPaidSubscription ?? false,
-      paymentMethod: insertUser.paymentMethod ?? null,
-      paymentOrderId: insertUser.paymentOrderId ?? null,
-      paymentDate: insertUser.paymentDate ?? null,
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -133,48 +126,14 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values());
   }
 
-  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (!user) return undefined;
-    
-    const updatedUser: User = { 
-      ...user, 
-      ...updates,
-      isAdmin: updates.isAdmin ?? user.isAdmin,
-      hasPaidSubscription: updates.hasPaidSubscription ?? user.hasPaidSubscription,
-      paymentMethod: updates.paymentMethod ?? user.paymentMethod,
-      paymentOrderId: updates.paymentOrderId ?? user.paymentOrderId,
-      paymentDate: updates.paymentDate ?? user.paymentDate
-    };
-    this.users.set(id, updatedUser);
-    return updatedUser;
-  }
-
-  async deleteUser(id: number): Promise<boolean> {
-    return this.users.delete(id);
-  }
-
   async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
     const id = this.currentWeddingId++;
     const uniqueUrl = nanoid(10);
     const wedding: Wedding = {
+      ...insertWedding,
       id,
       userId,
       uniqueUrl,
-      bride: insertWedding.bride,
-      groom: insertWedding.groom,
-      weddingDate: insertWedding.weddingDate,
-      weddingTime: insertWedding.weddingTime || "",
-      venue: insertWedding.venue,
-      venueAddress: insertWedding.venueAddress,
-      venueCoordinates: insertWedding.venueCoordinates || null,
-      story: insertWedding.story || "",
-      template: insertWedding.template || "modernElegance",
-      primaryColor: insertWedding.primaryColor || "#D4B08C",
-      accentColor: insertWedding.accentColor || "#89916B",
-      backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
-      welcomeMessage: insertWedding.welcomeMessage || "",
-      isPublic: insertWedding.isPublic ?? true,
       createdAt: new Date(),
     };
     this.weddings.set(id, wedding);
@@ -198,31 +157,11 @@ export class MemStorage implements IStorage {
     return updatedWedding;
   }
 
-  async deleteWedding(id: number): Promise<boolean> {
-    return this.weddings.delete(id);
-  }
-
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
     const id = this.currentGuestId++;
     const guest: Guest = {
+      ...insertGuest,
       id,
-      email: insertGuest.email ?? null,
-      name: insertGuest.name,
-      message: insertGuest.message ?? null,
-      weddingId: insertGuest.weddingId,
-      phone: insertGuest.phone ?? null,
-      rsvpStatus: (insertGuest.rsvpStatus as any) ?? "pending",
-      plusOne: insertGuest.plusOne ?? false,
-      plusOneName: insertGuest.plusOneName ?? null,
-      dietaryRestrictions: insertGuest.dietaryRestrictions ?? null,
-      notes: insertGuest.notes ?? null,
-      additionalGuests: 0,
-      category: "family",
-      side: "bride",
-      address: null,
-      invitationSent: false,
-      invitationSentAt: null,
-      addedBy: "system",
       createdAt: new Date(),
       respondedAt: null,
     };
@@ -250,12 +189,8 @@ export class MemStorage implements IStorage {
   async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
     const id = this.currentPhotoId++;
     const photo: Photo = {
+      ...insertPhoto,
       id,
-      weddingId: insertPhoto.weddingId,
-      url: insertPhoto.url,
-      caption: insertPhoto.caption ?? null,
-      isHero: insertPhoto.isHero ?? false,
-      photoType: (insertPhoto.photoType as "couple" | "memory" | "hero") ?? "memory",
       uploadedAt: new Date(),
     };
     this.photos.set(id, photo);
@@ -291,17 +226,8 @@ export class MemStorage implements IStorage {
   async createInvitation(insertInvitation: InsertInvitation): Promise<Invitation> {
     const id = this.currentInvitationId++;
     const invitation: Invitation = {
+      ...insertInvitation,
       id,
-      weddingId: insertInvitation.weddingId,
-      guestId: insertInvitation.guestId,
-      status: insertInvitation.status ?? "pending",
-      invitationType: insertInvitation.invitationType ?? "email",
-      invitationTemplate: insertInvitation.invitationTemplate ?? "default",
-      sentAt: insertInvitation.sentAt ?? null,
-      deliveredAt: insertInvitation.deliveredAt ?? null,
-      openedAt: insertInvitation.openedAt ?? null,
-      errorMessage: insertInvitation.errorMessage ?? null,
-      reminderSentAt: insertInvitation.reminderSentAt ?? null,
       createdAt: new Date(),
     };
     this.invitations.set(id, invitation);
@@ -352,15 +278,9 @@ export class MemStorage implements IStorage {
   async createGuestCollaborator(insertCollaborator: InsertGuestCollaborator): Promise<GuestCollaborator> {
     const id = this.currentCollaboratorId++;
     const collaborator: GuestCollaborator = {
+      ...insertCollaborator,
       id,
-      email: insertCollaborator.email,
-      name: insertCollaborator.name,
-      weddingId: insertCollaborator.weddingId,
-      status: insertCollaborator.status ?? "pending",
-      role: insertCollaborator.role ?? "viewer",
       invitedAt: new Date(),
-      acceptedAt: insertCollaborator.acceptedAt ?? null,
-      lastActiveAt: insertCollaborator.lastActiveAt ?? null,
     };
     this.guestCollaborators.set(id, collaborator);
     return collaborator;
@@ -535,21 +455,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
-    const guestData = {
-      name: insertGuest.name,
-      weddingId: insertGuest.weddingId,
-      email: insertGuest.email ?? null,
-      message: insertGuest.message ?? null,
-      phone: insertGuest.phone ?? null,
-      rsvpStatus: (insertGuest.rsvpStatus as "pending" | "confirmed" | "declined" | "maybe") ?? "pending",
-      plusOne: insertGuest.plusOne ?? false,
-      plusOneName: insertGuest.plusOneName ?? null,
-      dietaryRestrictions: insertGuest.dietaryRestrictions ?? null,
-      notes: insertGuest.notes ?? null
-    };
     const [guest] = await db
       .insert(guests)
-      .values([guestData])
+      .values(insertGuest)
       .returning();
     return guest;
   }
@@ -568,16 +476,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
-    const photoData = {
-      weddingId: insertPhoto.weddingId,
-      url: insertPhoto.url,
-      caption: insertPhoto.caption ?? null,
-      isHero: insertPhoto.isHero ?? false,
-      photoType: (insertPhoto.photoType as "couple" | "memory" | "hero") ?? "memory"
-    };
     const [photo] = await db
       .insert(photos)
-      .values([photoData])
+      .values(insertPhoto)
       .returning();
     return photo;
   }
@@ -588,7 +489,7 @@ export class DatabaseStorage implements IStorage {
 
   async deletePhoto(id: number): Promise<boolean> {
     const result = await db.delete(photos).where(eq(photos.id, id));
-    return (result.rowCount ?? 0) > 0;
+    return result.rowCount > 0;
   }
 
   async createGuestBookEntry(insertEntry: InsertGuestBookEntry): Promise<GuestBookEntry> {

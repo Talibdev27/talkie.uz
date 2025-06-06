@@ -16,23 +16,8 @@ if (!process.env.DATABASE_URL) {
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
   connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 10000,
-  max: 5,
-  ssl: true
+  idleTimeoutMillis: 30000,
+  max: 10
 });
 
 export const db = drizzle({ client: pool, schema });
-
-// Test database connection
-try {
-  // Simple connection test
-  pool.query('SELECT 1').then(() => {
-    console.log('Database connection verified');
-  }).catch((err) => {
-    console.error('Database connection failed:', err.message);
-  });
-} catch (error) {
-  console.error('Database initialization error:', error);
-}
-
-console.log('Database pool initialized');
