@@ -155,12 +155,10 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       weddingTime: insertWedding.weddingTime || "12:00",
       venueCoordinates: insertWedding.venueCoordinates || null,
-      description: insertWedding.description || null,
-      theme: insertWedding.theme || "classic",
-      maxGuests: insertWedding.maxGuests || 100,
-      rsvpDeadline: insertWedding.rsvpDeadline || new Date(),
-      budget: insertWedding.budget || null,
       isPublic: insertWedding.isPublic || true,
+      story: insertWedding.story || null,
+      heroImageUrl: insertWedding.heroImageUrl || null,
+      backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
     };
     this.weddings.set(id, wedding);
     return wedding;
@@ -194,6 +192,15 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       respondedAt: null,
+      email: insertGuest.email || null,
+      phone: insertGuest.phone || null,
+      address: insertGuest.address || null,
+      message: insertGuest.message || null,
+      rsvpStatus: (insertGuest.rsvpStatus as "pending" | "confirmed" | "declined" | "maybe") || "pending",
+      plusOne: insertGuest.plusOne || false,
+      plusOneName: insertGuest.plusOneName || null,
+      dietaryRestrictions: insertGuest.dietaryRestrictions || null,
+      notes: insertGuest.notes || null,
     };
     this.guests.set(id, guest);
     return guest;
