@@ -916,6 +916,19 @@ const resources = {
 
       // Common
       'common.sending': 'Yuborilmoqda...',
+
+      // Dashboard
+      'dashboard.myWeddingWebsites': 'Mening to\'y veb-saytlarim',
+      'dashboard.manageWebsites': 'Go\'zal to\'y veb-saytlaringizni boshqaring',
+      'dashboard.createNewWebsite': 'Yangi to\'y veb-sayti yaratish',
+      'dashboard.noWeddingsYet': 'Hali to\'y veb-saytlari yo\'q',
+      'dashboard.createFirstWebsite': 'Mehmonlaringiz bilan baham ko\'rish uchun birinchi go\'zal to\'y veb-saytingizni yarating',
+      'dashboard.createYourFirst': 'Birinchi to\'y veb-saytingizni yarating',
+      'dashboard.public': 'Ochiq',
+      'dashboard.private': 'Yopiq',
+      'dashboard.view': 'Ko\'rish',
+      'dashboard.edit': 'Tahrirlash',
+      'dashboard.manage': 'Boshqarish',
       'guestList.selectCategory': 'Kategoriyani tanlang',
       'guestList.family': 'Oila',
       'guestList.friends': 'Do\'stlar',

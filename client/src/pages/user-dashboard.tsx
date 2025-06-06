@@ -62,7 +62,7 @@ export default function UserDashboard() {
           <Link href="/create-wedding">
             <Button className="wedding-button">
               <Plus className="h-5 w-5 mr-2" />
-              Create New Wedding Website
+              {t('dashboard.createNewWebsite')}
             </Button>
           </Link>
         </div>
@@ -73,15 +73,15 @@ export default function UserDashboard() {
             <CardContent>
               <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-6" />
               <h3 className="text-xl font-playfair font-semibold text-charcoal mb-4">
-                No Wedding Websites Yet
+                {t('dashboard.noWeddingsYet')}
               </h3>
               <p className="text-charcoal opacity-70 mb-6">
-                Create your first beautiful wedding website to share with your guests
+                {t('dashboard.createFirstWebsite')}
               </p>
               <Link href="/create-wedding">
                 <Button className="wedding-button">
                   <Plus className="h-5 w-5 mr-2" />
-                  Create Your First Wedding Website
+                  {t('dashboard.createYourFirst')}
                 </Button>
               </Link>
             </CardContent>
@@ -96,7 +96,7 @@ export default function UserDashboard() {
                       {wedding.bride} & {wedding.groom}
                     </CardTitle>
                     <Badge variant={wedding.isPublic ? "default" : "secondary"}>
-                      {wedding.isPublic ? "Public" : "Private"}
+                      {wedding.isPublic ? t('dashboard.public') : t('dashboard.private')}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -122,13 +122,13 @@ export default function UserDashboard() {
                     <Link href={`/wedding/${wedding.uniqueUrl}`}>
                       <Button variant="outline" size="sm" className="flex-1">
                         <Eye className="h-4 w-4 mr-1" />
-                        View
+                        {t('dashboard.view')}
                       </Button>
                     </Link>
                     <Link href={`/manage/${wedding.uniqueUrl}`}>
                       <Button variant="outline" size="sm" className="flex-1">
                         <Edit className="h-4 w-4 mr-1" />
-                        Edit
+                        {t('dashboard.manage')}
                       </Button>
                     </Link>
                     <Button 
