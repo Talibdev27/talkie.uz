@@ -15,9 +15,28 @@ if (!process.env.DATABASE_URL) {
 
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  connectionTimeoutMillis: 2000,
-  idleTimeoutMillis: 10000,
-  max: 5
+  connectionTimeoutMillis: 3000,
+  idleTimeoutMillis: 5000,
+  max: 3,
+  ssl: process.env.NODE_ENV === 'production'
 });
 
 export const db = drizzle({ client: pool, schema });
+
+// Test connection on module load with timeout
+const testConnection = async () => {
+  try {
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+    );
+    
+    const connectionTest = pool.query('SELECT 1');
+    await Promise.race([connectionTest, timeout]);
+    console.log('Database connection established');
+  } catch (error) {
+    console.warn('Database connection warning:', error);
+    // Don't throw - allow server to start and handle DB errors gracefully
+  }
+};
+
+testConnection();

@@ -106,8 +106,15 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
     const user: User = {
-      ...insertUser,
       id,
+      email: insertUser.email,
+      password: insertUser.password,
+      name: insertUser.name,
+      isAdmin: insertUser.isAdmin ?? false,
+      hasPaidSubscription: insertUser.hasPaidSubscription ?? false,
+      paymentMethod: insertUser.paymentMethod ?? null,
+      paymentOrderId: insertUser.paymentOrderId ?? null,
+      paymentDate: insertUser.paymentDate ?? null,
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -126,14 +133,47 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values());
   }
 
+  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser: User = { 
+      ...user, 
+      ...updates,
+      isAdmin: updates.isAdmin ?? user.isAdmin,
+      hasPaidSubscription: updates.hasPaidSubscription ?? user.hasPaidSubscription,
+      paymentMethod: updates.paymentMethod ?? user.paymentMethod,
+      paymentOrderId: updates.paymentOrderId ?? user.paymentOrderId,
+      paymentDate: updates.paymentDate ?? user.paymentDate
+    };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    return this.users.delete(id);
+  }
+
   async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
     const id = this.currentWeddingId++;
     const uniqueUrl = nanoid(10);
     const wedding: Wedding = {
-      ...insertWedding,
       id,
       userId,
       uniqueUrl,
+      bride: insertWedding.bride,
+      groom: insertWedding.groom,
+      weddingDate: insertWedding.weddingDate,
+      weddingTime: insertWedding.weddingTime || "",
+      venue: insertWedding.venue,
+      venueAddress: insertWedding.venueAddress,
+      venueCoordinates: insertWedding.venueCoordinates || null,
+      story: insertWedding.story || "",
+      template: insertWedding.template || "modernElegance",
+      primaryColor: insertWedding.primaryColor || "#D4B08C",
+      accentColor: insertWedding.accentColor || "#89916B",
+      backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
+      isPublic: insertWedding.isPublic ?? true,
       createdAt: new Date(),
     };
     this.weddings.set(id, wedding);
@@ -157,11 +197,31 @@ export class MemStorage implements IStorage {
     return updatedWedding;
   }
 
+  async deleteWedding(id: number): Promise<boolean> {
+    return this.weddings.delete(id);
+  }
+
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
     const id = this.currentGuestId++;
     const guest: Guest = {
-      ...insertGuest,
       id,
+      email: insertGuest.email ?? null,
+      name: insertGuest.name,
+      message: insertGuest.message ?? null,
+      weddingId: insertGuest.weddingId,
+      phone: insertGuest.phone ?? null,
+      rsvpStatus: insertGuest.rsvpStatus ?? "pending",
+      plusOne: insertGuest.plusOne ?? false,
+      plusOneName: insertGuest.plusOneName ?? null,
+      dietaryRestrictions: insertGuest.dietaryRestrictions ?? null,
+      songRequest: insertGuest.songRequest ?? null,
+      accommodation: insertGuest.accommodation ?? null,
+      transportation: insertGuest.transportation ?? null,
+      specialNeeds: insertGuest.specialNeeds ?? null,
+      tablePreference: insertGuest.tablePreference ?? null,
+      giftPreference: insertGuest.giftPreference ?? null,
+      contactPreference: insertGuest.contactPreference ?? null,
+      notes: insertGuest.notes ?? null,
       createdAt: new Date(),
       respondedAt: null,
     };
