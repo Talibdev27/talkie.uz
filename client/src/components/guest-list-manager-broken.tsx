@@ -3,31 +3,90 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { z } from 'zod';
+import { GuestListLoading } from '@/components/ui/loading';
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  Mail, 
+  Phone, 
+  UserCheck, 
+  UserX, 
+  Clock, 
+  Users,
+  Edit,
+  Trash2,
+  Download,
+  Send,
+  UserPlus,
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
+  Calendar,
+  Share2
+} from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { 
-  Plus, Search, Edit, Trash2, Mail, Phone,
-  CheckCircle, XCircle, Clock, UserPlus
-} from 'lucide-react';
-import { insertGuestSchema, type Guest, type InsertGuest } from '@shared/schema';
-import { z } from 'zod';
+import type { Guest, InsertGuest } from '@shared/schema';
+
+const guestSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email').optional().or(z.literal('')),
+  phone: z.string().optional(),
+  plusOne: z.boolean().default(false),
+  plusOneName: z.string().optional(),
+  category: z.string().default('family'),
+  side: z.enum(['bride', 'groom', 'both']).default('both'),
+  dietaryRestrictions: z.string().optional(),
+  address: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+type GuestFormData = z.infer<typeof guestSchema>;
 
 interface GuestListManagerProps {
   weddingId: number;
   className?: string;
 }
-
-const guestSchema = insertGuestSchema.omit({ id: true, weddingId: true, createdAt: true, respondedAt: true });
-type GuestFormData = z.infer<typeof guestSchema>;
 
 export function GuestListManager({ weddingId, className = '' }: GuestListManagerProps) {
   const { t } = useTranslation();
@@ -45,10 +104,8 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
       name: '',
       email: '',
       phone: '',
-      rsvpStatus: 'pending',
       plusOne: false,
       plusOneName: '',
-      additionalGuests: 0,
       category: 'family',
       side: 'both',
       dietaryRestrictions: '',
@@ -57,8 +114,8 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
     },
   });
 
-  // Fetch guests using the correct endpoint
-  const { data: guests = [], isLoading } = useQuery<Guest[]>({
+  // Fetch guests
+  const { data: guests = [], isLoading } = useQuery({
     queryKey: ['/api/guests/wedding', weddingId],
     enabled: !!weddingId,
   });
@@ -95,10 +152,12 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
 
   // Update guest mutation
   const updateGuestMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Guest> }) => apiRequest(`/api/guests/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    }),
+    mutationFn: async ({ id, data }: { id: number; data: Partial<Guest> }) => {
+      return apiRequest(`/api/guests/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
       toast({
@@ -110,11 +169,13 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
 
   // Delete guest mutation
   const deleteGuestMutation = useMutation({
-    mutationFn: (guestId: number) => apiRequest(`/api/guests/${guestId}`, {
-      method: 'DELETE',
-    }),
+    mutationFn: async (guestId: number) => {
+      return apiRequest(`/api/guests/${guestId}`, {
+        method: 'DELETE',
+      });
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/guests', weddingId] });
       toast({
         title: t('guestList.guestDeleted'),
         description: t('guestList.guestDeletedSuccess'),
@@ -136,10 +197,8 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
       name: guest.name,
       email: guest.email || '',
       phone: guest.phone || '',
-      rsvpStatus: guest.rsvpStatus,
       plusOne: guest.plusOne,
       plusOneName: guest.plusOneName || '',
-      additionalGuests: guest.additionalGuests,
       category: guest.category,
       side: guest.side,
       dietaryRestrictions: guest.dietaryRestrictions || '',
@@ -200,23 +259,6 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
       </Badge>
     );
   };
-
-  const getStatusIcon = (status: Guest['rsvpStatus']) => {
-    switch (status) {
-      case 'confirmed': return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'declined': return <XCircle className="h-4 w-4 text-red-600" />;
-      default: return <Clock className="h-4 w-4 text-yellow-600" />;
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-        <p className="text-[#2C3338]/70">Loading guests...</p>
-      </div>
-    );
-  }
 
   return (
     <div className={className}>
@@ -398,9 +440,108 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
                       </FormItem>
                     )}
                   />
+                  
+                  <FormField
+                    control={form.control}
+                    name="side"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('guestList.side')}</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('guestList.selectSide')} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="bride">{t('guestList.bridesSide')}</SelectItem>
+                            <SelectItem value="groom">{t('guestList.groomsSide')}</SelectItem>
+                            <SelectItem value="both">{t('guestList.both')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="plusOne"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>{t('guestList.plusOne')}</FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                 </div>
-
-                <div className="flex gap-2 pt-4">
+                
+                {form.watch('plusOne') && (
+                  <FormField
+                    control={form.control}
+                    name="plusOneName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('guestList.plusOneName')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('guestList.enterPlusOneName')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                
+                <FormField
+                  control={form.control}
+                  name="dietaryRestrictions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('guestList.dietaryRestrictions')}</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t('guestList.enterDietaryRestrictions')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('guestList.address')}</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder={t('guestList.enterAddress')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('guestList.notes')}</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder={t('guestList.enterNotes')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-end space-x-2">
                   <Button
                     type="button"
                     variant="outline"
@@ -409,21 +550,15 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
                       setEditingGuest(null);
                       form.reset();
                     }}
-                    className="flex-1"
                   >
                     {t('common.cancel')}
                   </Button>
                   <Button
                     type="submit"
                     disabled={addGuestMutation.isPending || updateGuestMutation.isPending}
-                    className="wedding-button flex-1"
+                    className="wedding-button"
                   >
-                    {(addGuestMutation.isPending || updateGuestMutation.isPending) 
-                      ? t('common.saving') 
-                      : editingGuest 
-                        ? t('common.save') 
-                        : t('guestList.addGuest')
-                    }
+                    {editingGuest ? t('guestList.updateGuest') : t('guestList.addGuest')}
                   </Button>
                 </div>
               </form>
@@ -432,59 +567,120 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
         </Dialog>
       </div>
 
-      {/* Guest List */}
-      <div className="space-y-4">
-        {filteredGuests.map((guest) => (
-          <Card key={guest.id} className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(guest.rsvpStatus)}
-                  <div>
-                    <div className="font-medium">{guest.name}</div>
-                    <div className="text-sm text-gray-500 flex items-center gap-4">
-                      {guest.email && (
-                        <span className="flex items-center gap-1">
-                          <Mail className="h-3 w-3" />
-                          {guest.email}
-                        </span>
-                      )}
-                      {guest.phone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="h-3 w-3" />
-                          {guest.phone}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                {guest.plusOne && (
-                  <Badge variant="outline">+1</Badge>
-                )}
-                {getStatusBadge(guest.rsvpStatus)}
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => handleEdit(guest)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </div>
+      {/* Guest Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('guestList.guestList')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <GuestListLoading />
+          ) : filteredGuests.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {t('guestList.noGuestsFound')}
             </div>
-          </Card>
-        ))}
-      </div>
-
-      {filteredGuests.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          {searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
-            ? t('guestList.noGuestsFound') 
-            : t('guestList.noGuestsYet')
-          }
-        </div>
-      )}
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('guestList.name')}</TableHead>
+                    <TableHead>{t('guestList.contact')}</TableHead>
+                    <TableHead>{t('guestList.category')}</TableHead>
+                    <TableHead>{t('guestList.side')}</TableHead>
+                    <TableHead>{t('guestList.status')}</TableHead>
+                    <TableHead>{t('guestList.plusOne')}</TableHead>
+                    <TableHead>{t('guestList.actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredGuests.map((guest: Guest) => (
+                    <TableRow key={guest.id}>
+                      <TableCell className="font-medium">
+                        <div>
+                          <div>{guest.name}</div>
+                          {guest.plusOne && guest.plusOneName && (
+                            <div className="text-sm text-muted-foreground">
+                              +1: {guest.plusOneName}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          {guest.email && (
+                            <div className="flex items-center text-sm">
+                              <Mail className="h-3 w-3 mr-1" />
+                              {guest.email}
+                            </div>
+                          )}
+                          {guest.phone && (
+                            <div className="flex items-center text-sm">
+                              <Phone className="h-3 w-3 mr-1" />
+                              {guest.phone}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {t(`guestList.${guest.category}`)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {t(`guestList.${guest.side === 'bride' ? 'bridesSide' : guest.side === 'groom' ? 'groomsSide' : 'both'}`)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={guest.rsvpStatus}
+                          onValueChange={(value) => handleStatusUpdate(guest.id, value as Guest['rsvpStatus'])}
+                        >
+                          <SelectTrigger className="w-32">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">{t('guestList.pending')}</SelectItem>
+                            <SelectItem value="confirmed">{t('guestList.confirmed')}</SelectItem>
+                            <SelectItem value="declined">{t('guestList.declined')}</SelectItem>
+                            <SelectItem value="maybe">{t('guestList.maybe')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        {guest.plusOne ? (
+                          <UserCheck className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <UserX className="h-4 w-4 text-gray-400" />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(guest)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteGuestMutation.mutate(guest.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
