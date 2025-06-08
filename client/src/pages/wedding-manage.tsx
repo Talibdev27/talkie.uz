@@ -47,7 +47,7 @@ export default function WeddingManage() {
 
   // Fetch guests for this wedding
   const { data: guests, isLoading: guestsLoading } = useQuery<Guest[]>({
-    queryKey: [`/api/guests/wedding/${wedding?.id}`],
+    queryKey: ['/api/guests/wedding', wedding?.id],
     enabled: !!wedding?.id,
   });
 
