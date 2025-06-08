@@ -15,6 +15,7 @@ import { formatDate } from '@/lib/utils';
 import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, Trash2, Users, ExternalLink, MessageSquare } from 'lucide-react';
 import { LanguageToggle } from '@/components/language-toggle';
 import { PersonalizedGuestDashboard } from '@/components/personalized-guest-dashboard';
+import { EnhancedRSVPManager } from '@/components/enhanced-rsvp-manager';
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
@@ -240,9 +241,10 @@ export default function WeddingManage() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
             <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
             <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
+            <TabsTrigger value="dashboard">Guest Dashboard</TabsTrigger>
             <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
             <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
           </TabsList>
@@ -375,84 +377,19 @@ export default function WeddingManage() {
 
           {/* Guest Management Tab */}
           <TabsContent value="guests" className="space-y-6">
-            <Card className="wedding-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-[#D4B08C]" />
-                  Guest Management & RSVP Tracking
-                </CardTitle>
-                <CardDescription>
-                  Manage your wedding guests, track real-time RSVPs, and view guest messages
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {guestsLoading ? (
+            {guestsLoading ? (
+              <Card className="wedding-card">
+                <CardContent className="p-8">
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
                     <p className="text-[#2C3338]/70">Loading guest information...</p>
                   </div>
-                ) : (
-                  <div className="space-y-6">
-                    {/* Enhanced Guest Statistics */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="bg-green-50 p-4 rounded-lg border border-green-200 hover:bg-green-100 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-2xl font-bold text-green-600">
-                              {guests?.filter(guest => guest.rsvpStatus === 'confirmed').length || 0}
-                            </div>
-                            <div className="text-sm text-green-700 font-medium">Confirmed</div>
-                          </div>
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                        </div>
-                        <div className="text-xs text-green-600 mt-1">
-                          {guests?.length ? Math.round((guests.filter(g => g.rsvpStatus === 'confirmed').length / guests.length) * 100) : 0}% of total
-                        </div>
-                      </div>
-                      <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 hover:bg-yellow-100 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-2xl font-bold text-yellow-600">
-                              {guests?.filter(guest => guest.rsvpStatus === 'pending').length || 0}
-                            </div>
-                            <div className="text-sm text-yellow-700 font-medium">Pending</div>
-                          </div>
-                          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        </div>
-                        <div className="text-xs text-yellow-600 mt-1">Awaiting response</div>
-                      </div>
-                      <div className="bg-red-50 p-4 rounded-lg border border-red-200 hover:bg-red-100 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-2xl font-bold text-red-600">
-                              {guests?.filter(guest => guest.rsvpStatus === 'declined').length || 0}
-                            </div>
-                            <div className="text-sm text-red-700 font-medium">Declined</div>
-                          </div>
-                          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                        </div>
-                        <div className="text-xs text-red-600 mt-1">Cannot attend</div>
-                      </div>
-                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-2xl font-bold text-blue-600">
-                              {guests?.length || 0}
-                            </div>
-                            <div className="text-sm text-blue-700 font-medium">Total Guests</div>
-                          </div>
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        </div>
-                        <div className="text-xs text-blue-600 mt-1">
-                          {guests?.reduce((acc, guest) => acc + (guest.additionalGuests || 0) + 1, 0) || 0} total attendees
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    {guests && guests.length > 0 && (
-                      <div className="bg-gray-100 rounded-full p-1">
-                        <div className="flex h-4 rounded-full overflow-hidden">
+                </CardContent>
+              </Card>
+            ) : (
+              <EnhancedRSVPManager wedding={wedding} guests={guests} />
+            )}
+          </TabsContent>
                           <div 
                             className="bg-green-500 transition-all duration-500"
                             style={{ 
@@ -579,6 +516,11 @@ export default function WeddingManage() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Personalized Guest Dashboard Tab */}
+          <TabsContent value="dashboard" className="space-y-6">
+            <PersonalizedGuestDashboard wedding={wedding} />
           </TabsContent>
 
           {/* Photo Management Tab */}
