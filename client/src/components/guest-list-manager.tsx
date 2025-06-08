@@ -116,13 +116,13 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
 
   // Fetch guests
   const { data: guests = [], isLoading } = useQuery({
-    queryKey: ['/api/guests', weddingId],
-    queryFn: () => apiRequest(`/api/weddings/${weddingId}/guests`),
+    queryKey: ['/api/guests/wedding', weddingId],
+    enabled: !!weddingId,
   });
 
   // Add guest mutation
   const addGuestMutation = useMutation({
-    mutationFn: async (data: GuestFormData) => {
+    mutationFn: (data: GuestFormData) => {
       const guestData: InsertGuest = {
         ...data,
         weddingId,
@@ -133,13 +133,13 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
         address: data.address || null,
         notes: data.notes || null,
       };
-      return apiRequest(`/api/weddings/${weddingId}/guests`, {
+      return apiRequest('/api/guests', {
         method: 'POST',
         body: JSON.stringify(guestData),
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guests', weddingId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
       setIsAddDialogOpen(false);
       setEditingGuest(null);
       form.reset();
@@ -159,7 +159,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guests', weddingId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
       toast({
         title: t('guestList.guestUpdated'),
         description: t('guestList.guestUpdatedSuccess'),
