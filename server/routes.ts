@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -854,6 +855,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const guestData = insertGuestSchema.parse(req.body);
       const guest = await storage.createGuest(guestData);
+      
+      // Broadcast real-time update
+      const broadcastToWedding = (global as any).broadcastToWedding;
+      if (broadcastToWedding) {
+        broadcastToWedding(guest.weddingId, {
+          type: 'guest_added',
+          guest: guest
+        });
+      }
+      
       res.status(201).json(guest);
     } catch (error) {
       res.status(400).json({ message: "Invalid guest data" });
@@ -878,6 +889,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const guest = await storage.updateGuestRSVP(id, rsvpData);
       if (!guest) {
         return res.status(404).json({ message: "Guest not found" });
+      }
+
+      // Broadcast real-time RSVP update
+      const broadcastToWedding = (global as any).broadcastToWedding;
+      if (broadcastToWedding) {
+        broadcastToWedding(guest.weddingId, {
+          type: 'rsvp_updated',
+          guest: guest
+        });
       }
 
       res.json(guest);
@@ -1106,5 +1126,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/payments', paymentsRouter);
 
   const httpServer = createServer(app);
+  
+  // WebSocket server for real-time updates
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store active connections by wedding ID
+  const weddingConnections = new Map<number, Set<WebSocket>>();
+  
+  wss.on('connection', (ws, request) => {
+    console.log('WebSocket connection established');
+    
+    ws.on('message', (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        
+        if (message.type === 'join_wedding' && message.weddingId) {
+          const weddingId = parseInt(message.weddingId);
+          
+          if (!weddingConnections.has(weddingId)) {
+            weddingConnections.set(weddingId, new Set());
+          }
+          
+          weddingConnections.get(weddingId)!.add(ws);
+          console.log(`Client joined wedding ${weddingId}`);
+          
+          // Send confirmation
+          ws.send(JSON.stringify({
+            type: 'joined',
+            weddingId: weddingId
+          }));
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      // Remove connection from all wedding rooms
+      weddingConnections.forEach((connections, weddingId) => {
+        connections.delete(ws);
+        if (connections.size === 0) {
+          weddingConnections.delete(weddingId);
+        }
+      });
+    });
+  });
+  
+  // Function to broadcast updates to wedding subscribers
+  function broadcastToWedding(weddingId: number, data: any) {
+    const connections = weddingConnections.get(weddingId);
+    if (connections) {
+      const message = JSON.stringify(data);
+      connections.forEach((ws) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(message);
+        }
+      });
+    }
+  }
+  
+  // Store broadcast function globally for use in routes
+  (global as any).broadcastToWedding = broadcastToWedding;
+  
   return httpServer;
 }

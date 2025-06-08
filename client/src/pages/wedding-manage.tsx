@@ -14,6 +14,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { formatDate } from '@/lib/utils';
 import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, Trash2, Users, ExternalLink, MessageSquare } from 'lucide-react';
 import { LanguageToggle } from '@/components/language-toggle';
+import { PersonalizedGuestDashboard } from '@/components/personalized-guest-dashboard';
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
