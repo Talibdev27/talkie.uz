@@ -46,10 +46,16 @@ export default function WeddingManage() {
   });
 
   // Fetch guests for this wedding
-  const { data: guests, isLoading: guestsLoading } = useQuery<Guest[]>({
+  const { data: guests, isLoading: guestsLoading, error: guestsError } = useQuery<Guest[]>({
     queryKey: ['/api/guests/wedding', wedding?.id],
     enabled: !!wedding?.id,
   });
+
+  // Debug logging
+  console.log('Wedding ID:', wedding?.id);
+  console.log('Guests data:', guests);
+  console.log('Guests loading:', guestsLoading);
+  console.log('Guests error:', guestsError);
 
   // Fetch guest book entries for this wedding
   const { data: guestBookEntries = [], isLoading: guestBookLoading } = useQuery<any[]>({
