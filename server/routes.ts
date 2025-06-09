@@ -192,6 +192,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user role and permissions
+  app.put("/api/admin/users/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const updates = req.body;
+      
+      const updatedUser = await storage.updateUser(userId, updates);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(400).json({ 
+        message: "Failed to update user", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
   app.get("/api/admin/weddings", async (req, res) => {
     try {
       // Get all weddings across all users
