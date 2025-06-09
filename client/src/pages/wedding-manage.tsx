@@ -29,17 +29,18 @@ export default function WeddingManage() {
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
 
-  // Determine the correct dashboard to return to based on admin status and navigation context
+  // Determine the correct dashboard to return to based on user role and navigation context
   const getBackToDashboardPath = () => {
+    if (!currentUser) return '/login';
+    
+    // Guest managers should go to their restricted dashboard
+    if (currentUser.role === 'guest_manager') {
+      return '/guest-manager';
+    }
+    
     // Check if user is admin by looking at localStorage (where admin status is stored)
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const fromAdmin = sessionStorage.getItem('fromAdminDashboard');
-    
-    // Debug logging
-    console.log('Admin status:', isAdmin);
-    console.log('From admin flag:', fromAdmin);
-    console.log('Current URL:', window.location.href);
-    console.log('Document referrer:', document.referrer);
     
     // SECURITY: Only return to admin dashboard if user is admin AND came from admin dashboard
     if (isAdmin && fromAdmin === 'true') {
@@ -152,8 +153,13 @@ export default function WeddingManage() {
     );
   }
 
-  // Check if current user owns this wedding
-  if (currentUser && wedding.userId !== currentUser.id) {
+  // Check access permissions - owners have full access, guest_managers have limited access
+  const isOwner = currentUser && wedding.userId === currentUser.id;
+  const isGuestManager = currentUser && currentUser.role === 'guest_manager';
+  const isAdmin = currentUser && currentUser.isAdmin;
+  const hasAccess = isOwner || isGuestManager || isAdmin;
+
+  if (!hasAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -203,35 +209,46 @@ export default function WeddingManage() {
                 <Eye className="w-4 h-4 mr-2" />
                 {t('manage.viewSite')}
               </Button>
-              {editMode ? (
+              {/* Only show edit controls for owners and admins, not guest managers */}
+              {(isOwner || isAdmin) && (
                 <>
-                  <Button
-                    onClick={handleSave}
-                    disabled={updateWeddingMutation.isPending}
-                    className="wedding-button"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    {t('manage.saveChanges')}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setEditMode(false);
-                      setWeddingData(wedding);
-                    }}
-                    className="border-gray-200"
-                  >
-                    {t('manage.cancel')}
-                  </Button>
+                  {editMode ? (
+                    <>
+                      <Button
+                        onClick={handleSave}
+                        disabled={updateWeddingMutation.isPending}
+                        className="wedding-button"
+                      >
+                        <Save className="w-4 h-4 mr-2" />
+                        {t('manage.saveChanges')}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setEditMode(false);
+                          setWeddingData(wedding);
+                        }}
+                        className="border-gray-200"
+                      >
+                        {t('manage.cancel')}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() => setEditMode(true)}
+                      className="wedding-button"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      {t('manage.editWeddingButton')}
+                    </Button>
+                  )}
                 </>
-              ) : (
-                <Button
-                  onClick={() => setEditMode(true)}
-                  className="wedding-button"
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  {t('manage.editWeddingButton')}
-                </Button>
+              )}
+              {/* Show restricted access indicator for guest managers */}
+              {isGuestManager && (
+                <Badge variant="secondary" className="text-sm">
+                  Guest Manager Access
+                </Badge>
               )}
             </div>
           </div>

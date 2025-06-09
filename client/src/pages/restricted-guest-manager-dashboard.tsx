@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { RestrictedAdminDashboard } from "@/components/restricted-admin-dashboard";
@@ -6,7 +6,6 @@ import type { User } from "@shared/schema";
 
 export default function RestrictedGuestManagerDashboard() {
   const [, setLocation] = useLocation();
-  const [user, setUser] = useState<User | null>(null);
 
   // Check if user is authenticated and has guest manager role
   const { data: currentUser, isLoading, error } = useQuery<User>({
@@ -30,8 +29,6 @@ export default function RestrictedGuestManagerDashboard() {
         }
         return;
       }
-
-      setUser(currentUser);
     }
   }, [currentUser, isLoading, error, setLocation]);
 
@@ -46,7 +43,7 @@ export default function RestrictedGuestManagerDashboard() {
     );
   }
 
-  if (error || !user) {
+  if (error || !currentUser || currentUser.role !== 'guest_manager') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -63,5 +60,5 @@ export default function RestrictedGuestManagerDashboard() {
     );
   }
 
-  return <RestrictedAdminDashboard user={user} />;
+  return <RestrictedAdminDashboard user={currentUser} />;
 }
