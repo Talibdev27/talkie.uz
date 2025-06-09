@@ -5,12 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n';
+import { AuthProvider } from '@/hooks/useAuth';
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import CreateWedding from "@/pages/create-wedding";
 import GetStarted from "@/pages/get-started";
 import { ProgressiveOnboarding } from "@/components/progressive-onboarding";
-import GuestWeddingView from "@/pages/guest-wedding-view";
+// import GuestWeddingView from "@/pages/guest-wedding-view";
 import UserDashboard from "@/pages/user-dashboard";
 import WeddingSite from "@/pages/wedding-site";
 import AdminDashboard from "@/pages/admin-dashboard-new";
@@ -85,12 +86,14 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nextProvider i18n={i18n}>
-        <TooltipProvider>
+      <AuthProvider>
+        <I18nextProvider i18n={i18n}>
+          <TooltipProvider>
           <Toaster />
           <Router />
         </TooltipProvider>
       </I18nextProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

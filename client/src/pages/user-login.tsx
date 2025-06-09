@@ -90,32 +90,20 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: registerData.name,
-          email: registerData.email,
-          password: registerData.password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+      const result = await register(registerData.name, registerData.email, registerData.password);
+      
+      if (!result.success) {
+        toast({
+          title: "Registration Failed",
+          description: result.error || "An error occurred during registration. Please try again.",
+          variant: "destructive",
+        });
+        return;
       }
 
-      const { user, token } = await response.json();
-      
-      // Store authentication token
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      
       toast({
         title: "Registration Successful",
-        description: `Welcome ${user.name}! You can now create your wedding website.`,
+        description: "Welcome! You can now create your wedding website.",
       });
       
       // New users go directly to wedding creation
@@ -123,7 +111,7 @@ export default function UserLogin() {
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "An error occurred during registration. Please try again.",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
