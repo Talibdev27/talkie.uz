@@ -116,12 +116,6 @@ export class MemStorage implements IStorage {
     const user: User = {
       ...insertUser,
       id,
-      isAdmin: insertUser.isAdmin ?? false,
-      role: (insertUser.role as "user" | "admin" | "guest_manager") ?? "user",
-      hasPaidSubscription: insertUser.hasPaidSubscription ?? false,
-      paymentMethod: insertUser.paymentMethod ?? null,
-      paymentOrderId: insertUser.paymentOrderId ?? null,
-      paymentDate: insertUser.paymentDate ?? null,
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -144,23 +138,10 @@ export class MemStorage implements IStorage {
     const id = this.currentWeddingId++;
     const uniqueUrl = nanoid(10);
     const wedding: Wedding = {
+      ...insertWedding,
       id,
       userId,
       uniqueUrl,
-      bride: insertWedding.bride,
-      groom: insertWedding.groom,
-      weddingDate: insertWedding.weddingDate,
-      weddingTime: insertWedding.weddingTime || "4:00 PM",
-      venue: insertWedding.venue || "",
-      venueAddress: insertWedding.venueAddress || "",
-      venueCoordinates: insertWedding.venueCoordinates || null,
-      story: insertWedding.story || null,
-      welcomeMessage: insertWedding.welcomeMessage || null,
-      template: insertWedding.template || "garden-romance",
-      primaryColor: insertWedding.primaryColor || "#D4B08C",
-      accentColor: insertWedding.accentColor || "#89916B",
-      backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
-      isPublic: insertWedding.isPublic ?? true,
       createdAt: new Date(),
     };
     this.weddings.set(id, wedding);

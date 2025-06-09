@@ -71,9 +71,6 @@ function Router() {
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />
 
-      {/* Restricted Guest Manager Dashboard */}
-      <Route path="/guest-manager" component={RestrictedGuestManagerDashboard} />
-
 
 
       {/* Fallback to 404 */}

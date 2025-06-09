@@ -71,89 +71,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
 
-  // User registration endpoint
-  app.post("/api/register", async (req, res) => {
-    try {
-      const { name, email, password, confirmPassword } = req.body;
-
-      // Validate required fields
-      if (!name || !email || !password) {
-        return res.status(400).json({ message: "Name, email, and password are required" });
-      }
-
-      // Check if passwords match
-      if (confirmPassword && password !== confirmPassword) {
-        return res.status(400).json({ message: "Passwords don't match" });
-      }
-
-      // Check if user already exists
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ message: "User with this email already exists" });
-      }
-
-      // Hash password (in production, use bcrypt)
-      const hashedPassword = password; // For demo purposes, storing plain text
-
-      // Create user
-      const userData = {
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        password: hashedPassword,
-        isAdmin: false,
-        role: "user" as const,
-        hasPaidSubscription: false,
-        paymentMethod: null,
-        paymentOrderId: null,
-        paymentDate: null,
-      };
-
-      const user = await storage.createUser(userData);
-      
-      // Return user without password
-      const { password: _, ...userResponse } = user;
-      res.json({ 
-        message: "User registered successfully", 
-        user: userResponse 
-      });
-    } catch (error) {
-      console.error("Registration error:", error);
-      res.status(500).json({ message: "Failed to register user" });
-    }
-  });
-
-  // User login endpoint
-  app.post("/api/user/login", async (req, res) => {
-    try {
-      const { email, password } = req.body;
-
-      if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required" });
-      }
-
-      // Find user by email
-      const user = await storage.getUserByEmail(email.trim().toLowerCase());
-      if (!user) {
-        return res.status(401).json({ message: "Invalid email or password" });
-      }
-
-      // Check password (in production, use bcrypt.compare)
-      if (user.password !== password) {
-        return res.status(401).json({ message: "Invalid email or password" });
-      }
-
-      // Return user without password
-      const { password: _, ...userResponse } = user;
-      res.json({ 
-        message: "Login successful", 
-        user: userResponse 
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ message: "Failed to login" });
-    }
-  });
-
   // Combined registration and wedding creation endpoint
   app.post("/api/get-started", async (req, res) => {
     try {
@@ -318,7 +235,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bride: bride.trim(),
         groom: groom.trim(),
         weddingDate: new Date(weddingDate),
-        weddingTime: "4:00 PM", // Default wedding time
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
         story: story?.trim() || "",
@@ -394,22 +310,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get current user
   app.get("/api/user/current", async (req, res) => {
+    // For now, return the first user as a simple implementation
+    // In a real app, this would check session/authentication
     try {
-      // Get user ID from request headers (sent by frontend)
-      const userId = req.headers['x-user-id'];
-      
-      if (!userId) {
-        return res.status(401).json({ message: "User not authenticated" });
+      const users = await storage.getAllUsers();
+      if (users.length > 0) {
+        res.json(users[0]);
+      } else {
+        res.status(404).json({ message: "No user found" });
       }
-
-      const user = await storage.getUserById(parseInt(userId as string));
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // Return user without password
-      const { password: _, ...userResponse } = user;
-      res.json(userResponse);
     } catch (error) {
       res.status(500).json({ message: "Server error" });
     }
@@ -515,14 +424,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's own weddings - simplified for now
   app.get("/api/user/weddings", async (req, res) => {
     try {
-      // Get user ID from request headers (sent by frontend)
-      const userId = req.headers['x-user-id'];
-      
-      if (!userId) {
-        return res.status(401).json({ message: "User not authenticated" });
-      }
-
-      const weddings = await storage.getWeddingsByUserId(parseInt(userId as string));
+      // For now, return weddings for user ID 1 (you logged in as this user)
+      const userId = 1; // This should come from session/auth later
+      const weddings = await storage.getWeddingsByUserId(userId);
       res.json(weddings);
     } catch (error: any) {
       console.error('Get user weddings error:', error);

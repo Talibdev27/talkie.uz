@@ -34,32 +34,14 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      // Authenticate user first
-      const loginResponse = await fetch('/api/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData)
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error('Login failed');
-      }
-
-      const loginResult = await loginResponse.json();
-      
-      // Store user data in localStorage
-      localStorage.setItem('user', JSON.stringify(loginResult.user));
+      // Check if user has existing weddings
+      const weddingsResponse = await fetch('/api/user/weddings');
+      const weddings = await weddingsResponse.json();
       
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting...",
       });
-      
-      // Check if user has existing weddings after successful login
-      const weddingsResponse = await fetch('/api/user/weddings', {
-        headers: { 'x-user-id': loginResult.user.id.toString() }
-      });
-      const weddings = await weddingsResponse.json();
       
       // Smart redirect based on user's wedding status
       if (weddings && weddings.length > 0) {
@@ -95,23 +77,7 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: registerData.name,
-          email: registerData.email,
-          password: registerData.password,
-          confirmPassword: registerData.confirmPassword
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
+      // Simulate user registration - in production, this would create a new user account
       toast({
         title: "Registration Successful",
         description: "Welcome to our wedding platform! You can now create your wedding website.",
@@ -119,10 +85,10 @@ export default function UserLogin() {
       
       // New users go directly to wedding creation
       setLocation('/create-wedding');
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Registration Failed",
-        description: error.message || "An error occurred during registration. Please try again.",
+        description: "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
     } finally {

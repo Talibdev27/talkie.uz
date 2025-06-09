@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +7,6 @@ import { LanguageToggle } from "@/components/language-toggle";
 import { Heart, Calendar, MapPin, Users, Eye, Edit, Plus, ExternalLink } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { format } from "date-fns";
-import type { User } from "@shared/schema";
 
 interface Wedding {
   id: number;
@@ -25,28 +23,9 @@ export default function UserDashboard() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
 
-  // Check current user role for redirects
-  const { data: currentUser, isLoading: userLoading } = useQuery<User>({
-    queryKey: ['/api/user/current'],
-  });
-
   const { data: weddings = [], isLoading } = useQuery<Wedding[]>({
     queryKey: ['/api/user/weddings']
   });
-
-  // Redirect guest managers to their restricted dashboard
-  useEffect(() => {
-    if (!userLoading && currentUser) {
-      if (currentUser.role === 'guest_manager') {
-        navigate('/guest-manager');
-        return;
-      }
-      if (currentUser.isAdmin) {
-        navigate('/admin/dashboard');
-        return;
-      }
-    }
-  }, [currentUser, userLoading, navigate]);
 
   if (isLoading) {
     return (
