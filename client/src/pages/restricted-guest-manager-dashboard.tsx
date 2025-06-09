@@ -13,24 +13,24 @@ export default function RestrictedGuestManagerDashboard() {
   });
 
   useEffect(() => {
-    if (!isLoading && !error) {
-      if (!currentUser) {
-        // Redirect to login if not authenticated
-        setLocation('/login');
-        return;
-      }
-
-      if (currentUser.role !== 'guest_manager') {
-        // Redirect regular users to user dashboard, admins to admin dashboard
-        if (currentUser.isAdmin) {
-          setLocation('/admin/dashboard');
-        } else {
-          setLocation('/dashboard');
-        }
-        return;
-      }
+    if (isLoading || error) return;
+    
+    if (!currentUser) {
+      // Redirect to login if not authenticated
+      setLocation('/login');
+      return;
     }
-  }, [currentUser, isLoading, error, setLocation]);
+
+    if (currentUser.role !== 'guest_manager') {
+      // Redirect regular users to user dashboard, admins to admin dashboard
+      if (currentUser.isAdmin) {
+        setLocation('/admin/dashboard');
+      } else {
+        setLocation('/dashboard');
+      }
+      return;
+    }
+  }, [currentUser?.id, currentUser?.role, currentUser?.isAdmin, isLoading, error, setLocation]);
 
   if (isLoading) {
     return (

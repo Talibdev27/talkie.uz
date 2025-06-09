@@ -256,17 +256,26 @@ export default function WeddingManage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
-            <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
+        <Tabs defaultValue={isGuestManager ? "guests" : "details"} className="space-y-6">
+          <TabsList className={`grid w-full ${isGuestManager ? 'grid-cols-2' : 'grid-cols-5'} lg:${isGuestManager ? 'grid-cols-2' : 'grid-cols-5'}`}>
+            {/* Only show details tab for owners and admins */}
+            {(isOwner || isAdmin) && (
+              <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
+            )}
             <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
             <TabsTrigger value="dashboard">Guest Dashboard</TabsTrigger>
-            <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
-            <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
+            {/* Only show photo and guestbook management for owners and admins */}
+            {(isOwner || isAdmin) && (
+              <>
+                <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
+                <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
+              </>
+            )}
           </TabsList>
 
-          {/* Wedding Details Tab */}
-          <TabsContent value="details" className="space-y-6">
+          {/* Wedding Details Tab - Only for owners and admins */}
+          {(isOwner || isAdmin) && (
+            <TabsContent value="details" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -363,6 +372,7 @@ export default function WeddingManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* Guest Management Tab */}
           <TabsContent value="guests" className="space-y-6">
@@ -385,8 +395,9 @@ export default function WeddingManage() {
             {wedding && <PersonalizedGuestDashboard wedding={wedding} />}
           </TabsContent>
 
-          {/* Photo Management Tab */}
-          <TabsContent value="photos" className="space-y-6">
+          {/* Photo Management Tab - Only for owners and admins */}
+          {(isOwner || isAdmin) && (
+            <TabsContent value="photos" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -409,8 +420,10 @@ export default function WeddingManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
-          {/* Guest Book Tab */}
+          {/* Guest Book Tab - Only for owners and admins */}
+          {(isOwner || isAdmin) && (
           <TabsContent value="guestbook" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
@@ -427,6 +440,7 @@ export default function WeddingManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
