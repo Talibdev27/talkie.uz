@@ -34,14 +34,32 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      // Check if user has existing weddings
-      const weddingsResponse = await fetch('/api/user/weddings');
-      const weddings = await weddingsResponse.json();
+      // Authenticate user first
+      const loginResponse = await fetch('/api/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginData)
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error('Login failed');
+      }
+
+      const loginResult = await loginResponse.json();
+      
+      // Store user data in localStorage
+      localStorage.setItem('user', JSON.stringify(loginResult.user));
       
       toast({
         title: "Login Successful",
         description: "Welcome back! Redirecting...",
       });
+      
+      // Check if user has existing weddings after successful login
+      const weddingsResponse = await fetch('/api/user/weddings', {
+        headers: { 'x-user-id': loginResult.user.id.toString() }
+      });
+      const weddings = await weddingsResponse.json();
       
       // Smart redirect based on user's wedding status
       if (weddings && weddings.length > 0) {
