@@ -29,7 +29,7 @@ export default function WeddingManage() {
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
 
-  // Determine the correct dashboard to return to based on admin status
+  // Determine the correct dashboard to return to based on admin status and navigation context
   const getBackToDashboardPath = () => {
     // Check if user is admin by looking at localStorage (where admin status is stored)
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
@@ -41,18 +41,21 @@ export default function WeddingManage() {
     console.log('Current URL:', window.location.href);
     console.log('Document referrer:', document.referrer);
     
-    // If user is admin, always return to admin dashboard for now (simplified logic)
-    if (isAdmin) {
+    // SECURITY: Only return to admin dashboard if user is admin AND came from admin dashboard
+    if (isAdmin && fromAdmin === 'true') {
       return '/system/dashboard';
     }
     
+    // Default: Always return regular users to user dashboard
     return '/dashboard';
   };
 
   const handleBackToDashboard = () => {
-    // Clear the admin dashboard flag when navigating back
+    // Get the path BEFORE clearing the session flag
+    const targetPath = getBackToDashboardPath();
+    // Clear the admin dashboard flag after getting the path
     sessionStorage.removeItem('fromAdminDashboard');
-    setLocation(getBackToDashboardPath());
+    setLocation(targetPath);
   };
 
   // Check if user is logged in and owns this wedding
