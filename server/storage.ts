@@ -104,6 +104,7 @@ export class MemStorage implements IStorage {
     this.guestBookEntries = new Map();
     this.invitations = new Map();
     this.guestCollaborators = new Map();
+    this.weddingAccess = new Map();
     this.currentUserId = 1;
     this.currentWeddingId = 1;
     this.currentGuestId = 1;
@@ -186,6 +187,10 @@ export class MemStorage implements IStorage {
     };
     this.weddings.set(id, wedding);
     return wedding;
+  }
+
+  async getWeddingById(id: number): Promise<Wedding | undefined> {
+    return this.weddings.get(id);
   }
 
   async getWeddingByUrl(uniqueUrl: string): Promise<Wedding | undefined> {
@@ -417,6 +422,39 @@ export class MemStorage implements IStorage {
 
     this.guestCollaborators.set(collaborator.id, updatedCollaborator);
     return updatedCollaborator;
+  }
+
+  async createWeddingAccess(access: InsertWeddingAccess): Promise<WeddingAccess> {
+    const id = this.currentCollaboratorId++;
+    const weddingAccess: WeddingAccess = {
+      ...access,
+      id,
+      createdAt: new Date(),
+    };
+    this.weddingAccess.set(id, weddingAccess);
+    return weddingAccess;
+  }
+
+  async getWeddingAccessByUserId(userId: number): Promise<WeddingAccess[]> {
+    return Array.from(this.weddingAccess.values()).filter(access => access.userId === userId);
+  }
+
+  async getUserWeddingPermissions(userId: number, weddingId: number): Promise<WeddingAccess | undefined> {
+    return Array.from(this.weddingAccess.values())
+      .find(access => access.userId === userId && access.weddingId === weddingId);
+  }
+
+  async updateWeddingAccess(id: number, updates: Partial<InsertWeddingAccess>): Promise<WeddingAccess | undefined> {
+    const access = this.weddingAccess.get(id);
+    if (!access) return undefined;
+
+    const updatedAccess: WeddingAccess = { ...access, ...updates };
+    this.weddingAccess.set(id, updatedAccess);
+    return updatedAccess;
+  }
+
+  async deleteWeddingAccess(id: number): Promise<boolean> {
+    return this.weddingAccess.delete(id);
   }
 
   async getWeddingStats(weddingId: number): Promise<{

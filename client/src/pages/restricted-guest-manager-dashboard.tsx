@@ -30,7 +30,7 @@ export default function RestrictedGuestManagerDashboard() {
       }
       return;
     }
-  }, [currentUser, isLoading, error]);
+  }, [currentUser, isLoading, error, setLocation]);
 
   if (isLoading) {
     return (
