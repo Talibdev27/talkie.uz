@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +14,7 @@ interface RestrictedAdminDashboardProps {
 
 export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<"weddings" | "create">("weddings");
+  const { t } = useTranslation();
 
   // Fetch user's accessible weddings
   const { data: weddings = [], isLoading: weddingsLoading } = useQuery<Wedding[]>({
@@ -22,15 +24,9 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
   const restrictedTabs = [
     {
       id: "weddings" as const,
-      label: "Wedding Management",
+      label: t('guestManager.weddingManagement'),
       icon: Calendar,
-      description: "Manage assigned weddings and guest lists"
-    },
-    {
-      id: "create" as const,
-      label: "Create Wedding",
-      icon: Plus,
-      description: "Create new wedding events"
+      description: t('guestManager.manageAssignedWeddings')
     }
   ];
 
@@ -42,21 +38,21 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Wedding Management</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{t('guestManager.weddingManagement')}</h1>
                 <p className="text-sm text-gray-600">
-                  Restricted Access - Guest Management Only
+                  {t('guestManager.restrictedAccess')}
                 </p>
               </div>
               <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                Guest Manager
+                {t('guestManager.guestManager')}
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {user.name}</span>
+              <span className="text-sm text-gray-600">{t('guestManager.welcome')}, {user.name}</span>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/dashboard">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
+                  {t('guestManager.backToDashboard')}
                 </Link>
               </Button>
             </div>
@@ -87,10 +83,10 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
         {activeTab === "weddings" && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-medium text-gray-900">Assigned Weddings</h2>
+              <h2 className="text-lg font-medium text-gray-900">{t('guestManager.assignedWeddings')}</h2>
               <div className="flex items-center space-x-2">
                 <Badge variant="outline">
-                  {weddings.length} Wedding{weddings.length !== 1 ? 's' : ''}
+                  {weddings.length} {t('guestManager.wedding')}{weddings.length !== 1 ? '' : ''}
                 </Badge>
               </div>
             </div>
@@ -127,18 +123,18 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
                     <CardContent>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-sm font-medium text-gray-700">Venue</p>
+                          <p className="text-sm font-medium text-gray-700">{t('guestManager.venue')}</p>
                           <p className="text-sm text-gray-600">{wedding.venue}</p>
                         </div>
                         
                         <div className="flex items-center justify-between">
                           <Badge variant="outline" className="text-xs">
-                            Guest Management Only
+                            {t('guestManager.guestManagementOnly')}
                           </Badge>
                           <Button size="sm" asChild>
                             <Link href={`/manage/${wedding.uniqueUrl}`}>
                               <Users className="h-4 w-4 mr-2" />
-                              Manage Guests
+                              {t('guestManager.manageGuests')}
                             </Link>
                           </Button>
                         </div>
@@ -151,12 +147,12 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
               <Card>
                 <CardContent className="text-center py-12">
                   <Calendar className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Assigned Weddings</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('guestManager.noAssignedWeddings')}</h3>
                   <p className="text-gray-600 mb-4">
-                    You haven't been assigned to manage any weddings yet.
+                    {t('guestManager.noAssignedWeddingsDesc')}
                   </p>
                   <p className="text-sm text-gray-500">
-                    Contact your administrator to get access to wedding guest management.
+                    {t('guestManager.contactAdmin')}
                   </p>
                 </CardContent>
               </Card>
@@ -164,32 +160,7 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
           </div>
         )}
 
-        {activeTab === "create" && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">Create New Wedding</h2>
-              <p className="text-sm text-gray-600">
-                Create a new wedding event. You'll have guest management access once created.
-              </p>
-            </div>
 
-            <Card>
-              <CardContent className="text-center py-12">
-                <Plus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Wedding Creation</h3>
-                <p className="text-gray-600 mb-4">
-                  Create a new wedding and automatically get guest management access.
-                </p>
-                <Button asChild>
-                  <Link href="/create-wedding">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Wedding
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        )}
       </div>
 
       {/* Footer */}
