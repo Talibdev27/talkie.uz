@@ -29,15 +29,27 @@ export default function WeddingManage() {
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
 
-  // Determine the correct dashboard to return to based on referrer or current user context
+  // Determine the correct dashboard to return to based on admin status
   const getBackToDashboardPath = () => {
-    // Check if we came from admin dashboard by looking at the referrer or session storage
-    const referrer = document.referrer;
+    // Check if user is admin by looking at localStorage (where admin status is stored)
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const fromAdmin = sessionStorage.getItem('fromAdminDashboard');
     
-    if (referrer.includes('/admin/dashboard') || fromAdmin === 'true') {
-      return '/admin/dashboard';
+    // Debug logging
+    console.log('Admin status:', isAdmin);
+    console.log('From admin flag:', fromAdmin);
+    console.log('Document referrer:', document.referrer);
+    
+    // If user is admin and came from admin dashboard, return to admin dashboard
+    if (isAdmin && fromAdmin === 'true') {
+      return '/system/dashboard';
     }
+    
+    // Also check if user is currently an admin and URL suggests admin context
+    if (isAdmin && (document.referrer.includes('/admin/dashboard') || document.referrer.includes('/system/dashboard'))) {
+      return '/system/dashboard';
+    }
+    
     return '/dashboard';
   };
 
