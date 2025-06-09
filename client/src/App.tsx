@@ -21,7 +21,6 @@ import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
 import Payment from "@/pages/payment";
 import PaymentSuccess from "@/pages/payment-success";
-import GuestManagerDashboard from "@/pages/guest-manager-dashboard";
 
 function Router() {
   return (
@@ -71,8 +70,7 @@ function Router() {
       <Route path="/system/auth" component={AdminLogin} />
       <Route path="/system/dashboard" component={AdminDashboard} />
 
-      {/* Guest Manager Dashboard */}
-      <Route path="/guest-manager" component={GuestManagerDashboard} />
+
 
       {/* Fallback to 404 */}
       <Route component={NotFound} />
