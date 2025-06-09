@@ -8,14 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images, UserPlus
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
 } from "lucide-react";
 import type { Wedding, User } from "@shared/schema";
 
@@ -430,12 +428,11 @@ export default function AdminDashboard() {
 
         {/* Management Tabs */}
         <Tabs defaultValue="weddings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="weddings">Wedding Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="rsvp">RSVP Management</TabsTrigger>
             <TabsTrigger value="create">Create Wedding</TabsTrigger>
-            <TabsTrigger value="guest-managers">Guest Managers</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
@@ -801,126 +798,6 @@ export default function AdminDashboard() {
                       No weddings found.
                     </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Guest Managers */}
-          <TabsContent value="guest-managers" className="space-y-6">
-            <Card className="wedding-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-[#2C3338]">
-                  <Users className="h-5 w-5 text-[#D4B08C]" />
-                  Guest Manager Assignment
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-[#2C3338] mb-2">Guest Manager System</h3>
-                  <p className="text-sm text-[#2C3338]/70 mb-3">
-                    Assign limited wedding management access to users. Guest managers can only manage guest lists and RSVPs - they cannot edit wedding details or access admin functions.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <strong>Guest Manager Permissions:</strong>
-                      <ul className="list-disc list-inside mt-1 text-[#2C3338]/70">
-                        <li>Manage guest lists</li>
-                        <li>Track RSVP responses</li>
-                        <li>View guest analytics</li>
-                        <li>Send invitations</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <strong>Restricted Actions:</strong>
-                      <ul className="list-disc list-inside mt-1 text-[#2C3338]/70">
-                        <li>Cannot edit wedding details</li>
-                        <li>Cannot access admin functions</li>
-                        <li>Cannot manage photos</li>
-                        <li>Cannot change permissions</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Create Guest Manager Access */}
-                <div className="space-y-4 p-4 border rounded-lg">
-                  <h3 className="font-semibold text-[#2C3338]">Create Guest Manager Access</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="wedding-select">Select Wedding</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose a wedding" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {weddings?.map((wedding: Wedding) => (
-                            <SelectItem key={wedding.id} value={wedding.id.toString()}>
-                              {wedding.bride} & {wedding.groom}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="manager-email">Manager Email</Label>
-                      <Input
-                        id="manager-email"
-                        type="email"
-                        placeholder="manager@example.com"
-                      />
-                    </div>
-                    <div className="flex items-end">
-                      <Button className="w-full">
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        Assign Access
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Current Guest Managers */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-[#2C3338]">Current Guest Managers</h3>
-                  <div className="space-y-3">
-                    {weddings?.slice(0, 3).map((wedding: Wedding) => (
-                      <Card key={wedding.id} className="border-l-4 border-l-[#89916B]">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium text-[#2C3338]">
-                                {wedding.bride} & {wedding.groom}
-                              </h4>
-                              <p className="text-sm text-[#2C3338]/70">
-                                {wedding.venue} • {new Date(wedding.weddingDate).toLocaleDateString()}
-                              </p>
-                            </div>
-                            <Badge variant="outline" className="bg-green-50 text-green-700">
-                              No managers assigned
-                            </Badge>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                  
-                  <div className="text-center py-6 text-[#2C3338]/70 border-2 border-dashed border-gray-200 rounded-lg">
-                    <Users className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                    <p className="font-medium">No guest managers assigned yet</p>
-                    <p className="text-sm">Use the form above to assign guest management access to trusted users</p>
-                  </div>
-                </div>
-
-                {/* Usage Instructions */}
-                <div className="bg-yellow-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-[#2C3338] mb-2">How to Use Guest Manager System</h4>
-                  <ol className="list-decimal list-inside space-y-1 text-sm text-[#2C3338]/70">
-                    <li>Create a wedding for your client using the "Create Wedding" tab</li>
-                    <li>Assign guest manager access to the client's email address</li>
-                    <li>Client can log in and only access guest management for their wedding</li>
-                    <li>You maintain full admin control while client manages their guest list</li>
-                    <li>Perfect for Telegram channel requests where clients want limited access</li>
-                  </ol>
                 </div>
               </CardContent>
             </Card>
