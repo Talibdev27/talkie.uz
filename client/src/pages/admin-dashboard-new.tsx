@@ -382,10 +382,7 @@ export default function AdminDashboard() {
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log("Filtered users:", filteredUsers);
-  console.log("Search term:", searchTerm);
-  console.log("Users array length:", users.length);
-  console.log("Raw users data:", users);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white">
