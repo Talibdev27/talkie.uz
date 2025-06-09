@@ -57,6 +57,14 @@ export interface IStorage {
   updateCollaboratorStatus(id: number, status: string): Promise<GuestCollaborator | undefined>;
   acceptCollaboratorInvite(email: string, weddingId: number): Promise<GuestCollaborator | undefined>;
 
+  // Wedding Access Management
+  grantWeddingAccess(access: InsertWeddingAccess): Promise<WeddingAccess>;
+  getWeddingAccess(userId: number, weddingId: number): Promise<WeddingAccess | undefined>;
+  getUserWeddingAccess(userId: number): Promise<WeddingAccess[]>;
+  updateWeddingAccess(id: number, updates: Partial<InsertWeddingAccess>): Promise<WeddingAccess | undefined>;
+  revokeWeddingAccess(id: number): Promise<boolean>;
+  checkUserPermission(userId: number, weddingId: number, permission: keyof WeddingAccess['permissions']): Promise<boolean>;
+
   // Stats
   getWeddingStats(weddingId: number): Promise<{
     totalGuests: number;
