@@ -328,7 +328,7 @@ const resources = {
       'guests.responseProgress': 'Response Progress',
       'guests.outOf': 'out of',
       'guests.guestsResponded': 'guests have responded',
-      'guests.noGuestsFound': 'No guests found matching your search',
+      'guests.noGuestsFoundSearch': 'No guests found matching your search',
       'guests.noGuestsYet': 'No guests added yet',
       'guests.guestAdded': 'Guest Added!',
       'guests.guestAddedDesc': 'Guest has been added to your wedding',

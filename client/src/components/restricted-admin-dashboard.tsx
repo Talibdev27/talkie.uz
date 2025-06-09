@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Calendar, Plus, Settings, ArrowLeft } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Users, Calendar, Plus, Settings, ArrowLeft, Languages } from "lucide-react";
 import { Link } from "wouter";
 import type { Wedding, User } from "@shared/schema";
 
@@ -14,7 +15,11 @@ interface RestrictedAdminDashboardProps {
 
 export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<"weddings" | "create">("weddings");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const handleLanguageChange = (language: string) => {
+    i18n.changeLanguage(language);
+  };
 
   // Fetch user's accessible weddings
   const { data: weddings = [], isLoading: weddingsLoading } = useQuery<Wedding[]>({
@@ -42,6 +47,19 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <Languages className="h-4 w-4 text-gray-500" />
+                <Select value={i18n.language} onValueChange={handleLanguageChange}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="uz">O'zbekcha</SelectItem>
+                    <SelectItem value="ru">Русский</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <span className="text-sm text-gray-600">{t('guestManager.welcome')}, {user.name}</span>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/dashboard">
