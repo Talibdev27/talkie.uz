@@ -235,6 +235,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bride: bride.trim(),
         groom: groom.trim(),
         weddingDate: new Date(weddingDate),
+        weddingTime: "4:00 PM", // Default wedding time
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
         story: story?.trim() || "",
