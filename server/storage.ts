@@ -25,6 +25,7 @@ export interface IStorage {
 
   // Weddings
   createWedding(userId: number, wedding: InsertWedding): Promise<Wedding>;
+  getWeddingById(id: number): Promise<Wedding | undefined>;
   getWeddingByUrl(uniqueUrl: string): Promise<Wedding | undefined>;
   getWeddingsByUserId(userId: number): Promise<Wedding[]>;
   updateWedding(id: number, updates: Partial<InsertWedding>): Promise<Wedding | undefined>;
@@ -86,6 +87,7 @@ export class MemStorage implements IStorage {
   private guestBookEntries: Map<number, GuestBookEntry>;
   private invitations: Map<number, Invitation>;
   private guestCollaborators: Map<number, GuestCollaborator>;
+  private weddingAccess: Map<number, WeddingAccess>;
   private currentUserId: number;
   private currentWeddingId: number;
   private currentGuestId: number;
