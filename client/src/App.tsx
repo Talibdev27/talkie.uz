@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import { AuthProvider } from '@/hooks/useAuth';
+import { ProtectedRoute } from '@/components/protected-route';
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import CreateWedding from "@/pages/create-wedding";
@@ -34,21 +35,45 @@ function Router() {
       <Route path="/login" component={UserLogin} />
       <Route path="/register" component={UserLogin} />
 
-      {/* User Dashboard */}
-      <Route path="/dashboard" component={UserDashboard} />
+      {/* User Dashboard - restricted to users and admins only */}
+      <Route path="/dashboard">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <UserDashboard />
+        </ProtectedRoute>
+      </Route>
 
-      {/* Enhanced Progressive Onboarding */}
-      <Route path="/get-started" component={ProgressiveOnboarding} />
+      {/* Enhanced Progressive Onboarding - restricted to users and admins */}
+      <Route path="/get-started">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <ProgressiveOnboarding />
+        </ProtectedRoute>
+      </Route>
 
-      {/* Legacy registration (backup) */}
-      <Route path="/get-started-legacy" component={GetStarted} />
+      {/* Legacy registration (backup) - restricted to users and admins */}
+      <Route path="/get-started-legacy">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <GetStarted />
+        </ProtectedRoute>
+      </Route>
 
-      {/* Payment flow */}
-      <Route path="/payment" component={Payment} />
-      <Route path="/payment-success" component={PaymentSuccess} />
+      {/* Payment flow - restricted to users and admins */}
+      <Route path="/payment">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <Payment />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/payment-success">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <PaymentSuccess />
+        </ProtectedRoute>
+      </Route>
 
-      {/* Wedding creation flow */}
-      <Route path="/create-wedding" component={CreateWedding} />
+      {/* Wedding creation flow - restricted to users and admins only */}
+      <Route path="/create-wedding">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <CreateWedding />
+        </ProtectedRoute>
+      </Route>
 
       {/* Demo wedding site */}
       <Route path="/demo" component={DemoWedding} />
@@ -59,8 +84,12 @@ function Router() {
       {/* User dashboard */}
       <Route path="/dashboard" component={UserDashboard} />
       
-      {/* Wedding management for owners */}
-      <Route path="/manage/:uniqueUrl" component={WeddingManage} />
+      {/* Wedding management for owners - restricted to users and admins */}
+      <Route path="/manage/:uniqueUrl">
+        <ProtectedRoute allowedRoles={['user', 'admin']}>
+          <WeddingManage />
+        </ProtectedRoute>
+      </Route>
 
       {/* Admin login and dashboard */}
       <Route path="/admin" component={AdminLogin} />
