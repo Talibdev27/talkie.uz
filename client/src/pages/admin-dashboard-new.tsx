@@ -56,6 +56,11 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
+  // Debug logging
+  console.log("Users data:", users);
+  console.log("Users loading:", usersLoading);
+  console.log("Is admin:", isAdmin);
+
   const { data: stats = {
     totalUsers: 0,
     guestUsers: 0,
@@ -366,9 +371,14 @@ export default function AdminDashboard() {
   );
 
   const filteredUsers = users.filter((user: User) => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  console.log("Filtered users:", filteredUsers);
+  console.log("Search term:", searchTerm);
+  console.log("Users array length:", users.length);
+  console.log("Raw users data:", users);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white">
