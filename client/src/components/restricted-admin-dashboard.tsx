@@ -39,13 +39,7 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
             <div className="flex items-center space-x-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{t('guestManager.weddingManagement')}</h1>
-                <p className="text-sm text-gray-600">
-                  {t('guestManager.restrictedAccess')}
-                </p>
               </div>
-              <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                {t('guestManager.guestManager')}
-              </Badge>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">{t('guestManager.welcome')}, {user.name}</span>
@@ -127,10 +121,7 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
                           <p className="text-sm text-gray-600">{wedding.venue}</p>
                         </div>
                         
-                        <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="text-xs">
-                            {t('guestManager.guestManagementOnly')}
-                          </Badge>
+                        <div className="flex items-center justify-end">
                           <Button size="sm" asChild>
                             <Link href={`/manage/${wedding.uniqueUrl}`}>
                               <Users className="h-4 w-4 mr-2" />
@@ -163,22 +154,7 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
 
       </div>
 
-      {/* Footer */}
-      <div className="bg-white border-t mt-12">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center text-sm text-gray-500">
-            <div className="flex items-center space-x-2">
-              <Settings className="h-4 w-4" />
-              <span>{t('guestManager.restrictedAccessMode')}</span>
-            </div>
-            <div>
-              <Badge variant="outline" className="text-xs">
-                {t('guestManager.role')}: {t('guestManager.guestManager')}
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
