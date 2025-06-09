@@ -8,12 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images, UserPlus
 } from "lucide-react";
 import type { Wedding, User } from "@shared/schema";
 
