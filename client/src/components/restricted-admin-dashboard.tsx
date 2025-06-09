@@ -169,11 +169,11 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
           <div className="flex justify-between items-center text-sm text-gray-500">
             <div className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
-              <span>Restricted Access Mode - Guest Management Only</span>
+              <span>{t('guestManager.restrictedAccessMode')}</span>
             </div>
             <div>
               <Badge variant="outline" className="text-xs">
-                Role: Guest Manager
+                {t('guestManager.role')}: {t('guestManager.guestManager')}
               </Badge>
             </div>
           </div>
