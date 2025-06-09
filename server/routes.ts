@@ -9,7 +9,7 @@ import { storage } from "./storage";
 import { 
   insertUserSchema, insertWeddingSchema, insertGuestSchema, 
   insertPhotoSchema, insertGuestBookEntrySchema, rsvpUpdateSchema,
-  insertInvitationSchema, insertGuestCollaboratorSchema
+  insertInvitationSchema, insertGuestCollaboratorSchema, insertWeddingAccessSchema
 } from "@shared/schema";
 import { z } from "zod";
 import paymentsRouter from './payments';
@@ -806,6 +806,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Failed to create wedding", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
+    }
+  });
+
+  // Admin guest manager routes
+  app.post("/api/admin/create-guest-manager", async (req, res) => {
+    try {
+      const { email, name, weddingId } = req.body;
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User with this email already exists" });
+      }
+
+      // Create guest manager user
+      const userData = {
+        email,
+        name,
+        password: "temporary123", // Guest manager will need to change this
+        role: "guest_manager" as const,
+        isAdmin: false,
+        hasPaidSubscription: false
+      };
+
+      const newUser = await storage.createUser(userData);
+
+      // Create wedding access permissions
+      const accessData = {
+        userId: newUser.id,
+        weddingId: parseInt(weddingId),
+        accessLevel: "guest_manager" as const,
+        permissions: {
+          canEditDetails: false,
+          canManageGuests: true,
+          canViewAnalytics: false,
+          canManagePhotos: false,
+          canEditGuestBook: false
+        }
+      };
+
+      await storage.createWeddingAccess(accessData);
+
+      res.json({ success: true, user: newUser });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create guest manager" });
+    }
+  });
+
+  app.post("/api/admin/assign-guest-manager", async (req, res) => {
+    try {
+      const { userId, weddingId } = req.body;
+
+      // Check if user exists and is guest manager
+      const user = await storage.getUserById(userId);
+      if (!user || user.role !== 'guest_manager') {
+        return res.status(400).json({ message: "Invalid user or user is not a guest manager" });
+      }
+
+      // Check if access already exists
+      const existingAccess = await storage.getUserWeddingPermissions(userId, weddingId);
+      if (existingAccess) {
+        return res.status(400).json({ message: "User already has access to this wedding" });
+      }
+
+      const accessData = {
+        userId,
+        weddingId,
+        accessLevel: "guest_manager" as const,
+        permissions: {
+          canEditDetails: false,
+          canManageGuests: true,
+          canViewAnalytics: false,
+          canManagePhotos: false,
+          canEditGuestBook: false
+        }
+      };
+
+      const access = await storage.createWeddingAccess(accessData);
+      res.json(access);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to assign guest manager" });
+    }
+  });
+
+  app.get("/api/admin/wedding-access/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      // This would need a new storage method to get access by wedding ID
+      // For now, we'll return an empty array
+      res.json([]);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch wedding access" });
+    }
+  });
+
+  app.delete("/api/admin/wedding-access/:accessId", async (req, res) => {
+    try {
+      const accessId = parseInt(req.params.accessId);
+      const success = await storage.deleteWeddingAccess(accessId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Access not found" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove access" });
+    }
+  });
+
+  // Guest manager dashboard - restricted wedding list
+  app.get("/api/guest-manager/weddings", async (req, res) => {
+    try {
+      // This would get weddings the guest manager has access to
+      // For now return empty array
+      res.json([]);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
     }
   });
 

@@ -57,6 +57,13 @@ export interface IStorage {
   updateCollaboratorStatus(id: number, status: string): Promise<GuestCollaborator | undefined>;
   acceptCollaboratorInvite(email: string, weddingId: number): Promise<GuestCollaborator | undefined>;
 
+  // Wedding Access Control
+  createWeddingAccess(access: InsertWeddingAccess): Promise<WeddingAccess>;
+  getWeddingAccessByUserId(userId: number): Promise<WeddingAccess[]>;
+  getUserWeddingPermissions(userId: number, weddingId: number): Promise<WeddingAccess | undefined>;
+  updateWeddingAccess(id: number, updates: Partial<InsertWeddingAccess>): Promise<WeddingAccess | undefined>;
+  deleteWeddingAccess(id: number): Promise<boolean>;
+
   // Stats
   getWeddingStats(weddingId: number): Promise<{
     totalGuests: number;
@@ -585,6 +592,41 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(guestCollaborators.email, email), eq(guestCollaborators.weddingId, weddingId)))
       .returning();
     return collaborator || undefined;
+  }
+
+  // Wedding Access Control
+  async createWeddingAccess(access: InsertWeddingAccess): Promise<WeddingAccess> {
+    const [newAccess] = await db
+      .insert(weddingAccess)
+      .values(access)
+      .returning();
+    return newAccess;
+  }
+
+  async getWeddingAccessByUserId(userId: number): Promise<WeddingAccess[]> {
+    return await db.select().from(weddingAccess).where(eq(weddingAccess.userId, userId));
+  }
+
+  async getUserWeddingPermissions(userId: number, weddingId: number): Promise<WeddingAccess | undefined> {
+    const [access] = await db
+      .select()
+      .from(weddingAccess)
+      .where(and(eq(weddingAccess.userId, userId), eq(weddingAccess.weddingId, weddingId)));
+    return access || undefined;
+  }
+
+  async updateWeddingAccess(id: number, updates: Partial<InsertWeddingAccess>): Promise<WeddingAccess | undefined> {
+    const [access] = await db
+      .update(weddingAccess)
+      .set(updates)
+      .where(eq(weddingAccess.id, id))
+      .returning();
+    return access || undefined;
+  }
+
+  async deleteWeddingAccess(id: number): Promise<boolean> {
+    const result = await db.delete(weddingAccess).where(eq(weddingAccess.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   async getWeddingStats(weddingId: number): Promise<{
