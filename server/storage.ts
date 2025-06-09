@@ -203,11 +203,56 @@ export class MemStorage implements IStorage {
     return updatedWedding;
   }
 
+  async deleteWedding(id: number): Promise<boolean> {
+    // Delete all related data first
+    const weddingGuests = Array.from(this.guests.values()).filter(g => g.weddingId === id);
+    for (const guest of weddingGuests) {
+      this.guests.delete(guest.id);
+    }
+    
+    const weddingPhotos = Array.from(this.photos.values()).filter(p => p.weddingId === id);
+    for (const photo of weddingPhotos) {
+      this.photos.delete(photo.id);
+    }
+    
+    const weddingEntries = Array.from(this.guestBookEntries.values()).filter(e => e.weddingId === id);
+    for (const entry of weddingEntries) {
+      this.guestBookEntries.delete(entry.id);
+    }
+    
+    const weddingInvitations = Array.from(this.invitations.values()).filter(i => i.weddingId === id);
+    for (const invitation of weddingInvitations) {
+      this.invitations.delete(invitation.id);
+    }
+    
+    const weddingCollaborators = Array.from(this.guestCollaborators.values()).filter(c => c.weddingId === id);
+    for (const collaborator of weddingCollaborators) {
+      this.guestCollaborators.delete(collaborator.id);
+    }
+    
+    return this.weddings.delete(id);
+  }
+
   async createGuest(insertGuest: InsertGuest): Promise<Guest> {
     const id = this.currentGuestId++;
     const guest: Guest = {
       ...insertGuest,
       id,
+      email: insertGuest.email || null,
+      phone: insertGuest.phone || null,
+      address: insertGuest.address || null,
+      message: insertGuest.message || null,
+      plusOneName: insertGuest.plusOneName || null,
+      dietaryRestrictions: insertGuest.dietaryRestrictions || null,
+      notes: insertGuest.notes || null,
+      invitationSentAt: insertGuest.invitationSentAt || null,
+      rsvpStatus: (insertGuest.rsvpStatus as "pending" | "confirmed" | "declined" | "maybe") || 'pending',
+      side: (insertGuest.side as "bride" | "groom" | "both") || 'both',
+      plusOne: insertGuest.plusOne || false,
+      additionalGuests: insertGuest.additionalGuests || 0,
+      category: insertGuest.category || 'family',
+      invitationSent: insertGuest.invitationSent || false,
+      addedBy: insertGuest.addedBy || 'couple',
       createdAt: new Date(),
       respondedAt: null,
     };
@@ -237,6 +282,9 @@ export class MemStorage implements IStorage {
     const photo: Photo = {
       ...insertPhoto,
       id,
+      caption: insertPhoto.caption || null,
+      isHero: insertPhoto.isHero || false,
+      photoType: (insertPhoto.photoType as "couple" | "memory" | "hero") || 'memory',
       uploadedAt: new Date(),
     };
     this.photos.set(id, photo);
