@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { RestrictedAdminDashboard } from "@/components/restricted-admin-dashboard";
@@ -12,10 +12,10 @@ export default function RestrictedGuestManagerDashboard() {
     queryKey: ['/api/user/current'],
   });
 
-  useEffect(() => {
-    if (isLoading || error) return;
+  const handleRedirect = useCallback(() => {
+    if (isLoading) return;
     
-    if (!currentUser) {
+    if (error || !currentUser) {
       // Redirect to login if not authenticated
       setLocation('/login');
       return;
@@ -30,7 +30,11 @@ export default function RestrictedGuestManagerDashboard() {
       }
       return;
     }
-  }, [currentUser?.id, currentUser?.role, currentUser?.isAdmin, isLoading, error, setLocation]);
+  }, [currentUser, isLoading, error, setLocation]);
+
+  useEffect(() => {
+    handleRedirect();
+  }, [handleRedirect]);
 
   if (isLoading) {
     return (

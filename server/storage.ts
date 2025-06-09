@@ -116,6 +116,12 @@ export class MemStorage implements IStorage {
     const user: User = {
       ...insertUser,
       id,
+      role: (insertUser.role as "user" | "admin" | "guest_manager") || 'user',
+      isAdmin: insertUser.isAdmin || false,
+      hasPaidSubscription: insertUser.hasPaidSubscription || false,
+      paymentMethod: insertUser.paymentMethod || null,
+      paymentOrderId: insertUser.paymentOrderId || null,
+      paymentDate: insertUser.paymentDate || null,
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -134,6 +140,29 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values());
   }
 
+  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser: User = { 
+      ...user, 
+      ...updates,
+      role: (updates.role as "user" | "admin" | "guest_manager") || user.role
+    };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    // Delete all weddings for this user first
+    const userWeddings = Array.from(this.weddings.values()).filter(w => w.userId === id);
+    for (const wedding of userWeddings) {
+      await this.deleteWedding(wedding.id);
+    }
+    
+    return this.users.delete(id);
+  }
+
   async createWedding(userId: number, insertWedding: InsertWedding): Promise<Wedding> {
     const id = this.currentWeddingId++;
     const uniqueUrl = nanoid(10);
@@ -142,6 +171,15 @@ export class MemStorage implements IStorage {
       id,
       userId,
       uniqueUrl,
+      template: insertWedding.template || 'garden-romance',
+      weddingTime: insertWedding.weddingTime || '4:00 PM',
+      primaryColor: insertWedding.primaryColor || '#D4B08C',
+      accentColor: insertWedding.accentColor || '#89916B',
+      isPublic: insertWedding.isPublic !== undefined ? insertWedding.isPublic : true,
+      venueCoordinates: insertWedding.venueCoordinates || null,
+      story: insertWedding.story || null,
+      welcomeMessage: insertWedding.welcomeMessage || null,
+      backgroundMusicUrl: insertWedding.backgroundMusicUrl || null,
       createdAt: new Date(),
     };
     this.weddings.set(id, wedding);
