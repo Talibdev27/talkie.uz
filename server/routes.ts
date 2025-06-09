@@ -12,6 +12,8 @@ import {
   insertInvitationSchema, insertGuestCollaboratorSchema, insertWeddingAccessSchema
 } from "@shared/schema";
 import { z } from "zod";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import paymentsRouter from './payments';
 
 // Payment helper functions for Click and Payme
@@ -67,9 +69,153 @@ const upload = multer({
   }
 });
 
+// JWT secret key - in production, use environment variable
+const JWT_SECRET = process.env.JWT_SECRET || 'wedding-platform-secret-key';
+
+// Middleware to verify JWT token
+const authenticateToken = (req: any, res: any, next: any) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access token required' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+
+      // Validate required fields
+      if (!name || !email || !password) {
+        return res.status(400).json({ message: "Name, email, and password are required" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(409).json({ message: "User with this email already exists" });
+      }
+
+      // Hash password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      // Create user
+      const userData = {
+        name: name.trim(),
+        email: email.toLowerCase().trim(),
+        password: hashedPassword,
+        isAdmin: false,
+        role: 'user' as const,
+        hasPaidSubscription: false,
+        paymentMethod: null,
+        paymentOrderId: null,
+        paymentDate: null
+      };
+
+      const user = await storage.createUser(userData);
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { 
+          userId: user.id, 
+          email: user.email,
+          role: user.role,
+          isAdmin: user.isAdmin 
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // Return user data without password
+      const { password: _, ...userWithoutPassword } = user;
+      res.status(201).json({ 
+        user: userWithoutPassword, 
+        token,
+        message: "Registration successful" 
+      });
+
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      // Validate required fields
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      // Find user by email
+      const user = await storage.getUserByEmail(email.toLowerCase().trim());
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Verify password
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { 
+          userId: user.id, 
+          email: user.email,
+          role: user.role,
+          isAdmin: user.isAdmin 
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // Return user data without password
+      const { password: _, ...userWithoutPassword } = user;
+      res.json({ 
+        user: userWithoutPassword, 
+        token,
+        message: "Login successful" 
+      });
+
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.get("/api/auth/verify", authenticateToken, async (req: any, res) => {
+    try {
+      const user = await storage.getUserById(req.user.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const { password: _, ...userWithoutPassword } = user;
+      res.json({ user: userWithoutPassword });
+    } catch (error) {
+      console.error("Token verification error:", error);
+      res.status(500).json({ message: "Token verification failed" });
+    }
+  });
 
   // Combined registration and wedding creation endpoint
   app.post("/api/get-started", async (req, res) => {
@@ -441,11 +587,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user's own weddings - simplified for now
-  app.get("/api/user/weddings", async (req, res) => {
+  // Get user's own weddings - requires authentication
+  app.get("/api/user/weddings", authenticateToken, async (req: any, res) => {
     try {
-      // For now, return weddings for user ID 1 (you logged in as this user)
-      const userId = 1; // This should come from session/auth later
+      const userId = req.user.userId;
       const weddings = await storage.getWeddingsByUserId(userId);
       res.json(weddings);
     } catch (error: any) {

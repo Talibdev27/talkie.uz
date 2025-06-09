@@ -34,27 +34,58 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      // Check if user has existing weddings
-      const weddingsResponse = await fetch('/api/user/weddings');
-      const weddings = await weddingsResponse.json();
+      // Validate credentials with backend
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+
+      const { user, token } = await response.json();
+      
+      // Store authentication token
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('currentUser', JSON.stringify(user));
       
       toast({
         title: "Login Successful",
-        description: "Welcome back! Redirecting...",
+        description: `Welcome back, ${user.name}!`,
       });
       
-      // Smart redirect based on user's wedding status
-      if (weddings && weddings.length > 0) {
-        // User has existing weddings - go to dashboard
-        setLocation('/dashboard');
+      // Redirect based on user role
+      if (user.role === 'guest_manager') {
+        setLocation('/guest-manager');
+      } else if (user.isAdmin) {
+        setLocation('/admin/dashboard');
       } else {
-        // New user with no weddings - go to creation flow
-        setLocation('/create-wedding');
+        // Check if user has existing weddings
+        const weddingsResponse = await fetch('/api/user/weddings', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const weddings = await weddingsResponse.json();
+        
+        if (weddings && weddings.length > 0) {
+          setLocation('/dashboard');
+        } else {
+          setLocation('/create-wedding');
+        }
       }
     } catch (error) {
       toast({
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: error instanceof Error ? error.message : "Invalid email or password. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -74,13 +105,44 @@ export default function UserLogin() {
       return;
     }
 
+    if (registerData.password.length < 6) {
+      toast({
+        title: "Registration Failed",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Simulate user registration - in production, this would create a new user account
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: registerData.name,
+          email: registerData.email,
+          password: registerData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+
+      const { user, token } = await response.json();
+      
+      // Store authentication token
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
       toast({
         title: "Registration Successful",
-        description: "Welcome to our wedding platform! You can now create your wedding website.",
+        description: `Welcome ${user.name}! You can now create your wedding website.`,
       });
       
       // New users go directly to wedding creation
@@ -88,7 +150,7 @@ export default function UserLogin() {
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: "An error occurred during registration. Please try again.",
+        description: error instanceof Error ? error.message : "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
     } finally {
