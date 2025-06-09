@@ -156,7 +156,7 @@ export default function WeddingManage() {
   // Check access permissions - owners have full access, guest_managers have limited access
   const isOwner = currentUser && wedding.userId === currentUser.id;
   const isGuestManager = currentUser && currentUser.role === 'guest_manager';
-  const isAdmin = currentUser && currentUser.isAdmin;
+  const isAdmin = currentUser && currentUser.role === 'admin';
   const hasAccess = isOwner || isGuestManager || isAdmin;
 
   if (!hasAccess) {

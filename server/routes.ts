@@ -474,18 +474,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get current user
-  app.get("/api/user/current", async (req, res) => {
-    // For now, return the first user as a simple implementation
-    // In a real app, this would check session/authentication
+  // Get current user - requires authentication
+  app.get("/api/user/current", authenticateToken, async (req: any, res) => {
     try {
-      const users = await storage.getAllUsers();
-      if (users.length > 0) {
-        res.json(users[0]);
-      } else {
-        res.status(404).json({ message: "No user found" });
+      const user = await storage.getUserById(req.user.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
+
+      // Remove password from response
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
     } catch (error) {
+      console.error("Get current user error:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
