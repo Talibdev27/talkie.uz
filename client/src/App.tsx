@@ -21,6 +21,7 @@ import UserLogin from "@/pages/user-login";
 import DemoWedding from "@/pages/demo-wedding";
 import Payment from "@/pages/payment";
 import PaymentSuccess from "@/pages/payment-success";
+import RestrictedGuestManagerDashboard from "@/pages/restricted-guest-manager-dashboard";
 
 function Router() {
   return (

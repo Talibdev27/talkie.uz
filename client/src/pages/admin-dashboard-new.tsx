@@ -330,6 +330,19 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleRestrictUser = (userId: number, restricted: boolean) => {
+    const action = restricted ? 'restrict to guest management only' : 'remove restrictions from';
+    if (confirm(`Are you sure you want to ${action} this user?`)) {
+      updateUserMutation.mutate({ 
+        userId, 
+        updates: { 
+          role: restricted ? 'guest_manager' : 'user',
+          isAdmin: false 
+        } 
+      });
+    }
+  };
+
   const handleDeleteUser = (userId: number) => {
     if (confirm("Are you sure you want to delete this user? This will also delete all their weddings and cannot be undone.")) {
       deleteUserMutation.mutate(userId);
@@ -592,17 +605,35 @@ export default function AdminDashboard() {
                           <Badge variant="outline">
                             {weddings?.filter((w: Wedding) => w.userId === user.id).length || 0} weddings
                           </Badge>
-                          <Badge variant={user.isAdmin ? "default" : "secondary"}>
-                            {user.isAdmin ? "Admin" : "User"}
+                          <Badge variant={
+                            user.isAdmin ? "default" : 
+                            user.role === 'guest_manager' ? "destructive" : "secondary"
+                          }>
+                            {user.isAdmin ? "Admin" : 
+                             user.role === 'guest_manager' ? "Guest Manager" : "User"}
                           </Badge>
+                          {user.role === 'guest_manager' && (
+                            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
+                              Restricted Access
+                            </Badge>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleToggleAdmin(user.id, !user.isAdmin)}
-                            disabled={updateUserMutation.isPending}
+                            disabled={updateUserMutation.isPending || user.role === 'guest_manager'}
                             className="text-xs"
                           >
                             {user.isAdmin ? "Remove Admin" : "Make Admin"}
+                          </Button>
+                          <Button
+                            variant={user.role === 'guest_manager' ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleRestrictUser(user.id, user.role !== 'guest_manager')}
+                            disabled={updateUserMutation.isPending || user.isAdmin}
+                            className="text-xs"
+                          >
+                            {user.role === 'guest_manager' ? "Remove Restrictions" : "Restrict Access"}
                           </Button>
                           <Button
                             variant="destructive"

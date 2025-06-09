@@ -79,9 +79,7 @@ export function GuestManagerAssignment({ wedding, className = '' }: GuestManager
   // Remove guest manager access
   const removeAccessMutation = useMutation({
     mutationFn: async (accessId: number) => {
-      return apiRequest(`/api/admin/wedding-access/${accessId}`, {
-        method: 'DELETE',
-      });
+      return apiRequest(`/api/admin/wedding-access/${accessId}`, 'DELETE');
     },
     onSuccess: () => {
       toast({
