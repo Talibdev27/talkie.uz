@@ -77,7 +77,23 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      // Simulate user registration - in production, this would create a new user account
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: registerData.name,
+          email: registerData.email,
+          password: registerData.password,
+          confirmPassword: registerData.confirmPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
       toast({
         title: "Registration Successful",
         description: "Welcome to our wedding platform! You can now create your wedding website.",
@@ -85,10 +101,10 @@ export default function UserLogin() {
       
       // New users go directly to wedding creation
       setLocation('/create-wedding');
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Registration Failed",
-        description: "An error occurred during registration. Please try again.",
+        description: error.message || "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
     } finally {

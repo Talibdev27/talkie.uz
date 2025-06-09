@@ -71,6 +71,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
 
+  // User registration endpoint
+  app.post("/api/register", async (req, res) => {
+    try {
+      const { name, email, password, confirmPassword } = req.body;
+
+      // Validate required fields
+      if (!name || !email || !password) {
+        return res.status(400).json({ message: "Name, email, and password are required" });
+      }
+
+      // Check if passwords match
+      if (confirmPassword && password !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords don't match" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User with this email already exists" });
+      }
+
+      // Hash password (in production, use bcrypt)
+      const hashedPassword = password; // For demo purposes, storing plain text
+
+      // Create user
+      const userData = {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password: hashedPassword,
+        isAdmin: false,
+        role: "user" as const,
+        hasPaidSubscription: false,
+        paymentMethod: null,
+        paymentOrderId: null,
+        paymentDate: null,
+      };
+
+      const user = await storage.createUser(userData);
+      
+      // Return user without password
+      const { password: _, ...userResponse } = user;
+      res.json({ 
+        message: "User registered successfully", 
+        user: userResponse 
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Failed to register user" });
+    }
+  });
+
   // Combined registration and wedding creation endpoint
   app.post("/api/get-started", async (req, res) => {
     try {
