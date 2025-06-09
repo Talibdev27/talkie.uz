@@ -200,7 +200,7 @@ export default function GuestManagerDashboard() {
                     </p>
                   </CardHeader>
                   <CardContent>
-                    <EnhancedRSVPManager weddingId={selectedWedding.id} />
+                    <EnhancedRSVPManager wedding={selectedWedding} />
                   </CardContent>
                 </Card>
               </>
