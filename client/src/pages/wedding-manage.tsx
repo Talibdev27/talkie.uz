@@ -29,6 +29,24 @@ export default function WeddingManage() {
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
 
+  // Determine the correct dashboard to return to based on referrer or current user context
+  const getBackToDashboardPath = () => {
+    // Check if we came from admin dashboard by looking at the referrer or session storage
+    const referrer = document.referrer;
+    const fromAdmin = sessionStorage.getItem('fromAdminDashboard');
+    
+    if (referrer.includes('/admin/dashboard') || fromAdmin === 'true') {
+      return '/admin/dashboard';
+    }
+    return '/dashboard';
+  };
+
+  const handleBackToDashboard = () => {
+    // Clear the admin dashboard flag when navigating back
+    sessionStorage.removeItem('fromAdminDashboard');
+    setLocation(getBackToDashboardPath());
+  };
+
   // Check if user is logged in and owns this wedding
   const { data: currentUser } = useQuery({
     queryKey: ['/api/user/current'],
@@ -149,7 +167,7 @@ export default function WeddingManage() {
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
-                onClick={() => setLocation('/dashboard')}
+                onClick={handleBackToDashboard}
                 className="border-gray-200"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />

@@ -505,7 +505,10 @@ export default function AdminDashboard() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setLocation(`/admin/wedding/${wedding.uniqueUrl}`)}
+                            onClick={() => {
+                              sessionStorage.setItem('fromAdminDashboard', 'true');
+                              setLocation(`/manage/${wedding.uniqueUrl}`);
+                            }}
                           >
                             <Settings className="h-4 w-4" />
                           </Button>
