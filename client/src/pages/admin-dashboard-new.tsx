@@ -56,10 +56,7 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
-  // Debug logging
-  console.log("Users data:", users);
-  console.log("Users loading:", usersLoading);
-  console.log("Is admin:", isAdmin);
+
 
   const { data: stats = {
     totalUsers: 0,
@@ -108,14 +105,23 @@ export default function AdminDashboard() {
   // Create wedding mutation
   const createWeddingMutation = useMutation({
     mutationFn: async (weddingData: any) => {
+      console.log("Sending wedding data:", weddingData);
+      
+      // Validate required fields
+      if (!weddingData.userId || !weddingData.bride || !weddingData.groom || !weddingData.weddingDate) {
+        throw new Error('Please fill in all required fields');
+      }
+      
       const response = await fetch('/api/admin/weddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(weddingData)
       });
+      
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Failed to create wedding');
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Wedding creation error:", errorData);
+        throw new Error(errorData.message || 'Failed to create wedding');
       }
       return response.json();
     },
@@ -139,6 +145,7 @@ export default function AdminDashboard() {
       });
     },
     onError: (error: any) => {
+      console.error("Wedding creation error:", error);
       toast({
         title: "Creation Failed",
         description: error.message || "Failed to create wedding.",
@@ -600,14 +607,14 @@ export default function AdminDashboard() {
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 bg-[#89916B] rounded-full flex items-center justify-center">
                             <span className="text-white font-semibold">
-                              {user.name.charAt(0).toUpperCase()}
+                              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                             </span>
                           </div>
                           <div>
-                            <h3 className="font-semibold text-[#2C3338]">{user.name}</h3>
-                            <p className="text-sm text-[#2C3338]/70">{user.email}</p>
+                            <h3 className="font-semibold text-[#2C3338]">{user.name || 'Unknown User'}</h3>
+                            <p className="text-sm text-[#2C3338]/70">{user.email || 'No email'}</p>
                             <p className="text-xs text-[#2C3338]/50">
-                              Joined {new Date(user.createdAt).toLocaleDateString()}
+                              Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown date'}
                             </p>
                           </div>
                         </div>
