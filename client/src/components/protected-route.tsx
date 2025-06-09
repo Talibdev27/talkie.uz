@@ -41,7 +41,7 @@ export function ProtectedRoute({
         return;
       }
     }
-  }, [user?.id, user?.role, user?.isAdmin, isAuthenticated, isLoading, redirectTo, requireAuth, allowedRoles, setLocation]);
+  }, [user?.id, user?.role, user?.isAdmin, isAuthenticated, isLoading, redirectTo, requireAuth, setLocation]);
 
   // Show loading state while checking authentication
   if (isLoading) {
