@@ -13,9 +13,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images,
+  UserCog
 } from "lucide-react";
 import type { Wedding, User } from "@shared/schema";
+import { GuestManagerAssignment } from "@/components/guest-manager-assignment";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -428,11 +430,12 @@ export default function AdminDashboard() {
 
         {/* Management Tabs */}
         <Tabs defaultValue="weddings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="weddings">Wedding Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="rsvp">RSVP Management</TabsTrigger>
             <TabsTrigger value="create">Create Wedding</TabsTrigger>
+            <TabsTrigger value="access">Guest Managers</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
@@ -1017,6 +1020,51 @@ export default function AdminDashboard() {
                     Reset Form
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Guest Managers Tab */}
+          <TabsContent value="access" className="space-y-6">
+            <Card className="wedding-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-[#2C3338]">
+                  <UserCog className="h-5 w-5 text-[#D4B08C]" />
+                  Guest Manager Access Control
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Create and manage restricted access accounts for guest management. Perfect for clients who need help managing their wedding guests without full access to all features.
+                </p>
+              </CardHeader>
+              <CardContent>
+                {weddings && weddings.length > 0 ? (
+                  <div className="space-y-6">
+                    {weddings.map((wedding: Wedding) => (
+                      <div key={wedding.id} className="border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <h3 className="font-semibold text-lg text-[#2C3338]">
+                              {wedding.bride} & {wedding.groom}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {new Date(wedding.weddingDate).toLocaleDateString()} • {wedding.venue}
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            ID: {wedding.id}
+                          </Badge>
+                        </div>
+                        <GuestManagerAssignment wedding={wedding} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <UserCog className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No weddings available for guest manager assignment.</p>
+                    <p className="text-sm">Create weddings first to assign guest managers.</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
