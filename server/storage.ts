@@ -330,6 +330,14 @@ export class MemStorage implements IStorage {
       ...insertInvitation,
       id,
       createdAt: new Date(),
+      status: insertInvitation.status || 'pending',
+      invitationType: insertInvitation.invitationType || 'email',
+      invitationTemplate: insertInvitation.invitationTemplate || 'default',
+      sentAt: insertInvitation.sentAt || null,
+      deliveredAt: insertInvitation.deliveredAt || null,
+      openedAt: insertInvitation.openedAt || null,
+      errorMessage: insertInvitation.errorMessage || null,
+      reminderSentAt: insertInvitation.reminderSentAt || null,
     };
     this.invitations.set(id, invitation);
     return invitation;
@@ -382,6 +390,10 @@ export class MemStorage implements IStorage {
       ...insertCollaborator,
       id,
       invitedAt: new Date(),
+      role: insertCollaborator.role || 'guest_manager',
+      status: insertCollaborator.status || 'pending',
+      acceptedAt: insertCollaborator.acceptedAt || null,
+      lastActiveAt: insertCollaborator.lastActiveAt || null,
     };
     this.guestCollaborators.set(id, collaborator);
     return collaborator;
@@ -430,6 +442,14 @@ export class MemStorage implements IStorage {
       ...access,
       id,
       createdAt: new Date(),
+      accessLevel: (access.accessLevel as "guest_manager" | "owner" | "viewer") || 'viewer',
+      permissions: access.permissions || {
+        canEditDetails: false,
+        canManageGuests: false,
+        canViewAnalytics: false,
+        canManagePhotos: false,
+        canEditGuestBook: false,
+      },
     };
     this.weddingAccess.set(id, weddingAccess);
     return weddingAccess;
@@ -550,6 +570,11 @@ export class DatabaseStorage implements IStorage {
       console.error("Database wedding creation error:", error);
       throw error;
     }
+  }
+
+  async getWeddingById(id: number): Promise<Wedding | undefined> {
+    const [wedding] = await db.select().from(weddings).where(eq(weddings.id, id));
+    return wedding || undefined;
   }
 
   async getWeddingByUrl(uniqueUrl: string): Promise<Wedding | undefined> {
