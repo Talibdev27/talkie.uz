@@ -186,56 +186,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleCreateWedding = (e: React.FormEvent) => {
-    e.preventDefault();
 
-    // Validate required fields
-    const errors = [];
-    if (!newWedding.userId) errors.push("User ID");
-    if (!newWedding.bride?.trim()) errors.push("Bride's Name");
-    if (!newWedding.groom?.trim()) errors.push("Groom's Name");
-    if (!newWedding.weddingDate) errors.push("Wedding Date");
-
-    if (errors.length > 0) {
-      toast({
-        title: "Validation Error",
-        description: `Please fill in the following required fields: ${errors.join(", ")}`,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate date format
-    const dateObj = new Date(newWedding.weddingDate);
-    if (isNaN(dateObj.getTime())) {
-      toast({
-        title: "Invalid Date",
-        description: "Please enter a valid wedding date.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Submitting wedding data:", newWedding);
-    createWeddingMutation.mutate(newWedding);
-  };
-
-  const handleFormChange = (field: string, value: string) => {
-    setNewWedding(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleResetForm = () => {
-    setNewWedding({
-      userId: '',
-      bride: '',
-      groom: '',
-      weddingDate: '',
-      venue: '',
-      venueAddress: '',
-      template: 'gardenRomance',
-      story: ''
-    });
-  };
 
   // User management mutations
   const updateUserMutation = useMutation({
@@ -335,6 +286,8 @@ export default function AdminDashboard() {
       });
     },
   });
+
+
 
   const handleToggleAdmin = (userId: number, isAdmin: boolean) => {
     if (confirm(`Are you sure you want to ${isAdmin ? 'grant admin privileges to' : 'remove admin privileges from'} this user?`)) {
