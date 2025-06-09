@@ -8,6 +8,7 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   name: text("name").notNull(),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  role: text("role").$type<"user" | "admin" | "guest_manager">().notNull().default("user"),
   hasPaidSubscription: boolean("has_paid_subscription").default(false).notNull(),
   paymentMethod: text("payment_method"), // 'click', 'payme', or null
   paymentOrderId: text("payment_order_id"),
@@ -141,6 +142,27 @@ export const guestCollaborators = pgTable("guest_collaborators", {
   status: text("status").notNull().default("pending"), // pending, active, inactive
 });
 
+export const weddingAccess = pgTable("wedding_access", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  weddingId: integer("wedding_id").references(() => weddings.id).notNull(),
+  accessLevel: text("access_level").$type<"owner" | "guest_manager" | "viewer">().notNull().default("viewer"),
+  permissions: jsonb("permissions").$type<{
+    canEditDetails: boolean;
+    canManageGuests: boolean;
+    canViewAnalytics: boolean;
+    canManagePhotos: boolean;
+    canEditGuestBook: boolean;
+  }>().notNull().default({
+    canEditDetails: false,
+    canManageGuests: false,
+    canViewAnalytics: false,
+    canManagePhotos: false,
+    canEditGuestBook: false
+  }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -196,6 +218,11 @@ export const insertGuestCollaboratorSchema = createInsertSchema(guestCollaborato
   invitedAt: true,
 });
 
+export const insertWeddingAccessSchema = createInsertSchema(weddingAccess).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const rsvpUpdateSchema = z.object({
   rsvpStatus: z.enum(["confirmed", "declined", "maybe"]),
   message: z.string().optional(),
@@ -231,5 +258,8 @@ export type InsertInvitation = z.infer<typeof insertInvitationSchema>;
 
 export type GuestCollaborator = typeof guestCollaborators.$inferSelect;
 export type InsertGuestCollaborator = z.infer<typeof insertGuestCollaboratorSchema>;
+
+export type WeddingAccess = typeof weddingAccess.$inferSelect;
+export type InsertWeddingAccess = z.infer<typeof insertWeddingAccessSchema>;
 
 export type RSVPUpdate = z.infer<typeof rsvpUpdateSchema>;
