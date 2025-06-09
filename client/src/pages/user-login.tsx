@@ -8,10 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Heart, Eye, EyeOff, User, UserPlus } from 'lucide-react';
 import { Link } from 'wouter';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function UserLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { login, register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -34,58 +36,29 @@ export default function UserLogin() {
     setIsLoading(true);
 
     try {
-      // Validate credentials with backend
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: loginData.email,
-          password: loginData.password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+      const result = await login(loginData.email, loginData.password);
+      
+      if (!result.success) {
+        toast({
+          title: "Login Failed",
+          description: result.error || "Invalid email or password. Please try again.",
+          variant: "destructive",
+        });
+        return;
       }
 
-      const { user, token } = await response.json();
-      
-      // Store authentication token
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${user.name}!`,
+        description: "Welcome back! Redirecting...",
       });
       
-      // Redirect based on user role
-      if (user.role === 'guest_manager') {
-        setLocation('/guest-manager');
-      } else if (user.isAdmin) {
-        setLocation('/admin/dashboard');
-      } else {
-        // Check if user has existing weddings
-        const weddingsResponse = await fetch('/api/user/weddings', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const weddings = await weddingsResponse.json();
-        
-        if (weddings && weddings.length > 0) {
-          setLocation('/dashboard');
-        } else {
-          setLocation('/create-wedding');
-        }
-      }
+      // Redirect will be handled by the App component based on user role
+      setLocation('/dashboard');
+      
     } catch (error) {
       toast({
         title: "Login Failed",
-        description: error instanceof Error ? error.message : "Invalid email or password. Please try again.",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
