@@ -38,15 +38,11 @@ export default function WeddingManage() {
     // Debug logging
     console.log('Admin status:', isAdmin);
     console.log('From admin flag:', fromAdmin);
+    console.log('Current URL:', window.location.href);
     console.log('Document referrer:', document.referrer);
     
-    // If user is admin and came from admin dashboard, return to admin dashboard
-    if (isAdmin && fromAdmin === 'true') {
-      return '/system/dashboard';
-    }
-    
-    // Also check if user is currently an admin and URL suggests admin context
-    if (isAdmin && (document.referrer.includes('/admin/dashboard') || document.referrer.includes('/system/dashboard'))) {
+    // If user is admin, always return to admin dashboard for now (simplified logic)
+    if (isAdmin) {
       return '/system/dashboard';
     }
     

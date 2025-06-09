@@ -506,7 +506,9 @@ export default function AdminDashboard() {
                             variant="outline"
                             size="sm"
                             onClick={() => {
+                              console.log('Setting admin flag before navigation');
                               sessionStorage.setItem('fromAdminDashboard', 'true');
+                              console.log('Admin flag set:', sessionStorage.getItem('fromAdminDashboard'));
                               setLocation(`/manage/${wedding.uniqueUrl}`);
                             }}
                           >
