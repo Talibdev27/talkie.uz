@@ -179,7 +179,7 @@ export function PersonalizedGuestDashboard({
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
           <span className="text-sm text-muted-foreground">
-            {isConnected ? 'Live updates enabled' : 'Connecting...'}
+            {isConnected ? t('dashboard.liveUpdatesEnabled') : t('dashboard.connecting')}
           </span>
         </div>
       </div>

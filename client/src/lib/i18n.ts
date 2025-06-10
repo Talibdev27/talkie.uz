@@ -492,6 +492,8 @@ const resources = {
       'dashboard.guestBook': 'Guest Book',
       'dashboard.weddingOverview': 'Wedding Overview',
       'dashboard.photos': 'Photos',
+      'dashboard.liveUpdatesEnabled': 'Live updates enabled',
+      'dashboard.connecting': 'Connecting...',
 
       // Common
       'common.save': 'Save',
@@ -1040,6 +1042,8 @@ const resources = {
       'dashboard.guestBook': 'Mehmonlar kitobi',
       'dashboard.weddingOverview': 'To\'y haqida umumiy ma\'lumot',
       'dashboard.photos': 'Fotosuratlar',
+      'dashboard.liveUpdatesEnabled': 'Jonli yangilanishlar yoqilgan',
+      'dashboard.connecting': 'Ulanmoqda...',
 
       // Wedding Management
       'manage.backToDashboard': 'Boshqaruv paneliga qaytish',
@@ -1284,6 +1288,16 @@ const resources = {
       'admin.uploadPhotos': 'Загрузить фото',
       'admin.manageGuests': 'Управление гостями',
       'admin.recentRSVPs': 'Последние подтверждения',
+
+      // Dashboard
+      'dashboard.overview': 'Обзор',
+      'dashboard.rsvpStatus': 'Статус RSVP',
+      'dashboard.memories': 'Воспоминания',
+      'dashboard.guestBook': 'Книга гостей',
+      'dashboard.weddingOverview': 'Обзор свадьбы',
+      'dashboard.photos': 'Фотографии',
+      'dashboard.liveUpdatesEnabled': 'Живые обновления включены',
+      'dashboard.connecting': 'Подключение...',
 
       // Features Section
       'features.title': 'Все, что нужно для вашего идеального дня',
