@@ -35,8 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('Error parsing stored user data:', error);
         logout();
       }
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const verifyToken = async (authToken: string) => {
@@ -57,6 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Token verification failed:', error);
       logout();
+    } finally {
+      setIsLoading(false);
     }
   };
 
