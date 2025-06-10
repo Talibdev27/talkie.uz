@@ -29,6 +29,12 @@ export default function WeddingManage() {
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
 
+  // Check if user is logged in and owns this wedding
+  const { data: currentUser } = useQuery({
+    queryKey: ['/api/user/current'],
+    queryFn: () => fetch('/api/user/current').then(res => res.json()),
+  });
+
   // Determine the correct dashboard to return to based on user role and navigation context
   const getBackToDashboardPath = () => {
     if (!currentUser) return '/login';
@@ -52,18 +58,17 @@ export default function WeddingManage() {
   };
 
   const handleBackToDashboard = () => {
+    if (!currentUser) {
+      setLocation('/login');
+      return;
+    }
+    
     // Get the path BEFORE clearing the session flag
     const targetPath = getBackToDashboardPath();
     // Clear the admin dashboard flag after getting the path
     sessionStorage.removeItem('fromAdminDashboard');
     setLocation(targetPath);
   };
-
-  // Check if user is logged in and owns this wedding
-  const { data: currentUser } = useQuery({
-    queryKey: ['/api/user/current'],
-    queryFn: () => fetch('/api/user/current').then(res => res.json()),
-  });
 
   // Fetch wedding details
   const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
