@@ -494,6 +494,11 @@ const resources = {
       'dashboard.photos': 'Photos',
       'dashboard.liveUpdatesEnabled': 'Live updates enabled',
       'dashboard.connecting': 'Connecting...',
+      'dashboard.welcomeConfirmed': 'Welcome back, {{name}}! We\'re so excited you\'ll be joining us for our special day! 🎉',
+      'dashboard.welcomeDeclined': 'Hi {{name}}, thank you for letting us know. We\'ll miss you on our special day, but we understand! 💕',
+      'dashboard.welcomeMaybe': 'Hello {{name}}! We hope you can make it to our wedding. Let us know when you decide! 🤞',
+      'dashboard.welcomeDefault': 'Hi {{name}}! We\'d love to have you celebrate with us. Please let us know if you can attend! 💍',
+      'dashboard.welcomeGeneral': 'Welcome to {{bride}} & {{groom}}\'s wedding! We\'re so happy you\'re here! 💒',
 
       // Common
       'common.save': 'Save',
@@ -1044,6 +1049,11 @@ const resources = {
       'dashboard.photos': 'Fotosuratlar',
       'dashboard.liveUpdatesEnabled': 'Jonli yangilanishlar yoqilgan',
       'dashboard.connecting': 'Ulanmoqda...',
+      'dashboard.welcomeConfirmed': 'Qaytib kelganingizdan xursandmiz, {{name}}! Maxsus kunimizda bizga qo\'shilishingizdan juda xursandmiz! 🎉',
+      'dashboard.welcomeDeclined': 'Salom {{name}}, xabar berganingiz uchun rahmat. Maxsus kunimizda sizni sog\'inishimiz, lekin tushunishimiz! 💕',
+      'dashboard.welcomeMaybe': 'Salom {{name}}! To\'yga kelishingizni umid qilamiz. Qaror qabul qilganingizda bizga xabar bering! 🤞',
+      'dashboard.welcomeDefault': 'Salom {{name}}! Siz bilan nishonlashni juda xohlaymiz. Iltimos, qatnasha olishingizni bizga xabar bering! 💍',
+      'dashboard.welcomeGeneral': '{{bride}} va {{groom}}ning to\'yiga xush kelibsiz! Bu yerda bo\'lganingizdan juda xursandmiz! 💒',
 
       // Wedding Management
       'manage.backToDashboard': 'Boshqaruv paneliga qaytish',
@@ -1298,6 +1308,11 @@ const resources = {
       'dashboard.photos': 'Фотографии',
       'dashboard.liveUpdatesEnabled': 'Живые обновления включены',
       'dashboard.connecting': 'Подключение...',
+      'dashboard.welcomeConfirmed': 'Добро пожаловать обратно, {{name}}! Мы так рады, что вы присоединитесь к нам в наш особенный день! 🎉',
+      'dashboard.welcomeDeclined': 'Привет {{name}}, спасибо, что дали нам знать. Мы будем скучать по вам в наш особенный день, но мы понимаем! 💕',
+      'dashboard.welcomeMaybe': 'Привет {{name}}! Мы надеемся, что вы сможете прийти на нашу свадьбу. Дайте нам знать, когда решите! 🤞',
+      'dashboard.welcomeDefault': 'Привет {{name}}! Мы хотели бы праздновать с вами. Пожалуйста, дайте нам знать, сможете ли вы присутствовать! 💍',
+      'dashboard.welcomeGeneral': 'Добро пожаловать на свадьбу {{bride}} и {{groom}}! Мы так рады, что вы здесь! 💒',
 
       // Features Section
       'features.title': 'Все, что нужно для вашего идеального дня',

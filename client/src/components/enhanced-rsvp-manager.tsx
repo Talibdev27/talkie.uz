@@ -157,7 +157,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
           <div>
             <div className="flex justify-between text-sm mb-2">
               <span>{t('guests.responseRatePercent')}</span>
-              <span className="font-medium">{responseRate}% ({stats.total - stats.pending} of {stats.total})</span>
+              <span className="font-medium">{responseRate}% ({stats.total - stats.pending} {t('guests.outOf')} {stats.total})</span>
             </div>
             <Progress value={responseRate} className="w-full h-3" />
           </div>
@@ -350,7 +350,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                   <Badge className={`border ${getStatusColor(guest.rsvpStatus)}`}>
                     <div className="flex items-center gap-1">
                       {getStatusIcon(guest.rsvpStatus)}
-                      <span className="capitalize">{guest.rsvpStatus}</span>
+                      <span>{t(`guests.status.${guest.rsvpStatus}`)}</span>
                     </div>
                   </Badge>
                 </div>

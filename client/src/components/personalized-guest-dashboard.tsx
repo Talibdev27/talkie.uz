@@ -143,16 +143,16 @@ export function PersonalizedGuestDashboard({
     if (currentGuest) {
       switch (currentGuest.rsvpStatus) {
         case 'confirmed':
-          return `Welcome back, ${currentGuest.name}! We're so excited you'll be joining us for our special day! 🎉`;
+          return t('dashboard.welcomeConfirmed', { name: currentGuest.name });
         case 'declined':
-          return `Hi ${currentGuest.name}, thank you for letting us know. We'll miss you on our special day, but we understand! 💕`;
+          return t('dashboard.welcomeDeclined', { name: currentGuest.name });
         case 'maybe':
-          return `Hello ${currentGuest.name}! We hope you can make it to our wedding. Let us know when you decide! 🤞`;
+          return t('dashboard.welcomeMaybe', { name: currentGuest.name });
         default:
-          return `Hi ${currentGuest.name}! We'd love to have you celebrate with us. Please let us know if you can attend! 💍`;
+          return t('dashboard.welcomeDefault', { name: currentGuest.name });
       }
     }
-    return `Welcome to ${wedding.bride} & ${wedding.groom}'s wedding! We're so happy you're here! 💒`;
+    return t('dashboard.welcomeGeneral', { bride: wedding.bride, groom: wedding.groom });
   };
 
   const formatDate = (date: Date | string) => {
