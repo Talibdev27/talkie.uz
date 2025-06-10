@@ -39,9 +39,9 @@ export default function WeddingManage() {
   const getBackToDashboardPath = () => {
     if (!currentUser) return '/login';
     
-    // Guest managers should go to their restricted dashboard
+    // Guest managers should go to the main landing page
     if (currentUser.role === 'guest_manager') {
-      return '/guest-manager';
+      return '/';
     }
     
     // Check if user is admin by looking at localStorage (where admin status is stored)
