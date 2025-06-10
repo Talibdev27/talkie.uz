@@ -309,14 +309,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
 
-      // Use environment variables for admin credentials
-      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
+      // Check if this is the admin user
+      const adminUser = await storage.getUserByEmail('mukhammadaminkhonesaev@gmail.com');
+      
+      if (username === 'admin' && password === 'admin123' && adminUser) {
+        // Generate JWT token for the admin user
+        const token = jwt.sign(
+          { userId: adminUser.id, email: adminUser.email, isAdmin: true },
+          JWT_SECRET,
+          { expiresIn: '24h' }
+        );
+
+        const { password: _, ...userWithoutPassword } = adminUser;
+        
         res.json({
-          user: {
-            id: 1,
-            email: 'mukhammadaminkhonesaev@gmail.com',
-            name: 'Talibdev'
-          },
+          user: userWithoutPassword,
+          token,
           message: "Login successful"
         });
       } else {
@@ -491,11 +499,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Wedding owner update route
-  app.put("/api/weddings/:id", async (req, res) => {
+  // Wedding owner update route - with authorization
+  app.put("/api/weddings/:id", authenticateToken, async (req: any, res) => {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
+      const userId = req.user.userId;
+      
+      // Get the wedding to check ownership
+      const existingWedding = await storage.getWeddingById(weddingId);
+      if (!existingWedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+      
+      // Get the user to check if they're admin
+      const user = await storage.getUserById(userId);
+      const isAdmin = user && (user.isAdmin || user.role === 'admin');
+      
+      // Check if user owns the wedding or is admin
+      if (!isAdmin && existingWedding.userId !== userId) {
+        return res.status(403).json({ message: "Not authorized to update this wedding" });
+      }
       
       // Convert date string to Date object if needed
       if (updates.weddingDate && typeof updates.weddingDate === 'string') {

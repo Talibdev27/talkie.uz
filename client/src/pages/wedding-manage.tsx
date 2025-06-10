@@ -91,9 +91,16 @@ export default function WeddingManage() {
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updatedData: Partial<Wedding>) => {
+      const token = localStorage.getItem('authToken');
+      const headers: HeadersInit = { 'Content-Type': 'application/json' };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch(`/api/weddings/${wedding?.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(updatedData)
       });
       if (!response.ok) throw new Error('Failed to update wedding');
@@ -161,7 +168,8 @@ export default function WeddingManage() {
   // Check access permissions - owners have full access, guest_managers have limited access
   const isOwner = currentUser && wedding.userId === currentUser.id;
   const isGuestManager = currentUser && currentUser.role === 'guest_manager';
-  const isAdmin = currentUser && currentUser.role === 'admin';
+  // Check admin status from localStorage (where admin authentication is stored)
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const hasAccess = isOwner || isGuestManager || isAdmin;
 
   if (!hasAccess) {
@@ -215,7 +223,7 @@ export default function WeddingManage() {
                 {t('manage.viewSite')}
               </Button>
               {/* Only show edit controls for owners and admins, not guest managers */}
-              {(isOwner || isAdmin) && (
+              {(isOwner || localStorage.getItem('isAdmin') === 'true') && (
                 <>
                   {editMode ? (
                     <>
