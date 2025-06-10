@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ export function PersonalizedGuestDashboard({
   currentGuest,
   className = '' 
 }: PersonalizedGuestDashboardProps) {
+  const { t } = useTranslation();
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [guestMessage, setGuestMessage] = useState('');
   const [guestName, setGuestName] = useState('');

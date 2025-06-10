@@ -244,12 +244,7 @@ export default function WeddingManage() {
                   )}
                 </>
               )}
-              {/* Show restricted access indicator for guest managers */}
-              {isGuestManager && (
-                <Badge variant="secondary" className="text-sm">
-                  Guest Manager Access
-                </Badge>
-              )}
+
             </div>
           </div>
         </div>
@@ -263,7 +258,7 @@ export default function WeddingManage() {
               <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
             )}
             <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
-            <TabsTrigger value="dashboard">Guest Dashboard</TabsTrigger>
+            <TabsTrigger value="dashboard">{t('manage.guestDashboard')}</TabsTrigger>
             {/* Only show photo and guestbook management for owners and admins */}
             {(isOwner || isAdmin) && (
               <>

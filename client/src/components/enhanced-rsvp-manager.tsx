@@ -360,8 +360,8 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
             {filteredGuests.length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No guests found</p>
-                <p className="text-sm">Try adjusting your search or filter criteria</p>
+                <p>{t('guests.noGuestsFoundFilter')}</p>
+                <p className="text-sm">{t('guests.adjustSearchFilter')}</p>
               </div>
             )}
           </div>
