@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ interface EnhancedRSVPManagerProps {
 }
 
 export function EnhancedRSVPManager({ wedding, guests, className = '' }: EnhancedRSVPManagerProps) {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedGuests, setSelectedGuests] = useState<number[]>([]);
@@ -144,17 +146,17 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            RSVP Progress Overview
+            {t('guests.rsvpProgressOverview')}
           </CardTitle>
           <CardDescription>
-            Real-time tracking of guest responses with quick action tools
+            {t('guests.realTimeTracking')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Progress Bar */}
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span>Response Rate</span>
+              <span>{t('guests.responseRatePercent')}</span>
               <span className="font-medium">{responseRate}% ({stats.total - stats.pending} of {stats.total})</span>
             </div>
             <Progress value={responseRate} className="w-full h-3" />
@@ -164,19 +166,19 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 rounded-lg bg-green-50 border border-green-200">
               <div className="text-2xl font-bold text-green-600">{stats.confirmed}</div>
-              <div className="text-sm text-green-700 font-medium">Confirmed</div>
+              <div className="text-sm text-green-700 font-medium">{t('guests.status.confirmed')}</div>
             </div>
             <div className="text-center p-4 rounded-lg bg-yellow-50 border border-yellow-200">
               <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-              <div className="text-sm text-yellow-700 font-medium">Pending</div>
+              <div className="text-sm text-yellow-700 font-medium">{t('guests.status.pending')}</div>
             </div>
             <div className="text-center p-4 rounded-lg bg-blue-50 border border-blue-200">
               <div className="text-2xl font-bold text-blue-600">{stats.maybe}</div>
-              <div className="text-sm text-blue-700 font-medium">Maybe</div>
+              <div className="text-sm text-blue-700 font-medium">{t('guests.status.maybe')}</div>
             </div>
             <div className="text-center p-4 rounded-lg bg-red-50 border border-red-200">
               <div className="text-2xl font-bold text-red-600">{stats.declined}</div>
-              <div className="text-sm text-red-700 font-medium">Declined</div>
+              <div className="text-sm text-red-700 font-medium">{t('guests.status.declined')}</div>
             </div>
           </div>
         </CardContent>
@@ -185,21 +187,21 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
       {/* Guest Management Tools */}
       <Card>
         <CardHeader>
-          <CardTitle>Guest Management Tools</CardTitle>
+          <CardTitle>{t('guests.guestManagementTools')}</CardTitle>
           <CardDescription>
-            Search, filter, and perform bulk actions on your guest list
+            {t('guests.searchFilterTools')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Search and Filter Controls */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <Label htmlFor="search">Search Guests</Label>
+              <Label htmlFor="search">{t('guests.searchGuests')}</Label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   id="search"
-                  placeholder="Search by name or email..."
+                  placeholder={t('guests.searchGuestsByName')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -207,18 +209,18 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
               </div>
             </div>
             <div>
-              <Label htmlFor="status-filter">Filter by Status</Label>
+              <Label htmlFor="status-filter">{t('guests.filterByStatus')}</Label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-40">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="confirmed">Confirmed</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="maybe">Maybe</SelectItem>
-                  <SelectItem value="declined">Declined</SelectItem>
+                  <SelectItem value="all">{t('guests.allStatus')}</SelectItem>
+                  <SelectItem value="confirmed">{t('guests.status.confirmed')}</SelectItem>
+                  <SelectItem value="pending">{t('guests.status.pending')}</SelectItem>
+                  <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
+                  <SelectItem value="declined">{t('guests.status.declined')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -258,9 +260,9 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Guest List ({filteredGuests.length})</CardTitle>
+              <CardTitle>{t('guests.guestListCount', { count: filteredGuests.length })}</CardTitle>
               <CardDescription>
-                Click status badges for instant updates
+                {t('guests.clickStatusBadges')}
               </CardDescription>
             </div>
             <Button
@@ -268,7 +270,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
               size="sm"
               onClick={selectAll}
             >
-              {selectedGuests.length === filteredGuests.length ? 'Deselect All' : 'Select All'}
+              {selectedGuests.length === filteredGuests.length ? t('guests.deselectAll') : 'Select All'}
             </Button>
           </div>
         </CardHeader>
