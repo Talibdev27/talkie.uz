@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { RestrictedAdminDashboard } from "@/components/restricted-admin-dashboard";
@@ -6,6 +6,7 @@ import type { User } from "@shared/schema";
 
 export default function RestrictedGuestManagerDashboard() {
   const [, setLocation] = useLocation();
+  const [hasRedirected, setHasRedirected] = useState(false);
 
   // Check if user is authenticated and has guest manager role
   const { data: currentUser, isLoading, error } = useQuery<User>({
@@ -13,16 +14,18 @@ export default function RestrictedGuestManagerDashboard() {
   });
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || hasRedirected) return;
     
     if (error || !currentUser) {
       // Redirect to login if not authenticated
+      setHasRedirected(true);
       setLocation('/login');
       return;
     }
 
     if (currentUser.role !== 'guest_manager') {
       // Redirect regular users to user dashboard, admins to admin dashboard
+      setHasRedirected(true);
       if (currentUser.isAdmin) {
         setLocation('/admin/dashboard');
       } else {
@@ -30,7 +33,7 @@ export default function RestrictedGuestManagerDashboard() {
       }
       return;
     }
-  }, [currentUser, isLoading, error, setLocation]);
+  }, [currentUser, isLoading, error, setLocation, hasRedirected]);
 
   if (isLoading) {
     return (

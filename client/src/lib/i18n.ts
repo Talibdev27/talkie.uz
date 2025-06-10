@@ -334,24 +334,6 @@ const resources = {
       'guests.guestAddedDesc': 'Guest has been added to your wedding',
       'guests.addGuestError': 'Failed to add guest. Please try again.',
 
-      // Guest Management Tools  
-      'guests.guestManagementTools': 'Guest Management Tools',
-      'guests.searchFilterTools': 'Search, filter, and bulk actions for your guest list',
-      'guests.searchGuests': 'Search Guests',
-      'guests.searchByNameOrEmail': 'Search by name or email...',
-      'guests.searchGuestsByName': 'Search by name or email...',
-      'guests.filterByStatus': 'Filter by Status',
-      'guests.allStatus': 'All Status',
-      'guests.guestListCount': 'Guest List ({count})',
-      'guests.clickStatusBadges': 'Click status badges for quick updates',
-      'guests.deselectAll': 'Deselect All',
-      'guests.noGuestsFound': 'No guests found',
-      'guests.adjustSearchFilter': 'Adjust your search or filter criteria',
-      'guests.rsvpProgressOverview': 'RSVP Progress Overview',
-      'guests.realTimeTracking': 'Real-time tracking of guest responses and quick action tools',
-      'guests.responseRate': 'Response Rate',
-      'guests.responseRatePercent': 'Response Rate',
-
       // Progressive Onboarding
       'onboarding.title': 'Create Your Dream Wedding Website',
       'onboarding.subtitle': 'Follow our guided process to build your perfect wedding site',
