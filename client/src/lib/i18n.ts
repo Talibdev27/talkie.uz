@@ -334,6 +334,24 @@ const resources = {
       'guests.guestAddedDesc': 'Guest has been added to your wedding',
       'guests.addGuestError': 'Failed to add guest. Please try again.',
 
+      // Guest Management Tools  
+      'guests.guestManagementTools': 'Guest Management Tools',
+      'guests.searchFilterTools': 'Search, filter, and bulk actions for your guest list',
+      'guests.searchGuests': 'Search Guests',
+      'guests.searchByNameOrEmail': 'Search by name or email...',
+      'guests.searchGuestsByName': 'Search by name or email...',
+      'guests.filterByStatus': 'Filter by Status',
+      'guests.allStatus': 'All Status',
+      'guests.guestListCount': 'Guest List ({count})',
+      'guests.clickStatusBadges': 'Click status badges for quick updates',
+      'guests.deselectAll': 'Deselect All',
+      'guests.noGuestsFound': 'No guests found',
+      'guests.adjustSearchFilter': 'Adjust your search or filter criteria',
+      'guests.rsvpProgressOverview': 'RSVP Progress Overview',
+      'guests.realTimeTracking': 'Real-time tracking of guest responses and quick action tools',
+      'guests.responseRate': 'Response Rate',
+      'guests.responseRatePercent': 'Response Rate',
+
       // Progressive Onboarding
       'onboarding.title': 'Create Your Dream Wedding Website',
       'onboarding.subtitle': 'Follow our guided process to build your perfect wedding site',
@@ -838,6 +856,14 @@ const resources = {
       'guests.rsvpProgressOverview': 'RSVP taraqqiyoti haqida umumiy ma\'lumot',
       'guests.realTimeTracking': 'Mehmonlarning javoblari bo\'yicha real vaqt kuzatuvi va tezkor harakat vositalari',
       'guests.responseRate': 'Javob foizi',
+      'guests.responseRatePercent': 'Javob foizi',
+      'guests.outOf': 'dan',
+      
+      // RSVP Status Labels
+      'guests.status.confirmed': 'Tasdiqlangan',
+      'guests.status.pending': 'Kutilmoqda',
+      'guests.status.maybe': 'Ehtimol',
+      'guests.status.declined': 'Rad etilgan',
 
       // Admin Dashboard
       'admin.dashboard': 'Boshqaruv paneli',
@@ -1534,6 +1560,31 @@ const resources = {
       'manage.cancel': 'Отменить',
       'manage.accessDenied': 'Доступ запрещен',
       'manage.noPermission': 'У вас нет разрешения на управление этой свадьбой.',
+
+      // Guest Management Tools  
+      'guests.guestManagementTools': 'Инструменты управления гостями',
+      'guests.searchFilterTools': 'Поиск, фильтрация и массовые действия для списка гостей',
+      'guests.searchGuests': 'Поиск гостей',
+      'guests.searchByNameOrEmail': 'Поиск по имени или email...',
+      'guests.searchGuestsByName': 'Поиск по имени или email...',
+      'guests.filterByStatus': 'Фильтр по статусу',
+      'guests.allStatus': 'Все статусы',
+      'guests.guestListCount': 'Список гостей ({count})',
+      'guests.clickStatusBadges': 'Нажмите на значки статуса для быстрого обновления',
+      'guests.deselectAll': 'Снять все выделения',
+      'guests.noGuestsFound': 'Гости не найдены',
+      'guests.adjustSearchFilter': 'Настройте критерии поиска или фильтра',
+      'guests.rsvpProgressOverview': 'Обзор прогресса RSVP',
+      'guests.realTimeTracking': 'Отслеживание ответов гостей в реальном времени и инструменты быстрых действий',
+      'guests.responseRate': 'Процент ответов',
+      'guests.responseRatePercent': 'Процент ответов',
+      'guests.outOf': 'из',
+      
+      // RSVP Status Labels
+      'guests.status.confirmed': 'Подтверждено',
+      'guests.status.pending': 'Ожидает',
+      'guests.status.maybe': 'Возможно',
+      'guests.status.declined': 'Отклонено',
     }
   }
 };
