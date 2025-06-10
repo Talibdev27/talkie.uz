@@ -486,6 +486,12 @@ const resources = {
       'dashboard.totalWeddings': 'Total Weddings',
       'dashboard.publicWeddings': 'Public Weddings',
       'dashboard.upcomingWeddings': 'Upcoming Weddings',
+      'dashboard.overview': 'Overview',
+      'dashboard.rsvpStatus': 'RSVP Status',
+      'dashboard.memories': 'Memories',
+      'dashboard.guestBook': 'Guest Book',
+      'dashboard.weddingOverview': 'Wedding Overview',
+      'dashboard.photos': 'Photos',
 
       // Common
       'common.save': 'Save',
@@ -1028,6 +1034,12 @@ const resources = {
       'dashboard.view': 'Ko\'rish',
       'dashboard.edit': 'Tahrirlash',
       'dashboard.manage': 'Boshqarish',
+      'dashboard.overview': 'Umumiy ko\'rinish',
+      'dashboard.rsvpStatus': 'RSVP holati',
+      'dashboard.memories': 'Xotiralar',
+      'dashboard.guestBook': 'Mehmonlar kitobi',
+      'dashboard.weddingOverview': 'To\'y haqida umumiy ma\'lumot',
+      'dashboard.photos': 'Fotosuratlar',
 
       // Wedding Management
       'manage.backToDashboard': 'Boshqaruv paneliga qaytish',

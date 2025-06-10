@@ -219,34 +219,34 @@ export function PersonalizedGuestDashboard({
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="rsvp">RSVP Status</TabsTrigger>
-          <TabsTrigger value="memories">Memories</TabsTrigger>
-          <TabsTrigger value="guestbook">Guest Book</TabsTrigger>
+          <TabsTrigger value="overview">{t('dashboard.overview')}</TabsTrigger>
+          <TabsTrigger value="rsvp">{t('dashboard.rsvpStatus')}</TabsTrigger>
+          <TabsTrigger value="memories">{t('dashboard.memories')}</TabsTrigger>
+          <TabsTrigger value="guestbook">{t('dashboard.guestBook')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Wedding Overview</CardTitle>
+              <CardTitle>{t('dashboard.weddingOverview')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">{rsvpStats.confirmed}</div>
-                  <div className="text-sm text-muted-foreground">Confirmed</div>
+                  <div className="text-sm text-muted-foreground">{t('guests.status.confirmed')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-600">{rsvpStats.pending}</div>
-                  <div className="text-sm text-muted-foreground">Pending</div>
+                  <div className="text-sm text-muted-foreground">{t('guests.status.pending')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600">{rsvpStats.maybe}</div>
-                  <div className="text-sm text-muted-foreground">Maybe</div>
+                  <div className="text-sm text-muted-foreground">{t('guests.status.maybe')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-600">{photos.length}</div>
-                  <div className="text-sm text-muted-foreground">Photos</div>
+                  <div className="text-sm text-muted-foreground">{t('dashboard.photos')}</div>
                 </div>
               </div>
             </CardContent>
@@ -258,17 +258,17 @@ export function PersonalizedGuestDashboard({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                RSVP Progress
+                {t('guests.rsvpProgressOverview')}
               </CardTitle>
               <CardDescription>
-                See how many guests have responded to the invitation
+                {t('guests.realTimeTracking')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-2">
-                  <span>Response Rate</span>
-                  <span>{responseRate}%</span>
+                  <span>{t('guests.responseRatePercent')}</span>
+                  <span>{responseRate}% ({rsvpStats.confirmed + rsvpStats.declined + rsvpStats.maybe} {t('guests.outOf')} {rsvpStats.total})</span>
                 </div>
                 <Progress value={responseRate} className="w-full" />
               </div>
@@ -277,13 +277,13 @@ export function PersonalizedGuestDashboard({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Badge variant="default" className="bg-green-100 text-green-800">
-                      Confirmed
+                      {t('guests.status.confirmed')}
                     </Badge>
                     <span className="text-sm font-medium">{rsvpStats.confirmed}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <Badge variant="default" className="bg-yellow-100 text-yellow-800">
-                      Pending
+                      {t('guests.status.pending')}
                     </Badge>
                     <span className="text-sm font-medium">{rsvpStats.pending}</span>
                   </div>
@@ -291,13 +291,13 @@ export function PersonalizedGuestDashboard({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Badge variant="default" className="bg-blue-100 text-blue-800">
-                      Maybe
+                      {t('guests.status.maybe')}
                     </Badge>
                     <span className="text-sm font-medium">{rsvpStats.maybe}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <Badge variant="default" className="bg-red-100 text-red-800">
-                      Declined
+                      {t('guests.status.declined')}
                     </Badge>
                     <span className="text-sm font-medium">{rsvpStats.declined}</span>
                   </div>
