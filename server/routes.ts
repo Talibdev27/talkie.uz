@@ -309,10 +309,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
 
-      // Check if this is the admin user
+      // Check if this is the admin user using environment variables
       const adminUser = await storage.getUserByEmail('mukhammadaminkhonesaev@gmail.com');
       
-      if (username === 'admin' && password === 'admin123' && adminUser) {
+      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD && adminUser) {
         // Generate JWT token for the admin user
         const token = jwt.sign(
           { userId: adminUser.id, email: adminUser.email, isAdmin: true },
