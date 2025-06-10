@@ -168,8 +168,8 @@ export default function WeddingManage() {
   // Check access permissions - owners have full access, guest_managers have limited access
   const isOwner = currentUser && wedding.userId === currentUser.id;
   const isGuestManager = currentUser && currentUser.role === 'guest_manager';
-  // Check admin status from localStorage (where admin authentication is stored)
-  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  // Check admin status from localStorage (where admin authentication is stored) OR from user data
+  const isAdmin = localStorage.getItem('isAdmin') === 'true' || (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin'));
   const hasAccess = isOwner || isGuestManager || isAdmin;
 
   if (!hasAccess) {
@@ -179,7 +179,17 @@ export default function WeddingManage() {
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-semibold text-[#2C3338] mb-2">Access Denied</h2>
             <p className="text-[#2C3338]/70 mb-4">You don't have permission to manage this wedding.</p>
-            <Button onClick={() => setLocation('/dashboard')} className="wedding-button">
+            <Button onClick={() => {
+              if (!currentUser) {
+                setLocation('/login');
+              } else if (currentUser.role === 'guest_manager') {
+                setLocation('/guest-manager');
+              } else if (localStorage.getItem('isAdmin') === 'true') {
+                setLocation('/admin/dashboard');
+              } else {
+                setLocation('/dashboard');
+              }
+            }} className="wedding-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>

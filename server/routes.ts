@@ -514,7 +514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get the user to check if they're admin
       const user = await storage.getUserById(userId);
-      const isAdmin = user && (user.isAdmin || user.role === 'admin');
+      const isAdmin = user && (user.isAdmin === true || user.role === 'admin');
       
       // Check if user owns the wedding or is admin
       if (!isAdmin && existingWedding.userId !== userId) {

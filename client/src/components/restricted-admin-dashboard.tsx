@@ -61,11 +61,16 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
                 </Select>
               </div>
               <span className="text-sm text-gray-600">{t('guestManager.welcome')}, {user.name}</span>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/dashboard">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  {t('guestManager.backToDashboard')}
-                </Link>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  // Guest managers should go to landing page
+                  window.location.href = '/';
+                }}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {t('guestManager.backToDashboard')}
               </Button>
             </div>
           </div>
