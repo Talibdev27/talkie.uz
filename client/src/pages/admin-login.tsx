@@ -32,9 +32,11 @@ export default function AdminLogin() {
 
       if (response.ok) {
         const data = await response.json();
-        // Store admin session
+        // Store admin session with token
         localStorage.setItem('isAdmin', 'true');
         localStorage.setItem('adminUser', data.user.email);
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
         
         toast({
           title: "Login Successful",
