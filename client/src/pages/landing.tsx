@@ -389,15 +389,15 @@ export default function Landing() {
               <Card key={index} className="wedding-card overflow-hidden">
                 <img 
                   src={template.image} 
-                  alt={template.name}
+                  alt={t(template.nameKey)}
                   className="w-full h-48 object-cover" 
                 />
                 <CardContent className="p-6">
                   <h3 className="text-lg font-playfair font-semibold text-charcoal mb-2">
-                    {template.nameKey ? t(template.nameKey) : template.name}
+                    {t(template.nameKey)}
                   </h3>
                   <p className="text-sm text-charcoal opacity-70 mb-4">
-                    {template.descriptionKey ? t(template.descriptionKey) : template.description}
+                    {t(template.descriptionKey)}
                   </p>
                   <Link href={`/demo?template=${template.nameKey.split('.')[1]}`}>
                     <Button className="w-full wedding-button">

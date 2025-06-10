@@ -1467,6 +1467,32 @@ const resources = {
       // Photos
       'photos.noPhotosYet': 'Пока нет фотографий',
       'photos.photosWillAppear': 'Фотографии появятся здесь после загрузки',
+
+      // Wedding Management
+      'manage.backToDashboard': 'Вернуться к панели',
+      'manage.manageWedding': 'Управление свадьбой',
+      'manage.viewSite': 'Просмотр сайта',
+      'manage.editWedding': 'Редактировать свадьбу',
+      'manage.weddingDetails': 'Детали свадьбы',
+      'manage.guestManagement': 'Управление гостями',
+      'manage.guestDashboard': 'Панель гостей',
+      'manage.photoManagement': 'Управление фотографиями',
+      'manage.guestBook': 'Книга гостей',
+      'manage.weddingInformation': 'Информация о свадьбе',
+      'manage.brideName': 'Имя невесты',
+      'manage.groomName': 'Имя жениха',
+      'manage.weddingDate': 'Дата свадьбы',
+      'manage.ceremonyTime': 'Время церемонии',
+      'manage.guestWelcomeMessage': 'Приветственное сообщение для гостей (Необязательно)',
+      'manage.welcomeMessagePlaceholder': 'Напишите особое приветственное сообщение для ваших гостей...',
+      'manage.welcomeMessageDescription': 'Это сообщение будет отображаться как официальная секция приглашения на вашем свадебном сайте.',
+      'manage.venue': 'Место проведения',
+      'manage.venueAddress': 'Адрес места проведения',
+      'manage.editWeddingButton': 'Редактировать свадьбу',
+      'manage.saveChanges': 'Сохранить изменения',
+      'manage.cancel': 'Отменить',
+      'manage.accessDenied': 'Доступ запрещен',
+      'manage.noPermission': 'У вас нет разрешения на управление этой свадьбой.',
     }
   }
 };
