@@ -293,11 +293,9 @@ export default function WeddingSite() {
                 {t('wedding.photos')}
               </a>
             )}
-            {currentTemplate !== 'standard' && (
-              <a href="#rsvp" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                {t('wedding.rsvp')}
-              </a>
-            )}
+            <a href="#rsvp" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+              {t('wedding.rsvp')}
+            </a>
             <a href="#details" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
               {t('wedding.weddingDetails')}
             </a>
@@ -442,23 +440,21 @@ export default function WeddingSite() {
         </section>
       ) : null}
 
-      {/* RSVP Section - Hidden for Standard template */}
-      {currentTemplate !== 'standard' && (
-        <section id="rsvp" className="py-20 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
-                {t('wedding.rsvp')}
-              </h2>
-              <p className="mt-4 text-lg text-charcoal opacity-70">
-                {t('wedding.cantWaitToCelebrate')}
-              </p>
-            </div>
-            
-            <RSVPForm weddingId={wedding.id} />
+      {/* RSVP Section - Now available for all templates including Standard */}
+      <section id="rsvp" className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              {t('wedding.rsvp')}
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70">
+              {t('wedding.cantWaitToCelebrate')}
+            </p>
           </div>
-        </section>
-      )}
+          
+          <RSVPForm weddingId={wedding.id} />
+        </div>
+      </section>
 
       {/* Wedding Details Section */}
       <section id="details" className="py-20 bg-soft-white">
