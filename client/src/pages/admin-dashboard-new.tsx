@@ -504,61 +504,69 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredWeddings.map((wedding: Wedding) => (
-                      <div key={wedding.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-[#D4B08C] rounded-full flex items-center justify-center">
-                            <Heart className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-[#2C3338]">
-                              {wedding.bride} & {wedding.groom}
-                            </h3>
-                            <p className="text-sm text-[#2C3338]/70">
-                              {wedding.venue} • {new Date(wedding.weddingDate).toLocaleDateString()}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Badge variant={wedding.isPublic ? "default" : "secondary"}>
-                                {wedding.isPublic ? 'Public' : 'Private'}
-                              </Badge>
-                              <span className="text-xs text-[#2C3338]/50">
-                                /{wedding.uniqueUrl}
-                              </span>
+                    {filteredWeddings.map((wedding: Wedding) => {
+                      const weddingOwner = users.find(user => user.id === wedding.userId);
+                      return (
+                        <div key={wedding.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-[#D4B08C] rounded-full flex items-center justify-center">
+                              <Heart className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-[#2C3338]">
+                                {wedding.bride} & {wedding.groom}
+                              </h3>
+                              <p className="text-sm text-[#2C3338]/70">
+                                {wedding.venue} • {new Date(wedding.weddingDate).toLocaleDateString()}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge variant={wedding.isPublic ? "default" : "secondary"}>
+                                  {wedding.isPublic ? 'Public' : 'Private'}
+                                </Badge>
+                                <span className="text-xs text-[#2C3338]/50">
+                                  /{wedding.uniqueUrl}
+                                </span>
+                                {weddingOwner && (
+                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                    Owner: {weddingOwner.name}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                console.log('Setting admin flag before navigation');
+                                sessionStorage.setItem('fromAdminDashboard', 'true');
+                                console.log('Admin flag set:', sessionStorage.getItem('fromAdminDashboard'));
+                                setLocation(`/manage/${wedding.uniqueUrl}`);
+                              }}
+                            >
+                              <Settings className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteWedding(wedding.id)}
+                              disabled={deleteWeddingMutation.isPending}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              console.log('Setting admin flag before navigation');
-                              sessionStorage.setItem('fromAdminDashboard', 'true');
-                              console.log('Admin flag set:', sessionStorage.getItem('fromAdminDashboard'));
-                              setLocation(`/manage/${wedding.uniqueUrl}`);
-                            }}
-                          >
-                            <Settings className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteWedding(wedding.id)}
-                            disabled={deleteWeddingMutation.isPending}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                     {filteredWeddings.length === 0 && (
                       <div className="text-center py-8 text-[#2C3338]/70">
                         {searchTerm ? 'No weddings found matching your search.' : 'No weddings created yet.'}
