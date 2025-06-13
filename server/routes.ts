@@ -309,10 +309,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
 
-      // Check if this is the admin user using environment variables
-      const adminUser = await storage.getUserByEmail('mukhammadaminkhonesaev@gmail.com');
-      
-      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD && adminUser) {
+      console.log('Admin login attempt:', { username, password });
+      console.log('Expected:', { 
+        expectedUsername: process.env.ADMIN_USERNAME, 
+        expectedPassword: process.env.ADMIN_PASSWORD 
+      });
+
+      // Check credentials against environment variables
+      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
+        // Create or get admin user
+        let adminUser = await storage.getUserByEmail('admin@wedding-platform.com');
+        
+        if (!adminUser) {
+          // Create admin user if it doesn't exist
+          adminUser = await storage.createUser({
+            email: 'admin@wedding-platform.com',
+            name: 'System Administrator',
+            password: 'admin-placeholder', // Not used for login
+            role: 'admin',
+            isAdmin: true,
+            hasPaidSubscription: true
+          });
+        }
+
         // Generate JWT token for the admin user
         const token = jwt.sign(
           { userId: adminUser.id, email: adminUser.email, isAdmin: true },
