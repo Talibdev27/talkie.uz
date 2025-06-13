@@ -127,21 +127,30 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
               </div>
             ) : weddings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {weddings.map((wedding) => (
+                {weddings.map((wedding: any) => (
                   <Card key={wedding.id} className="hover:shadow-md transition-shadow">
                     <CardHeader>
-                      <CardTitle className="text-lg">
-                        {wedding.bride} & {wedding.groom}
-                      </CardTitle>
-                      <p className="text-sm text-gray-600">
-                        {new Date(wedding.weddingDate).toLocaleDateString()}
-                      </p>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-lg">
+                            {wedding.bride} & {wedding.groom}
+                          </CardTitle>
+                          <p className="text-sm text-gray-600">
+                            {new Date(wedding.weddingDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {wedding.isManaged && (
+                          <Badge variant="secondary" className="text-xs">
+                            {t('guestManager.managed')}
+                          </Badge>
+                        )}
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm font-medium text-gray-700">{t('guestManager.venue')}</p>
-                          <p className="text-sm text-gray-600">{wedding.venue}</p>
+                          <p className="text-sm text-gray-600">{wedding.venue || 'Not specified'}</p>
                         </div>
                         
                         <div className="flex items-center justify-end">

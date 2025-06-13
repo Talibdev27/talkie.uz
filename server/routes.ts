@@ -1132,22 +1132,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json([]);
       }
       
-      // Get weddings assigned to this guest manager through wedding_access table
+      // Get only user's own weddings - guest managers should only see their own created weddings
+      const ownedWeddings = await storage.getWeddingsByUserId(userId);
+      
+      // Get weddings they have guest manager access to (but mark them as managed, not owned)
       const accessRecords = await storage.getWeddingAccessByUserId(userId);
-      const assignedWeddings = [];
+      const managedWeddings = [];
       
       for (const access of accessRecords) {
         const wedding = await storage.getWeddingById(access.weddingId);
-        if (wedding) {
-          assignedWeddings.push({
+        if (wedding && wedding.userId !== userId) { // Only include if not owned by user
+          managedWeddings.push({
             ...wedding,
             accessLevel: access.accessLevel,
-            permissions: access.permissions
+            permissions: access.permissions,
+            isManaged: true, // Flag to distinguish managed from owned
+            originalOwner: wedding.userId
           });
         }
       }
       
-      res.json(assignedWeddings);
+      // Combine owned and managed weddings
+      const allWeddings = [
+        ...ownedWeddings.map(w => ({ ...w, isManaged: false })),
+        ...managedWeddings
+      ];
+      
+      res.json(allWeddings);
     } catch (error) {
       console.error('Guest manager weddings error:', error);
       res.status(500).json({ message: "Server error" });
