@@ -29,7 +29,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
   const queryClient = useQueryClient();
 
   // Filter guests based on search and status
-  const filteredGuests = guests.filter(guest => {
+  const filteredGuests = (guests || []).filter(guest => {
     const matchesSearch = guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (guest.email && guest.email.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus = statusFilter === 'all' || guest.rsvpStatus === statusFilter;
@@ -38,11 +38,11 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
 
   // Calculate RSVP statistics
   const stats = {
-    total: guests.length,
-    confirmed: guests.filter(g => g.rsvpStatus === 'confirmed').length,
-    pending: guests.filter(g => g.rsvpStatus === 'pending').length,
-    declined: guests.filter(g => g.rsvpStatus === 'declined').length,
-    maybe: guests.filter(g => g.rsvpStatus === 'maybe').length,
+    total: (guests || []).length,
+    confirmed: (guests || []).filter(g => g.rsvpStatus === 'confirmed').length,
+    pending: (guests || []).filter(g => g.rsvpStatus === 'pending').length,
+    declined: (guests || []).filter(g => g.rsvpStatus === 'declined').length,
+    maybe: (guests || []).filter(g => g.rsvpStatus === 'maybe').length,
   };
 
   const responseRate = stats.total > 0 
