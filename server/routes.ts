@@ -309,11 +309,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
 
-      console.log('Admin login attempt:', { username, password });
-      console.log('Expected:', { 
-        expectedUsername: process.env.ADMIN_USERNAME, 
-        expectedPassword: process.env.ADMIN_PASSWORD 
-      });
+
 
       // Check credentials against environment variables
       if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
