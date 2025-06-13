@@ -528,7 +528,7 @@ export default function AdminDashboard() {
                                 </span>
                                 {weddingOwner && (
                                   <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                    Owner: {weddingOwner.name}
+                                    Owner: {weddingOwner.email}
                                   </span>
                                 )}
                               </div>
