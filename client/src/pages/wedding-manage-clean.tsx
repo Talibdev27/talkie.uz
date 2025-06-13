@@ -330,7 +330,7 @@ export default function WeddingManage() {
                 </CardContent>
               </Card>
             ) : (
-              <EnhancedRSVPManager wedding={wedding} guests={guests} />
+              <EnhancedRSVPManager wedding={wedding} guests={guests || []} />
             )}
           </TabsContent>
 

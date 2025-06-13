@@ -429,7 +429,18 @@ export default function WeddingManage() {
 
           {/* Guest Management Tab */}
           <TabsContent value="guests" className="space-y-6">
-            {wedding && <EnhancedRSVPManager wedding={wedding} guests={guests} />}
+            {guestsLoading ? (
+              <Card>
+                <CardContent className="p-8">
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
+                    <p className="text-[#2C3338]/70">Loading guest information...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              wedding && <EnhancedRSVPManager wedding={wedding} guests={guests || []} />
+            )}
           </TabsContent>
 
           {/* Guest Dashboard Tab - Only for non-guest managers */}
