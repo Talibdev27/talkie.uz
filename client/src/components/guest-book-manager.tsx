@@ -56,9 +56,7 @@ export function GuestBookManager({ weddingId, readOnly = false }: GuestBookManag
 
   const deleteEntryMutation = useMutation({
     mutationFn: (entryId: number) =>
-      apiRequest(`/api/guestbook/entry/${entryId}`, {
-        method: 'DELETE',
-      }),
+      apiRequest(`/api/guestbook/entry/${entryId}`, 'DELETE'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guestbook', weddingId] });
       toast({
