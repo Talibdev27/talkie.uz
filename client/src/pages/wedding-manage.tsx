@@ -30,10 +30,82 @@ export default function WeddingManage() {
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
 
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   // Check if user is logged in and owns this wedding
   const { data: currentUser } = useQuery({
     queryKey: ['/api/user/current'],
     queryFn: () => fetch('/api/user/current').then(res => res.json()),
+  });
+
+  // Fetch wedding details
+  const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
+    queryKey: [`/api/weddings/url/${weddingUrl}`],
+    enabled: !!weddingUrl,
+  });
+
+  // Fetch photos for this wedding
+  const { data: photos = [], isLoading: photosLoading } = useQuery<Photo[]>({
+    queryKey: [`/api/photos/wedding/${wedding?.id}`],
+    enabled: !!wedding?.id,
+  });
+
+  // Fetch guests for this wedding
+  const { data: guests = [], isLoading: guestsLoading } = useQuery<Guest[]>({
+    queryKey: wedding?.id ? [`/api/guests/wedding/${wedding.id}`] : [],
+    enabled: !!wedding?.id,
+  });
+
+  // Check access permissions - must be done before any conditional returns
+  const isOwner = currentUser && wedding && wedding.userId === currentUser.id;
+  const isAdmin = localStorage.getItem('isAdmin') === 'true' || (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin'));
+  
+  // Check if user has specific wedding access through wedding_access table
+  const { data: userWeddingAccess } = useQuery({
+    queryKey: ['/api/user/wedding-access', currentUser?.id, wedding?.id],
+    queryFn: () => fetch(`/api/user/wedding-access/${currentUser?.id}/${wedding?.id}`).then(res => {
+      if (res.status === 404) return null;
+      return res.json();
+    }),
+    enabled: !!currentUser && !!wedding && currentUser.role === 'guest_manager' && !isAdmin,
+  });
+
+  const hasGuestManagerAccess = currentUser?.role === 'guest_manager' && userWeddingAccess;
+  const hasAccess = isAdmin || (currentUser?.role !== 'guest_manager' && isOwner) || hasGuestManagerAccess;
+
+  // Update wedding mutation
+  const updateWeddingMutation = useMutation({
+    mutationFn: async (updatedData: Partial<Wedding>) => {
+      const headers: HeadersInit = { 'Content-Type': 'application/json' };
+      if (localStorage.getItem('isAdmin') === 'true') {
+        headers['x-admin'] = 'true';
+      }
+      
+      const response = await fetch(`/api/weddings/${wedding!.id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updatedData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update wedding');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/weddings/url/${weddingUrl}`] });
+      setEditMode(false);
+      toast({
+        title: "Wedding Updated",
+        description: "Wedding details have been successfully updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Update Failed", 
+        description: "Failed to update wedding details.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Determine the correct dashboard to return to based on user role and navigation context
@@ -46,11 +118,11 @@ export default function WeddingManage() {
     }
     
     // Check if user is admin by looking at localStorage (where admin status is stored)
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const isAdminLocal = localStorage.getItem('isAdmin') === 'true';
     const fromAdmin = sessionStorage.getItem('fromAdminDashboard');
     
     // SECURITY: Only return to admin dashboard if user is admin AND came from admin dashboard
-    if (isAdmin && fromAdmin === 'true') {
+    if (isAdminLocal && fromAdmin === 'true') {
       return '/system/dashboard';
     }
     
@@ -71,62 +143,13 @@ export default function WeddingManage() {
     setLocation(targetPath);
   };
 
-  // Fetch wedding details
-  const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
-    queryKey: [`/api/weddings/url/${weddingUrl}`],
-    enabled: !!weddingUrl,
-  });
+  const handleInputChange = (field: keyof Wedding, value: any) => {
+    if (!weddingData) return;
+    setWeddingData(prev => prev ? { ...prev, [field]: value } : null);
+  };
 
-  // Fetch photos for this wedding
-  const { data: photos = [], isLoading: photosLoading } = useQuery<Photo[]>({
-    queryKey: [`/api/photos/wedding/${wedding?.id}`],
-    enabled: !!wedding?.id,
-  });
-
-  // Fetch guests for this wedding
-  const { data: guests = [], isLoading: guestsLoading } = useQuery<Guest[]>({
-    queryKey: wedding?.id ? [`/api/guests/wedding/${wedding.id}`] : [],
-    enabled: !!wedding?.id,
-  });
-
-  // Update wedding mutation
-  const updateWeddingMutation = useMutation({
-    mutationFn: async (updatedData: Partial<Wedding>) => {
-      const token = localStorage.getItem('authToken');
-      const headers: HeadersInit = { 'Content-Type': 'application/json' };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
-      const response = await fetch(`/api/weddings/${wedding?.id}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify(updatedData)
-      });
-      if (!response.ok) throw new Error('Failed to update wedding');
-      return response.json();
-    },
-    onSuccess: (updatedWedding) => {
-      queryClient.invalidateQueries({ queryKey: [`/api/weddings/url/${weddingUrl}`] });
-      setEditMode(false);
-      setWeddingData(null);
-      toast({
-        title: "Wedding Updated!",
-        description: "Your wedding details have been saved successfully.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update wedding details. Please try again.",
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Initialize form data when wedding loads
-  if (wedding && !weddingData) {
+  const handleEditToggle = () => {
+    setEditMode(!editMode);
     setWeddingData(wedding);
   }
 
@@ -136,6 +159,7 @@ export default function WeddingManage() {
     }
   };
 
+  // NOW WE CAN HAVE CONDITIONAL RETURNS AFTER ALL HOOKS
   if (weddingLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
@@ -166,26 +190,6 @@ export default function WeddingManage() {
     );
   }
 
-  // Check access permissions - owners have full access, guest_managers need specific wedding access
-  const isOwner = currentUser && wedding.userId === currentUser.id;
-  // Check admin status from localStorage (where admin authentication is stored) OR from user data
-  const isAdmin = localStorage.getItem('isAdmin') === 'true' || (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin'));
-  
-  // Check if user has specific wedding access through wedding_access table
-  // For guest_managers, always check wedding access regardless of ownership
-  const { data: userWeddingAccess } = useQuery({
-    queryKey: ['/api/user/wedding-access', currentUser?.id, wedding.id],
-    queryFn: () => fetch(`/api/user/wedding-access/${currentUser?.id}/${wedding.id}`).then(res => {
-      if (res.status === 404) return null;
-      return res.json();
-    }),
-    enabled: !!currentUser && currentUser.role === 'guest_manager' && !isAdmin,
-  });
-
-  // Guest manager access is determined by wedding_access table, not ownership
-  const hasGuestManagerAccess = currentUser?.role === 'guest_manager' && userWeddingAccess;
-  const hasAccess = isAdmin || (currentUser?.role !== 'guest_manager' && isOwner) || hasGuestManagerAccess;
-
   if (!hasAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
@@ -215,68 +219,45 @@ export default function WeddingManage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white">
-      <header className="bg-white shadow-sm border-b border-[#D4B08C]/20">
+      <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
+            <div className="flex items-center space-x-4">
+              <Button 
+                variant="ghost" 
                 onClick={handleBackToDashboard}
-                className="border-gray-200"
+                className="text-[#2C3338] hover:bg-[#F8F1F1]"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t('manage.backToDashboard')}
               </Button>
+              <div className="h-6 w-px bg-gray-200"></div>
               <div>
-                <h1 className="text-2xl font-bold text-[#2C3338]">
-                  {t('manage.manageWedding')}: {wedding.bride} & {wedding.groom}
-                </h1>
-                <p className="text-[#2C3338]/70">
-                  {wedding.isPublic ? t('dashboard.public') : t('dashboard.private')} • {wedding.uniqueUrl}
+                <h1 className="text-2xl font-bold text-[#2C3338]">{t('manage.weddingManagement')}</h1>
+                <p className="text-sm text-[#2C3338]/70">
+                  {wedding.bride} & {wedding.groom} • {formatDate(wedding.weddingDate)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center space-x-4">
               <LanguageToggle />
-              <Button
-                variant="outline"
-                onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
-                className="border-gray-200"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                {t('manage.viewSite')}
-              </Button>
-              {/* Only show edit controls for owners and admins, not guest managers */}
-              {(isOwner || localStorage.getItem('isAdmin') === 'true') && (
+              
+              {currentUser && (
                 <>
-                  {editMode ? (
-                    <>
-                      <Button
-                        onClick={handleSave}
-                        disabled={updateWeddingMutation.isPending}
-                        className="wedding-button"
-                      >
-                        <Save className="w-4 h-4 mr-2" />
-                        {t('manage.saveChanges')}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setEditMode(false);
-                          setWeddingData(wedding);
-                        }}
-                        className="border-gray-200"
-                      >
-                        {t('manage.cancel')}
-                      </Button>
-                    </>
-                  ) : (
+                  <span className="text-sm text-[#2C3338]/70">
+                    {t('manage.welcome')}, {currentUser.name || currentUser.email}
+                  </span>
+                  
+                  {(isOwner || isAdmin) && (
                     <Button
-                      onClick={() => setEditMode(true)}
-                      className="wedding-button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
+                      className="border-[#D4B08C] text-[#D4B08C] hover:bg-[#D4B08C] hover:text-white"
                     >
-                      <Edit className="w-4 h-4 mr-2" />
-                      {t('manage.editWeddingButton')}
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      {t('manage.viewSite')}
                     </Button>
                   )}
                 </>
@@ -322,8 +303,8 @@ export default function WeddingManage() {
                     <Label htmlFor="bride">{t('manage.brideName')}</Label>
                     <Input
                       id="bride"
-                      value={weddingData?.bride || ''}
-                      onChange={(e) => setWeddingData(prev => prev ? {...prev, bride: e.target.value} : null)}
+                      value={editMode ? weddingData?.bride || '' : wedding.bride}
+                      onChange={(e) => handleInputChange('bride', e.target.value)}
                       disabled={!editMode}
                       className="wedding-input"
                     />
@@ -332,8 +313,8 @@ export default function WeddingManage() {
                     <Label htmlFor="groom">{t('manage.groomName')}</Label>
                     <Input
                       id="groom"
-                      value={weddingData?.groom || ''}
-                      onChange={(e) => setWeddingData(prev => prev ? {...prev, groom: e.target.value} : null)}
+                      value={editMode ? weddingData?.groom || '' : wedding.groom}
+                      onChange={(e) => handleInputChange('groom', e.target.value)}
                       disabled={!editMode}
                       className="wedding-input"
                     />
@@ -346,8 +327,11 @@ export default function WeddingManage() {
                     <Input
                       id="weddingDate"
                       type="date"
-                      value={weddingData?.weddingDate ? new Date(weddingData.weddingDate).toISOString().split('T')[0] : ''}
-                      onChange={(e) => setWeddingData(prev => prev ? {...prev, weddingDate: new Date(e.target.value)} : null)}
+                      value={editMode ? 
+                        (weddingData?.weddingDate ? new Date(weddingData.weddingDate).toISOString().split('T')[0] : '') :
+                        (wedding.weddingDate ? new Date(wedding.weddingDate).toISOString().split('T')[0] : '')
+                      }
+                      onChange={(e) => handleInputChange('weddingDate', e.target.value)}
                       disabled={!editMode}
                       className="wedding-input"
                     />
@@ -356,51 +340,89 @@ export default function WeddingManage() {
                     <Label htmlFor="weddingTime">{t('manage.weddingTime')}</Label>
                     <Input
                       id="weddingTime"
-                      value={weddingData?.weddingTime || ''}
-                      onChange={(e) => setWeddingData(prev => prev ? {...prev, weddingTime: e.target.value} : null)}
+                      value={editMode ? weddingData?.weddingTime || '' : wedding.weddingTime || ''}
+                      onChange={(e) => handleInputChange('weddingTime', e.target.value)}
                       disabled={!editMode}
-                      className="wedding-input"
-                      placeholder="16:00, 4:00 PM"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="venue">Venue</Label>
-                    <Input
-                      id="venue"
-                      value={weddingData?.venue || ''}
-                      onChange={(e) => setWeddingData(prev => prev ? {...prev, venue: e.target.value} : null)}
-                      disabled={!editMode}
-                      className="wedding-input"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="venueAddress">Venue Address</Label>
-                    <Input
-                      id="venueAddress"
-                      value={weddingData?.venueAddress || ''}
-                      onChange={(e) => setWeddingData(prev => prev ? {...prev, venueAddress: e.target.value} : null)}
-                      disabled={!editMode}
+                      placeholder="e.g., 3:00 PM"
                       className="wedding-input"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Badge variant={weddingData?.isPublic ? "default" : "secondary"}>
-                    {weddingData?.isPublic ? 'Public' : 'Private'}
-                  </Badge>
-                  {editMode && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setWeddingData(prev => prev ? {...prev, isPublic: !prev.isPublic} : null)}
-                    >
-                      Toggle Visibility
-                    </Button>
-                  )}
+                <div className="space-y-2">
+                  <Label htmlFor="venue">{t('manage.venue')}</Label>
+                  <Input
+                    id="venue"
+                    value={editMode ? weddingData?.venue || '' : wedding.venue}
+                    onChange={(e) => handleInputChange('venue', e.target.value)}
+                    disabled={!editMode}
+                    className="wedding-input"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="venueAddress">{t('manage.venueAddress')}</Label>
+                  <Input
+                    id="venueAddress"
+                    value={editMode ? weddingData?.venueAddress || '' : wedding.venueAddress}
+                    onChange={(e) => handleInputChange('venueAddress', e.target.value)}
+                    disabled={!editMode}
+                    className="wedding-input"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="story">{t('manage.ourStory')}</Label>
+                  <Textarea
+                    id="story"
+                    value={editMode ? weddingData?.story || '' : wedding.story || ''}
+                    onChange={(e) => handleInputChange('story', e.target.value)}
+                    disabled={!editMode}
+                    rows={4}
+                    className="wedding-input"
+                    placeholder={t('manage.storyPlaceholder')}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-4">
+                  <div className="flex items-center space-x-2">
+                    <Badge variant={wedding.isPublic ? "default" : "secondary"}>
+                      {wedding.isPublic ? t('manage.public') : t('manage.private')}
+                    </Badge>
+                    <span className="text-sm text-[#2C3338]/70">
+                      /{wedding.uniqueUrl}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    {editMode ? (
+                      <>
+                        <Button
+                          variant="outline"
+                          onClick={handleEditToggle}
+                          disabled={updateWeddingMutation.isPending}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleSave}
+                          disabled={updateWeddingMutation.isPending}
+                          className="wedding-button"
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          {updateWeddingMutation.isPending ? t('manage.saving') : t('manage.saveChanges')}
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        onClick={handleEditToggle}
+                        className="wedding-button"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        {t('manage.editDetails')}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -409,21 +431,10 @@ export default function WeddingManage() {
 
           {/* Guest Management Tab */}
           <TabsContent value="guests" className="space-y-6">
-            {guestsLoading ? (
-              <Card className="wedding-card">
-                <CardContent className="p-8">
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-                    <p className="text-[#2C3338]/70">Loading guest information...</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <EnhancedRSVPManager wedding={wedding} guests={guests} />
-            )}
+            {wedding && <EnhancedRSVPManager weddingId={wedding.id} />}
           </TabsContent>
 
-          {/* Personalized Guest Dashboard Tab */}
+          {/* Guest Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-6">
             {wedding && <PersonalizedGuestDashboard wedding={wedding} />}
           </TabsContent>
