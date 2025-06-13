@@ -1154,6 +1154,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check if user has access to specific wedding
+  app.get("/api/user/wedding-access/:userId/:weddingId", authenticateToken, async (req: any, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const weddingId = parseInt(req.params.weddingId);
+      
+      // Only allow users to check their own access or admin users
+      const requestingUserId = req.user.userId;
+      const requestingUser = await storage.getUserById(requestingUserId);
+      
+      if (requestingUserId !== userId && !requestingUser?.isAdmin) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const access = await storage.getUserWeddingPermissions(userId, weddingId);
+      if (!access) {
+        return res.status(404).json({ message: "No access found" });
+      }
+      
+      res.json(access);
+    } catch (error) {
+      console.error('Wedding access check error:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.get("/api/weddings/url/:uniqueUrl", async (req, res) => {
     try {
       const { uniqueUrl } = req.params;

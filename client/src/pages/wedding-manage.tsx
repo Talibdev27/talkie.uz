@@ -165,12 +165,24 @@ export default function WeddingManage() {
     );
   }
 
-  // Check access permissions - owners have full access, guest_managers have limited access
+  // Check access permissions - owners have full access, guest_managers need specific wedding access
   const isOwner = currentUser && wedding.userId === currentUser.id;
-  const isGuestManager = currentUser && currentUser.role === 'guest_manager';
   // Check admin status from localStorage (where admin authentication is stored) OR from user data
   const isAdmin = localStorage.getItem('isAdmin') === 'true' || (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin'));
-  const hasAccess = isOwner || isGuestManager || isAdmin;
+  
+  // Check if user has specific wedding access through wedding_access table
+  const { data: userWeddingAccess } = useQuery({
+    queryKey: ['/api/user/wedding-access', currentUser?.id, wedding.id],
+    queryFn: () => fetch(`/api/user/wedding-access/${currentUser?.id}/${wedding.id}`).then(res => {
+      if (res.status === 404) return null;
+      return res.json();
+    }),
+    enabled: !!currentUser && currentUser.role === 'guest_manager' && !isOwner && !isAdmin,
+  });
+
+  const hasGuestManagerAccess = currentUser?.role === 'guest_manager' && userWeddingAccess;
+  const isGuestManager = hasGuestManagerAccess;
+  const hasAccess = isOwner || isAdmin || hasGuestManagerAccess;
 
   if (!hasAccess) {
     return (
@@ -274,8 +286,8 @@ export default function WeddingManage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <Tabs defaultValue={isGuestManager ? "guests" : "details"} className="space-y-6">
-          <TabsList className={`grid w-full ${isGuestManager ? 'grid-cols-2' : 'grid-cols-5'} lg:${isGuestManager ? 'grid-cols-2' : 'grid-cols-5'}`}>
+        <Tabs defaultValue={hasGuestManagerAccess ? "guests" : "details"} className="space-y-6">
+          <TabsList className={`grid w-full ${hasGuestManagerAccess ? 'grid-cols-2' : 'grid-cols-5'} lg:${hasGuestManagerAccess ? 'grid-cols-2' : 'grid-cols-5'}`}>
             {/* Only show details tab for owners and admins */}
             {(isOwner || isAdmin) && (
               <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
