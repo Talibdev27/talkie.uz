@@ -172,17 +172,19 @@ export default function WeddingManage() {
   const isAdmin = localStorage.getItem('isAdmin') === 'true' || (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin'));
   
   // Check if user has specific wedding access through wedding_access table
+  // For guest_managers, always check wedding access regardless of ownership
   const { data: userWeddingAccess } = useQuery({
     queryKey: ['/api/user/wedding-access', currentUser?.id, wedding.id],
     queryFn: () => fetch(`/api/user/wedding-access/${currentUser?.id}/${wedding.id}`).then(res => {
       if (res.status === 404) return null;
       return res.json();
     }),
-    enabled: !!currentUser && currentUser.role === 'guest_manager' && !isOwner && !isAdmin,
+    enabled: !!currentUser && currentUser.role === 'guest_manager' && !isAdmin,
   });
 
+  // Guest manager access is determined by wedding_access table, not ownership
   const hasGuestManagerAccess = currentUser?.role === 'guest_manager' && userWeddingAccess;
-  const hasAccess = isOwner || isAdmin || hasGuestManagerAccess;
+  const hasAccess = isAdmin || (currentUser?.role !== 'guest_manager' && isOwner) || hasGuestManagerAccess;
 
   if (!hasAccess) {
     return (
@@ -286,26 +288,26 @@ export default function WeddingManage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <Tabs defaultValue={hasGuestManagerAccess ? "guests" : "details"} className="space-y-6">
-          <TabsList className={`grid w-full ${hasGuestManagerAccess ? 'grid-cols-3' : 'grid-cols-5'} lg:${hasGuestManagerAccess ? 'grid-cols-3' : 'grid-cols-5'}`}>
-            {/* Only show details tab for owners and admins */}
-            {(isOwner || isAdmin) && (
+        <Tabs defaultValue={hasGuestManagerAccess && currentUser?.role === 'guest_manager' ? "guests" : "details"} className="space-y-6">
+          <TabsList className={`grid w-full ${hasGuestManagerAccess && !isAdmin && currentUser?.role !== 'user' ? 'grid-cols-3' : 'grid-cols-5'} lg:${hasGuestManagerAccess && !isAdmin && currentUser?.role !== 'user' ? 'grid-cols-3' : 'grid-cols-5'}`}>
+            {/* Only show details tab for owners and admins, not for guest_managers */}
+            {((isOwner && currentUser?.role !== 'guest_manager') || isAdmin) && (
               <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
             )}
             <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
             <TabsTrigger value="dashboard">{t('manage.guestDashboard')}</TabsTrigger>
             {/* Guest book is available to guest managers (read-only) and owners/admins (full access) */}
-            {(isOwner || isAdmin || hasGuestManagerAccess) && (
+            {(((isOwner && currentUser?.role !== 'guest_manager') || isAdmin) || hasGuestManagerAccess) && (
               <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
             )}
-            {/* Photos only for owners and admins */}
-            {(isOwner || isAdmin) && (
+            {/* Photos only for owners and admins, not for guest_managers */}
+            {((isOwner && currentUser?.role !== 'guest_manager') || isAdmin) && (
               <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
             )}
           </TabsList>
 
-          {/* Wedding Details Tab - Only for owners and admins */}
-          {(isOwner || isAdmin) && (
+          {/* Wedding Details Tab - Only for owners and admins, not for guest_managers */}
+          {((isOwner && currentUser?.role !== 'guest_manager') || isAdmin) && (
             <TabsContent value="details" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
@@ -426,8 +428,8 @@ export default function WeddingManage() {
             {wedding && <PersonalizedGuestDashboard wedding={wedding} />}
           </TabsContent>
 
-          {/* Photo Management Tab - Only for owners and admins */}
-          {(isOwner || isAdmin) && (
+          {/* Photo Management Tab - Only for owners and admins, not for guest_managers */}
+          {((isOwner && currentUser?.role !== 'guest_manager') || isAdmin) && (
             <TabsContent value="photos" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
@@ -454,20 +456,20 @@ export default function WeddingManage() {
           )}
 
           {/* Guest Book Tab - Available for owners, admins, and guest managers */}
-          {(isOwner || isAdmin || hasGuestManagerAccess) && (
+          {(((isOwner && currentUser?.role !== 'guest_manager') || isAdmin) || hasGuestManagerAccess) && (
           <TabsContent value="guestbook" className="space-y-6">
             <Card className="wedding-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
                   Guest Book Messages
-                  {hasGuestManagerAccess && !isOwner && !isAdmin && (
+                  {hasGuestManagerAccess && currentUser?.role === 'guest_manager' && (
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">View Only</span>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <GuestBookManager weddingId={wedding.id} readOnly={hasGuestManagerAccess && !isOwner && !isAdmin} />
+                <GuestBookManager weddingId={wedding.id} readOnly={hasGuestManagerAccess && currentUser?.role === 'guest_manager'} />
               </CardContent>
             </Card>
           </TabsContent>
