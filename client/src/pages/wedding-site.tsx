@@ -12,7 +12,7 @@ import { SmartImageUpload } from '@/components/smart-image-upload';
 import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
 import { RSVPForm } from '@/components/rsvp-form';
 import { LanguageToggle } from '@/components/language-toggle';
-import { SocialShare } from '@/components/social-share';
+import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink } from 'lucide-react';

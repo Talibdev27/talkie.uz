@@ -278,6 +278,14 @@ const resources = {
       'share.showLess': 'Show Less',
       'share.linkCopied': 'Link Copied!',
       'share.linkCopiedDesc': 'Wedding website link has been copied to clipboard',
+      'share.whatsapp': 'WhatsApp',
+      'share.telegram': 'Telegram',
+      'share.instagram': 'Instagram',
+      'share.facebook': 'Facebook',
+      
+      // Advertisement
+      'ad.createWebsite': 'Create your own wedding website',
+      'ad.orderInvitation': 'Order a website invitation',
       'share.copyError': 'Failed to copy link. Please try again.',
 
       // Photo Upload
@@ -743,8 +751,16 @@ const resources = {
       'share.moreOptions': 'Ko\'proq variantlar',
       'share.showLess': 'Kamroq ko\'rsatish',
       'share.linkCopied': 'Havola nusxalandi!',
-      'share.linkCopiedDesc': 'To\'y veb-sayti havolasi buferga nusxalandi',
-      'share.copyError': 'Havolani nusxalash amalga oshmadi. Qaytadan urinib ko\'ring.',
+      'share.linkCopiedDesc': 'To\'y veb-sayti havolasi clipboard ga nusxalandi',
+      'share.whatsapp': 'WhatsApp',
+      'share.telegram': 'Telegram',
+      'share.instagram': 'Instagram',
+      'share.facebook': 'Facebook',
+      'share.copyError': 'Havolani nusxalashda xatolik. Qaytadan urinib ko\'ring.',
+      
+      // Advertisement
+      'ad.createWebsite': 'O\'zingizning to\'y veb-saytingizni yarating',
+      'ad.orderInvitation': 'Saytli taklifnomaga buyurtma bering',
 
       // Photo Upload
       'photoUpload.addPhotos': 'Rasm qo\'shish',
