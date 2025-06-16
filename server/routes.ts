@@ -621,17 +621,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const wedding = await storage.updateWedding(weddingId, updates);
 
-      if (wedding) {
-        res.json(wedding);
-      } else {
-        res.status(404).json({ message: "Wedding not found" });
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
       }
+      
+      res.json(wedding);
     } catch (error) {
-      console.error('Wedding update error:', error);
-      res.status(400).json({ 
-        message: "Failed to update wedding", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      console.error('Update wedding error:', error);
+      res.status(400).json({ message: "Failed to update wedding" });
+    }
+  });
+
+  // Get wedding language settings
+  app.get("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const wedding = await storage.getWeddingById(weddingId);
+      
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+      
+      res.json({
+        availableLanguages: wedding.availableLanguages || ['en'],
+        defaultLanguage: wedding.defaultLanguage || 'en'
       });
+    } catch (error) {
+      console.error('Get wedding languages error:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Update wedding language settings
+  app.put("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const { availableLanguages, defaultLanguage } = req.body;
+      
+      // Validate languages
+      const supportedLanguages = ['en', 'uz', 'ru'];
+      if (!Array.isArray(availableLanguages) || availableLanguages.length === 0) {
+        return res.status(400).json({ message: "At least one language must be selected" });
+      }
+      
+      const invalidLanguages = availableLanguages.filter(lang => !supportedLanguages.includes(lang));
+      if (invalidLanguages.length > 0) {
+        return res.status(400).json({ message: `Unsupported languages: ${invalidLanguages.join(', ')}` });
+      }
+      
+      if (!availableLanguages.includes(defaultLanguage)) {
+        return res.status(400).json({ message: "Default language must be in available languages list" });
+      }
+      
+      const updatedWedding = await storage.updateWedding(weddingId, {
+        availableLanguages,
+        defaultLanguage
+      });
+
+      if (!updatedWedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+      
+      res.json({
+        availableLanguages: updatedWedding.availableLanguages,
+        defaultLanguage: updatedWedding.defaultLanguage
+      });
+    } catch (error) {
+      console.error('Update wedding languages error:', error);
+      res.status(500).json({ message: "Server error" });
     }
   });
 
