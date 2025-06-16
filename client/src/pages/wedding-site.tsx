@@ -136,6 +136,28 @@ export default function WeddingSite() {
   const currentTemplate = wedding.template || 'gardenRomance';
   const config = templateConfigs[currentTemplate as keyof typeof templateConfigs] || templateConfigs.gardenRomance;
 
+  // Template photo styles for fallback
+  const templatePhotos = {
+    classic: "https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+    traditional: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+    modern: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+  };
+
+  // Determine couple photo to display
+  const getCouplePhoto = () => {
+    if (wedding.couplePhotoUrl && !wedding.useTemplatePhoto) {
+      return wedding.couplePhotoUrl;
+    }
+    if (wedding.useTemplatePhoto && wedding.templatePhotoStyle) {
+      return templatePhotos[wedding.templatePhotoStyle as keyof typeof templatePhotos] || templatePhotos.classic;
+    }
+    // Fallback to uploaded couple photos
+    const couplePhoto = photos.find((photo: any) => photo.photoType === 'couple');
+    if (couplePhoto) return couplePhoto.url;
+    
+    return templatePhotos.classic; // Default fallback
+  };
+
   // For Standard template, use the first uploaded photo as hero image
   const heroImage = currentTemplate === 'standard' && photos.length > 0 
     ? photos[0].url 
@@ -277,54 +299,80 @@ export default function WeddingSite() {
       <nav className="sticky top-0 bg-white shadow-md z-40">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-center space-x-8 py-4">
-            {/* Only show navigation items for sections that exist */}
-            {wedding.welcomeMessage && wedding.welcomeMessage.trim() && (
-              <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                {t('wedding.dearGuests')}
-              </a>
-            )}
-            {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
-              <a href="#story" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                {t('wedding.ourStory')}
-              </a>
-            )}
-            {((photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner) && (
-              <a href="#photos" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                {t('wedding.photos')}
-              </a>
-            )}
+            {/* Navigation items in proper order */}
+            {(() => {
+              const hasWelcomeMessage = wedding.welcomeMessage?.trim() || wedding.welcomeMessageUz?.trim() || wedding.welcomeMessageRu?.trim();
+              return hasWelcomeMessage && (
+                <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                  {i18n.language === 'uz' ? 'Hurmatli mehmonlar' : i18n.language === 'ru' ? 'Дорогие гости' : 'Dear Guests'}
+                </a>
+              );
+            })()}
+            <a href="#about" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+              {i18n.language === 'uz' ? "To'y haqida" : i18n.language === 'ru' ? 'О свадьбе' : 'About Wedding'}
+            </a>
             <a href="#rsvp" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
               {t('wedding.rsvp')}
             </a>
-            <a href="#details" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-              {t('wedding.weddingDetails')}
-            </a>
             <a href="#guestbook" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-              {t('wedding.guestBook')}
+              {i18n.language === 'uz' ? 'Izohlar' : i18n.language === 'ru' ? 'Комментарии' : 'Comments'}
             </a>
           </div>
         </div>
       </nav>
 
-      {/* Guest Welcome Section - Only show if there's a welcome message */}
-      {wedding.welcomeMessage && wedding.welcomeMessage.trim() ? (
-        <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-                {t('wedding.dearGuests')}!
-              </h2>
-              <div className="max-w-3xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20">
-                  <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
-                    {wedding.welcomeMessage.split('\n').map((paragraph, index) => (
-                      <p key={index} className="mb-4 last:mb-0 text-lg">
-                        {paragraph}
-                      </p>
-                    ))}
+      {/* Hurmatli Mehmonlar / Dear Guests Section */}
+      {(() => {
+        const getCurrentWelcomeMessage = () => {
+          if (i18n.language === 'uz' && wedding.welcomeMessageUz?.trim()) {
+            return wedding.welcomeMessageUz;
+          }
+          if (i18n.language === 'ru' && wedding.welcomeMessageRu?.trim()) {
+            return wedding.welcomeMessageRu;
+          }
+          if (wedding.welcomeMessage?.trim()) {
+            return wedding.welcomeMessage;
+          }
+          return null;
+        };
+        
+        const welcomeMessage = getCurrentWelcomeMessage();
+        
+        return welcomeMessage ? (
+          <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                {/* Couple Photo */}
+                <div className="relative">
+                  <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+                    <img
+                      src={getCouplePhoto()}
+                      alt={`${wedding.bride} & ${wedding.groom}`}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="mt-8 flex justify-center">
-                    <div className="w-24 h-0.5 bg-romantic-gold"></div>
+                  <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-romantic-gold/10 rounded-full blur-xl"></div>
+                  <div className="absolute -top-6 -left-6 w-32 h-32 bg-sage-green/10 rounded-full blur-xl"></div>
+                </div>
+
+                {/* Welcome Message */}
+                <div className="text-center lg:text-left">
+                  <h2 className="text-4xl lg:text-5xl font-playfair font-bold text-romantic-gold mb-8">
+                    {i18n.language === 'uz' ? 'HURMATLI MEHMONLAR!' : 
+                     i18n.language === 'ru' ? 'ДОРОГИЕ ГОСТИ!' : 
+                     'DEAR GUESTS!'}
+                  </h2>
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 md:p-10 border border-romantic-gold/20">
+                    <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
+                      {welcomeMessage.split('\n').map((paragraph, index) => (
+                        <p key={index} className="mb-4 last:mb-0 text-lg">
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="mt-8 flex justify-center">
+                      <div className="w-24 h-0.5 bg-romantic-gold"></div>
+                    </div>
                   </div>
                   <p className="mt-6 text-romantic-gold font-playfair font-semibold text-xl">
                     {wedding.bride} & {wedding.groom}
