@@ -162,53 +162,53 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   return (
     <div className="space-y-6">
       {/* Analytics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-600" />
-              {t('guests.totalGuests')}
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+              <span className="truncate">{t('guests.totalGuests')}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalGuests}</div>
+          <CardContent className="pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{totalGuests}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              {t('guests.confirmed')}
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
+              <span className="truncate">{t('guests.confirmed')}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{confirmedGuests}</div>
+          <CardContent className="pt-0">
+            <div className="text-lg sm:text-2xl font-bold text-green-600">{confirmedGuests}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Clock className="h-4 w-4 text-yellow-600" />
-              {t('guests.pending')}
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
+              <span className="truncate">{t('guests.pending')}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{pendingGuests}</div>
+          <CardContent className="pt-0">
+            <div className="text-lg sm:text-2xl font-bold text-yellow-600">{pendingGuests}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-purple-600" />
-              {t('guests.responseRate')}
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600" />
+              <span className="truncate">{t('guests.responseRate')}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{responseRate.toFixed(1)}%</div>
-            <Progress value={responseRate} className="mt-2" />
+          <CardContent className="pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{responseRate.toFixed(1)}%</div>
+            <Progress value={responseRate} className="mt-1 sm:mt-2" />
           </CardContent>
         </Card>
       </div>
@@ -334,91 +334,98 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
 
             <TabsContent value="list" className="space-y-4">
               {/* Search and Filter */}
-              <div className="flex gap-4">
-                <div className="flex-1 relative">
+              <div className="space-y-3">
+                <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Search guests by name, email, or comment..."
+                    placeholder="Search guests..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t('guests.allStatuses')}</SelectItem>
-                    <SelectItem value="pending">{t('guests.status.pending')}</SelectItem>
-                    <SelectItem value="confirmed">{t('guests.status.confirmed')}</SelectItem>
-                    <SelectItem value="declined">{t('guests.status.declined')}</SelectItem>
-                    <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={commentFilter} onValueChange={setCommentFilter}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Comments</SelectItem>
-                    <SelectItem value="with-comments">With Comments</SelectItem>
-                    <SelectItem value="no-comments">No Comments</SelectItem>
-                  </SelectContent>
-                </Select>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t('guests.allStatuses')}</SelectItem>
+                      <SelectItem value="pending">{t('guests.status.pending')}</SelectItem>
+                      <SelectItem value="confirmed">{t('guests.status.confirmed')}</SelectItem>
+                      <SelectItem value="declined">{t('guests.status.declined')}</SelectItem>
+                      <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={commentFilter} onValueChange={setCommentFilter}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Filter comments" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="with-comments">With Comments</SelectItem>
+                      <SelectItem value="no-comments">No Comments</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Guest List */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {filteredGuests.map((guest) => (
-                  <Card key={guest.id} className="p-4">
+                  <Card key={guest.id} className="p-3 sm:p-4">
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
+                          <div className="flex-shrink-0 mt-0.5">
                             {getStatusIcon(guest.rsvpStatus)}
-                            <div>
-                              <div className="font-medium flex items-center gap-2">
-                                {guest.name}
-                                {guest.message && (
-                                  <MessageSquare className="h-4 w-4 text-blue-600" />
-                                )}
-                              </div>
-                              <div className="text-sm text-gray-500 flex items-center gap-4">
-                                {guest.email && (
-                                  <span className="flex items-center gap-1">
-                                    <Mail className="h-3 w-3" />
-                                    {guest.email}
-                                  </span>
-                                )}
-                                {guest.phone && (
-                                  <span className="flex items-center gap-1">
-                                    <Phone className="h-3 w-3" />
-                                    {guest.phone}
-                                  </span>
-                                )}
-                                {guest.respondedAt && (
-                                  <span className="flex items-center gap-1">
-                                    <Calendar className="h-3 w-3" />
-                                    {formatDate(guest.respondedAt)}
-                                  </span>
-                                )}
-                              </div>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium flex items-center gap-2 mb-1">
+                              <span className="truncate">{guest.name}</span>
+                              {guest.message && (
+                                <MessageSquare className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                              )}
+                            </div>
+                            <div className="space-y-1">
+                              {guest.email && (
+                                <div className="flex items-center gap-1 text-sm text-gray-500">
+                                  <Mail className="h-3 w-3 flex-shrink-0" />
+                                  <span className="truncate">{guest.email}</span>
+                                </div>
+                              )}
+                              {guest.phone && (
+                                <div className="flex items-center gap-1 text-sm text-gray-500">
+                                  <Phone className="h-3 w-3 flex-shrink-0" />
+                                  <span>{guest.phone}</span>
+                                </div>
+                              )}
+                              {guest.respondedAt && (
+                                <div className="flex items-center gap-1 text-xs text-gray-400">
+                                  <Calendar className="h-3 w-3 flex-shrink-0" />
+                                  <span>{formatDate(guest.respondedAt)}</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          {guest.plusOne && (
-                            <Badge variant="outline">+1</Badge>
-                          )}
+                        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                          <div className="flex items-center gap-2">
+                            {guest.plusOne && (
+                              <Badge variant="outline" className="text-xs">+1</Badge>
+                            )}
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setSelectedGuest(guest)}
+                              className="p-1"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </div>
                           {getStatusBadge(guest.rsvpStatus)}
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => setSelectedGuest(guest)}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
                         </div>
                       </div>
                       
@@ -585,7 +592,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
             )}
 
             <TabsContent value="analytics" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">

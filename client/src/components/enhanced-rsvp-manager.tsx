@@ -169,26 +169,26 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
           </div>
 
           {/* Statistics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="text-center p-4 rounded-lg bg-green-50 border border-green-200">
-              <div className="text-2xl font-bold text-green-600">{stats.confirmed}</div>
-              <div className="text-sm text-green-700 font-medium">{t('guests.status.confirmed')}</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+            <div className="text-center p-2 sm:p-4 rounded-lg bg-green-50 border border-green-200">
+              <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.confirmed}</div>
+              <div className="text-xs sm:text-sm text-green-700 font-medium">{t('guests.status.confirmed')}</div>
             </div>
-            <div className="text-center p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-              <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-              <div className="text-sm text-yellow-700 font-medium">{t('guests.status.pending')}</div>
+            <div className="text-center p-2 sm:p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+              <div className="text-lg sm:text-2xl font-bold text-yellow-600">{stats.pending}</div>
+              <div className="text-xs sm:text-sm text-yellow-700 font-medium">{t('guests.status.pending')}</div>
             </div>
-            <div className="text-center p-4 rounded-lg bg-blue-50 border border-blue-200">
-              <div className="text-2xl font-bold text-blue-600">{stats.maybe}</div>
-              <div className="text-sm text-blue-700 font-medium">{t('guests.status.maybe')}</div>
+            <div className="text-center p-2 sm:p-4 rounded-lg bg-blue-50 border border-blue-200">
+              <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.maybe}</div>
+              <div className="text-xs sm:text-sm text-blue-700 font-medium">{t('guests.status.maybe')}</div>
             </div>
-            <div className="text-center p-4 rounded-lg bg-red-50 border border-red-200">
-              <div className="text-2xl font-bold text-red-600">{stats.declined}</div>
-              <div className="text-sm text-red-700 font-medium">{t('guests.status.declined')}</div>
+            <div className="text-center p-2 sm:p-4 rounded-lg bg-red-50 border border-red-200">
+              <div className="text-lg sm:text-2xl font-bold text-red-600">{stats.declined}</div>
+              <div className="text-xs sm:text-sm text-red-700 font-medium">{t('guests.status.declined')}</div>
             </div>
-            <div className="text-center p-4 rounded-lg bg-purple-50 border border-purple-200">
-              <div className="text-2xl font-bold text-purple-600">{stats.withComments}</div>
-              <div className="text-sm text-purple-700 font-medium flex items-center justify-center gap-1">
+            <div className="text-center p-2 sm:p-4 rounded-lg bg-purple-50 border border-purple-200 col-span-2 sm:col-span-1">
+              <div className="text-lg sm:text-2xl font-bold text-purple-600">{stats.withComments}</div>
+              <div className="text-xs sm:text-sm text-purple-700 font-medium flex items-center justify-center gap-1">
                 <MessageSquare className="h-3 w-3" />
                 Comments
               </div>
@@ -207,49 +207,53 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Search and Filter Controls */}
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <Label htmlFor="search">{t('guests.searchGuests')}</Label>
-              <div className="relative">
+          <div className="space-y-4">
+            <div className="w-full">
+              <Label htmlFor="search" className="text-sm font-medium">{t('guests.searchGuests')}</Label>
+              <div className="relative mt-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   id="search"
-                  placeholder="Search guests by name, email, or comment..."
+                  placeholder="Search guests..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="status-filter">{t('guests.filterByStatus')}</Label>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('guests.allStatus')}</SelectItem>
-                  <SelectItem value="confirmed">{t('guests.status.confirmed')}</SelectItem>
-                  <SelectItem value="pending">{t('guests.status.pending')}</SelectItem>
-                  <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
-                  <SelectItem value="declined">{t('guests.status.declined')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="comment-filter">Filter by Comments</Label>
-              <Select value={commentFilter} onValueChange={setCommentFilter}>
-                <SelectTrigger className="w-40">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Comments</SelectItem>
-                  <SelectItem value="with-comments">With Comments</SelectItem>
-                  <SelectItem value="no-comments">No Comments</SelectItem>
-                </SelectContent>
-              </Select>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="status-filter" className="text-sm font-medium">{t('guests.filterByStatus')}</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full mt-1">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('guests.allStatus')}</SelectItem>
+                    <SelectItem value="confirmed">{t('guests.status.confirmed')}</SelectItem>
+                    <SelectItem value="pending">{t('guests.status.pending')}</SelectItem>
+                    <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
+                    <SelectItem value="declined">{t('guests.status.declined')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="comment-filter" className="text-sm font-medium">Comments</Label>
+                <Select value={commentFilter} onValueChange={setCommentFilter}>
+                  <SelectTrigger className="w-full mt-1">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="with-comments">With Comments</SelectItem>
+                    <SelectItem value="no-comments">No Comments</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
