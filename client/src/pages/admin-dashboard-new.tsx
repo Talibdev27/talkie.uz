@@ -15,6 +15,7 @@ import {
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
   Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Wedding, User } from "@shared/schema";
 
 export default function AdminDashboard() {
@@ -407,15 +408,21 @@ export default function AdminDashboard() {
                 <p className="text-xs sm:text-sm text-[#2C3338]/70 hidden sm:block">Wedding Platform Management</p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={handleLogout}
-              className="text-[#2C3338] border-[#2C3338] hover:bg-[#2C3338] hover:text-white text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 min-h-[44px] sm:min-h-[36px]"
-            >
-              <LogOut className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Logout</span>
-              <span className="sm:hidden">Exit</span>
-            </Button>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <LanguageSwitcher 
+                variant="compact" 
+                className="flex-shrink-0"
+              />
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="text-[#2C3338] border-[#2C3338] hover:bg-[#2C3338] hover:text-white text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 min-h-[44px] sm:min-h-[36px]"
+              >
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Exit</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>

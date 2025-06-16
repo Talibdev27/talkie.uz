@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Calendar, Plus, Settings, ArrowLeft, Languages } from "lucide-react";
+import { Users, Calendar, Plus, Settings, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Wedding, User } from "@shared/schema";
 
 interface RestrictedAdminDashboardProps {
@@ -15,11 +16,7 @@ interface RestrictedAdminDashboardProps {
 
 export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<"weddings" | "create">("weddings");
-  const { t, i18n } = useTranslation();
-
-  const handleLanguageChange = (language: string) => {
-    i18n.changeLanguage(language);
-  };
+  const { t } = useTranslation();
 
   // Fetch user's accessible weddings
   const { data: weddings = [], isLoading: weddingsLoading } = useQuery<Wedding[]>({
@@ -47,19 +44,11 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
               </div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
-              <div className="flex items-center space-x-3">
-                <Languages className="h-4 w-4 text-gray-500" />
-                <Select value={i18n.language} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="uz">O'zbekcha</SelectItem>
-                    <SelectItem value="ru">Русский</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <LanguageSwitcher 
+                variant="dropdown" 
+                showLabel={false}
+                className="flex-shrink-0"
+              />
               <span className="text-sm text-gray-600">{t('guestManager.welcome')}, {user.name}</span>
               <Button 
                 variant="outline" 
