@@ -11,7 +11,7 @@ import { PhotoUpload } from '@/components/photo-upload';
 import { SmartImageUpload } from '@/components/smart-image-upload';
 import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
 import { RSVPForm } from '@/components/rsvp-form';
-import { LanguageToggle } from '@/components/language-toggle';
+import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
@@ -148,9 +148,9 @@ export default function WeddingSite() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
-      {/* Header with Language Toggle */}
+      {/* Header with Wedding Language Switcher */}
       <div className="absolute top-4 right-4 z-50">
-        <LanguageToggle />
+        <WeddingLanguageSwitcher wedding={wedding} />
       </div>
 
       {/* Hero Section */}
