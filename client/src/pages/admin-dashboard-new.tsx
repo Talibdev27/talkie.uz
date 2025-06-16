@@ -122,9 +122,18 @@ export default function AdminDashboard() {
         throw new Error('Please fill in all required fields');
       }
       
-      const response = await fetch('/api/admin/weddings', {
+      // Get the JWT token from localStorage
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+      
+      const response = await fetch('/api/weddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(weddingData)
       });
       
