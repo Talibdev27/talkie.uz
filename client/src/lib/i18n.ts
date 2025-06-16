@@ -802,7 +802,7 @@ const resources = {
       'wedding.createdWith': 'Yaratilgan',
       'wedding.using': 'LoveStory yordamida',
       'wedding.capturingJourney': 'Bizning sayohatimizni suratga olish',
-      'wedding.cantWaitToCelebrate': 'Siz bilan nishonlashimizni kutib turibmiz!',
+      'wedding.cantWaitToCelebrate': 'Siz bilan quvonchli kunimizni nishonlashni sabrsizlik bilan kutyapmiz!',
       'wedding.weddingDayIsHere': 'To\'y kuni keldi!',
 
       // RSVP Form
