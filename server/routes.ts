@@ -90,6 +90,53 @@ const authenticateToken = (req: any, res: any, next: any) => {
   });
 };
 
+// Middleware to verify wedding ownership
+const verifyWeddingOwnership = async (req: any, res: any, next: any) => {
+  try {
+    const weddingId = parseInt(req.params.id);
+    const userId = req.user.userId;
+
+    // Get the wedding
+    const wedding = await storage.getWeddingById(weddingId);
+    if (!wedding) {
+      return res.status(404).json({ message: 'Wedding not found' });
+    }
+
+    // Get the user to check if they're admin
+    const user = await storage.getUserById(userId);
+    const isAdmin = user && (user.isAdmin === true || user.role === 'admin');
+
+    // Check if user owns the wedding or is admin
+    if (!isAdmin && wedding.userId !== userId) {
+      return res.status(403).json({ message: 'Unauthorized access to this wedding' });
+    }
+
+    // Attach wedding to request for further use
+    req.wedding = wedding;
+    next();
+  } catch (error) {
+    console.error('Wedding ownership verification error:', error);
+    res.status(500).json({ message: 'Server error during ownership verification' });
+  }
+};
+
+// Middleware to check admin privileges
+const requireAdmin = async (req: any, res: any, next: any) => {
+  try {
+    const userId = req.user.userId;
+    const user = await storage.getUserById(userId);
+    
+    if (!user || (!user.isAdmin && user.role !== 'admin')) {
+      return res.status(403).json({ message: 'Admin privileges required' });
+    }
+    
+    next();
+  } catch (error) {
+    console.error('Admin verification error:', error);
+    res.status(500).json({ message: 'Server error during admin verification' });
+  }
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
@@ -352,7 +399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin management routes - Full CRUD operations
-  app.get("/api/admin/users", async (req, res) => {
+  app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       res.json(users);
@@ -362,7 +409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update user role and permissions
-  app.put("/api/admin/users/:userId", async (req, res) => {
+  app.put("/api/admin/users/:userId", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const updates = req.body;
@@ -381,7 +428,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/weddings", async (req, res) => {
+  app.get("/api/admin/weddings", authenticateToken, requireAdmin, async (req, res) => {
     try {
       // Get all weddings across all users
       const users = await storage.getAllUsers();
@@ -514,27 +561,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user's own weddings only - SECURE ROUTE
+  app.get("/api/user/weddings", authenticateToken, async (req: any, res) => {
+    try {
+      const userId = req.user.userId;
+      const weddings = await storage.getWeddingsByUserId(userId);
+      res.json(weddings);
+    } catch (error) {
+      console.error("Get user weddings error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Get specific wedding by ID - with ownership verification
+  app.get("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      // Wedding is already attached by middleware and ownership verified
+      res.json(req.wedding);
+    } catch (error) {
+      console.error("Get wedding error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   // Wedding owner update route - with authorization
-  app.put("/api/weddings/:id", authenticateToken, async (req: any, res) => {
+  app.put("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
-      const userId = req.user.userId;
-      
-      // Get the wedding to check ownership
-      const existingWedding = await storage.getWeddingById(weddingId);
-      if (!existingWedding) {
-        return res.status(404).json({ message: "Wedding not found" });
-      }
-      
-      // Get the user to check if they're admin
-      const user = await storage.getUserById(userId);
-      const isAdmin = user && (user.isAdmin === true || user.role === 'admin');
-      
-      // Check if user owns the wedding or is admin
-      if (!isAdmin && existingWedding.userId !== userId) {
-        return res.status(403).json({ message: "Not authorized to update this wedding" });
-      }
       
       // Convert date string to Date object if needed
       if (updates.weddingDate && typeof updates.weddingDate === 'string') {
@@ -554,6 +608,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Failed to update wedding", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
+    }
+  });
+
+  // Delete wedding - with ownership verification
+  app.delete("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const success = await storage.deleteWedding(weddingId);
+      
+      if (success) {
+        res.json({ message: "Wedding deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Wedding not found" });
+      }
+    } catch (error) {
+      console.error('Wedding deletion error:', error);
+      res.status(500).json({ message: "Failed to delete wedding" });
     }
   });
 
