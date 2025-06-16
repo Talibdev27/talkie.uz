@@ -237,6 +237,20 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <Label htmlFor="comment-filter">Filter by Comments</Label>
+              <Select value={commentFilter} onValueChange={setCommentFilter}>
+                <SelectTrigger className="w-40">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Comments</SelectItem>
+                  <SelectItem value="with-comments">With Comments</SelectItem>
+                  <SelectItem value="no-comments">No Comments</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Bulk Actions */}
@@ -300,6 +314,9 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                   <div className="flex items-center gap-2 mb-1">
                     <User className="h-4 w-4 text-gray-400" />
                     <span className="font-medium truncate">{guest.name}</span>
+                    {guest.message && (
+                      <MessageSquare className="h-4 w-4 text-blue-600" />
+                    )}
                   </div>
                   {guest.email && (
                     <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -311,6 +328,22 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Phone className="h-3 w-3" />
                       <span>{guest.phone}</span>
+                    </div>
+                  )}
+                  {guest.message && (
+                    <div className="mt-2 p-2 bg-blue-50 rounded text-sm">
+                      <div className="flex items-start gap-1">
+                        <MessageSquare className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">
+                          {guest.message.length > 60 ? `${guest.message.substring(0, 60)}...` : guest.message}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {guest.respondedAt && (
+                    <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>Responded: {new Date(guest.respondedAt).toLocaleDateString()}</span>
                     </div>
                   )}
                 </div>
