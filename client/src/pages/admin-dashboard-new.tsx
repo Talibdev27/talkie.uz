@@ -450,43 +450,58 @@ export default function AdminDashboard() {
 
           <Card className="wedding-card">
             <CardContent className="p-3 sm:p-6 text-center">
-              <BarChart3 className="h-8 w-8 text-[#89916B] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">
+              <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-[#89916B] mx-auto mb-1 sm:mb-2" />
+              <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">
                 {weddings?.filter((w: Wedding) => 
                   new Date(w.weddingDate) > new Date()
                 ).length || 0}
               </p>
-              <p className="text-[#2C3338]/70 text-sm">Upcoming Weddings</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Upcoming Weddings</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Management Tabs */}
-        <Tabs defaultValue="weddings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="weddings">Wedding Management</TabsTrigger>
-            <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="rsvp">RSVP Management</TabsTrigger>
-            <TabsTrigger value="create">Create Wedding</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        {/* Mobile-Optimized Management Tabs */}
+        <Tabs defaultValue="weddings" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto p-1">
+            <TabsTrigger value="weddings" className="text-xs sm:text-sm p-2 sm:p-3">
+              <span className="hidden sm:inline">Wedding Management</span>
+              <span className="sm:hidden">Weddings</span>
+            </TabsTrigger>
+            <TabsTrigger value="users" className="text-xs sm:text-sm p-2 sm:p-3">
+              <span className="hidden sm:inline">User Management</span>
+              <span className="sm:hidden">Users</span>
+            </TabsTrigger>
+            <TabsTrigger value="rsvp" className="text-xs sm:text-sm p-2 sm:p-3">
+              <span className="hidden sm:inline">RSVP Management</span>
+              <span className="sm:hidden">RSVP</span>
+            </TabsTrigger>
+            <TabsTrigger value="create" className="text-xs sm:text-sm p-2 sm:p-3">
+              <span className="hidden sm:inline">Create Wedding</span>
+              <span className="sm:hidden">Create</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="text-xs sm:text-sm p-2 sm:p-3">
+              <span className="hidden sm:inline">Analytics</span>
+              <span className="sm:hidden">Stats</span>
+            </TabsTrigger>
           </TabsList>
 
-          {/* Weddings Management */}
-          <TabsContent value="weddings" className="space-y-6">
+          {/* Mobile-Optimized Weddings Management */}
+          <TabsContent value="weddings" className="space-y-4 sm:space-y-6">
             <Card className="wedding-card">
-              <CardHeader>
-                <div className="flex items-center justify-between">
+              <CardHeader className="pb-3 sm:pb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle className="flex items-center gap-2 text-[#2C3338]">
-                    <Globe className="h-5 w-5 text-[#D4B08C]" />
+                    <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-[#D4B08C]" />
                     All Weddings
                   </CardTitle>
                   <div className="relative">
-                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Search className="h-3 w-3 sm:h-4 sm:w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <Input
                       placeholder="Search weddings..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 w-64"
+                      className="pl-8 sm:pl-10 w-full sm:w-64 text-sm"
                     />
                   </div>
                 </div>
@@ -505,44 +520,46 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {filteredWeddings.map((wedding: Wedding) => {
                       const weddingOwner = users.find(user => user.id === wedding.userId);
                       return (
-                        <div key={wedding.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-[#D4B08C] rounded-full flex items-center justify-center">
-                              <Heart className="w-6 h-6 text-white" />
+                        <div key={wedding.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 gap-3">
+                          <div className="flex items-start sm:items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#D4B08C] rounded-full flex items-center justify-center flex-shrink-0">
+                              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
-                            <div>
-                              <h3 className="font-semibold text-[#2C3338]">
+                            <div className="min-w-0 flex-1">
+                              <h3 className="font-semibold text-sm sm:text-base text-[#2C3338] truncate">
                                 {wedding.bride} & {wedding.groom}
                               </h3>
-                              <p className="text-sm text-[#2C3338]/70">
-                                {wedding.venue} • {new Date(wedding.weddingDate).toLocaleDateString()}
+                              <p className="text-xs sm:text-sm text-[#2C3338]/70 truncate">
+                                📍 {wedding.venue} • 📅 {new Date(wedding.weddingDate).toLocaleDateString()}
                               </p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Badge variant={wedding.isPublic ? "default" : "secondary"}>
+                              <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
+                                <Badge variant={wedding.isPublic ? "default" : "secondary"} className="text-xs">
                                   {wedding.isPublic ? 'Public' : 'Private'}
                                 </Badge>
-                                <span className="text-xs text-[#2C3338]/50">
+                                <span className="text-xs text-[#2C3338]/50 truncate max-w-[100px] sm:max-w-none">
                                   /{wedding.uniqueUrl}
                                 </span>
                                 {weddingOwner && (
-                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded truncate max-w-[120px] sm:max-w-none">
                                     Owner: {weddingOwner.email}
                                   </span>
                                 )}
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-shrink-0 justify-end sm:justify-start">
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => window.open(`/wedding/${wedding.uniqueUrl}`, '_blank')}
+                              className="min-h-[44px] sm:min-h-[36px] p-2"
                             >
-                              <Eye className="h-4 w-4" />
+                              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="ml-1 text-xs sm:hidden">View</span>
                             </Button>
                             <Button
                               variant="outline"
@@ -553,17 +570,20 @@ export default function AdminDashboard() {
                                 console.log('Admin flag set:', sessionStorage.getItem('fromAdminDashboard'));
                                 setLocation(`/manage/${wedding.uniqueUrl}`);
                               }}
+                              className="min-h-[44px] sm:min-h-[36px] p-2"
                             >
-                              <Settings className="h-4 w-4" />
+                              <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="ml-1 text-xs sm:hidden">Edit</span>
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => handleDeleteWedding(wedding.id)}
                               disabled={deleteWeddingMutation.isPending}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 min-h-[44px] sm:min-h-[36px] p-2"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="ml-1 text-xs sm:hidden">Del</span>
                             </Button>
                           </div>
                         </div>
