@@ -97,12 +97,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
 
   return (
     <Card className={`max-w-md mx-auto ${className}`}>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-playfair font-bold text-charcoal">
-          {t('wedding.rsvp')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
