@@ -573,6 +573,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Guest manager route - only for users with guest_manager role
+  app.get("/api/guest-manager/weddings", authenticateToken, async (req: any, res) => {
+    try {
+      const userId = req.user.userId;
+      const user = await storage.getUserById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Only allow guest managers and admins
+      if (user.role !== 'guest_manager' && !user.isAdmin) {
+        return res.status(403).json({ message: "Access denied. Guest manager role required." });
+      }
+
+      // Guest managers can only see their own weddings
+      const weddings = await storage.getWeddingsByUserId(userId);
+      res.json(weddings);
+    } catch (error) {
+      console.error("Guest manager weddings error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   // Get specific wedding by ID - with ownership verification
   app.get("/api/weddings/:id", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
     try {
@@ -1123,16 +1147,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Wedding routes
-  app.post("/api/weddings", authenticateToken, async (req, res) => {
+  app.post("/api/weddings", authenticateToken, async (req: any, res) => {
     try {
       console.log("Wedding creation request:", JSON.stringify(req.body, null, 2));
 
-      const { userId, ...weddingFields } = req.body;
-
-      if (!userId) {
-        console.log("Missing userId in request");
-        return res.status(400).json({ message: "User ID required" });
-      }
+      const userId = req.user.userId; // Use authenticated user's ID
+      const weddingFields = req.body;
 
       // Check if user exists and is not a guest user
       const user = await storage.getUserById(userId);
