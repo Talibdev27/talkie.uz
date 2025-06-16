@@ -11,6 +11,7 @@ import { PhotoUpload } from '@/components/photo-upload';
 import { SmartImageUpload } from '@/components/smart-image-upload';
 import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
 import { RSVPForm } from '@/components/rsvp-form';
+import { GuestBookForm } from '@/components/guest-book-form';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
