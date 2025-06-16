@@ -1275,8 +1275,9 @@ const resources = {
       'photoUpload.maxFiles': 'Загрузка нескольких файлов',
 
       // Wedding Site
+      'wedding.dearGuests': 'Дорогие гости',
       'wedding.ourStory': 'Наша история любви',
-      'wedding.rsvp': 'Подтверждение',
+      'wedding.rsvp': 'Пожалуйста, подтвердите ваше присутствие',
       'wedding.photos': 'Наши воспоминания',
       'wedding.guestBook': 'Книга гостей',
       'wedding.weddingDetails': 'Детали свадьбы',
