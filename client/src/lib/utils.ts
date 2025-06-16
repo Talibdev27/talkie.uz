@@ -8,8 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 export function formatDate(date: Date | string, locale?: string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   
-  // Use current locale or fallback to Uzbek
-  const currentLocale = locale || localStorage.getItem('i18nextLng') || 'uz';
+  // Use current locale or fallback to English
+  const currentLocale = locale || localStorage.getItem('language') || 'en';
   
   // Custom Uzbek month names
   if (currentLocale === 'uz') {

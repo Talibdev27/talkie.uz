@@ -19,7 +19,7 @@ import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, Mes
 import type { Wedding, GuestBookEntry } from '@shared/schema';
 
 export default function WeddingSite() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const params = useParams();
   const uniqueUrl = params.uniqueUrl as string;
   
@@ -171,7 +171,7 @@ export default function WeddingSite() {
               {wedding.bride} & {wedding.groom}
             </h1>
             <p className={`text-xl md:text-2xl font-cormorant mb-8 ${currentTemplate === 'standard' ? 'text-white/90 drop-shadow-xl' : 'text-shadow'}`}>
-              {formatDate(wedding.weddingDate)}
+              {formatDate(wedding.weddingDate, i18n.language)}
             </p>
             
             {/* Ceremony Time */}
