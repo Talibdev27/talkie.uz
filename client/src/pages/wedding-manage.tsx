@@ -14,6 +14,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { formatDate } from '@/lib/utils';
 import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, Trash2, Users, ExternalLink, MessageSquare } from 'lucide-react';
 import { LanguageToggle } from '@/components/language-toggle';
+import { WeddingLanguageSettings } from '@/components/wedding-language-settings';
 import { PersonalizedGuestDashboard } from '@/components/personalized-guest-dashboard';
 import { EnhancedRSVPManager } from '@/components/enhanced-rsvp-manager';
 import { GuestBookManager } from '@/components/guest-book-manager';
@@ -276,12 +277,13 @@ export default function WeddingManage() {
               <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
             </TabsList>
           ) : (
-            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-6">
               <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
               <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
               <TabsTrigger value="dashboard">{t('manage.guestDashboard')}</TabsTrigger>
               <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
               <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
+              <TabsTrigger value="languages">Languages</TabsTrigger>
             </TabsList>
           )}
 
@@ -492,6 +494,13 @@ export default function WeddingManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
+
+          {/* Language Settings Tab - Only for non-guest managers */}
+          {currentUser?.role !== 'guest_manager' && (
+            <TabsContent value="languages" className="space-y-6">
+              <WeddingLanguageSettings wedding={wedding} />
+            </TabsContent>
           )}
         </Tabs>
       </div>
