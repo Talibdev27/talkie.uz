@@ -446,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin wedding creation route
-  app.post("/api/admin/weddings", async (req, res) => {
+  app.post("/api/admin/weddings", authenticateToken, requireAdmin, async (req, res) => {
     try {
       console.log("Admin wedding creation request:", req.body);
 
@@ -497,7 +497,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/weddings/:id", async (req, res) => {
+  app.delete("/api/admin/weddings/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const weddingId = parseInt(req.params.id);
 
@@ -514,7 +514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/weddings/:id", async (req, res) => {
+  app.put("/api/admin/weddings/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const weddingId = parseInt(req.params.id);
       const updates = req.body;
@@ -628,10 +628,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete photo endpoint for wedding owners
-  app.delete("/api/photos/:id", async (req, res) => {
+  // Get guests for a specific wedding - with ownership verification
+  app.get("/api/weddings/:id/guests", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const guests = await storage.getGuestsByWeddingId(weddingId);
+      res.json(guests);
+    } catch (error) {
+      console.error('Get guests error:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Create guest for a specific wedding - with ownership verification
+  app.post("/api/weddings/:id/guests", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const guestData = { ...req.body, weddingId };
+      
+      const guest = await storage.createGuest(guestData);
+      res.status(201).json(guest);
+    } catch (error) {
+      console.error('Create guest error:', error);
+      res.status(400).json({ message: "Failed to create guest" });
+    }
+  });
+
+  // Update RSVP for a guest - with ownership verification
+  app.put("/api/guests/:guestId/rsvp", authenticateToken, async (req: any, res) => {
+    try {
+      const guestId = parseInt(req.params.guestId);
+      const update = req.body;
+      
+      // First get the guest to find the wedding
+      const guests = await storage.getGuestsByWeddingId(0); // This needs to be improved in storage
+      const guest = guests.find(g => g.id === guestId);
+      
+      if (!guest) {
+        return res.status(404).json({ message: "Guest not found" });
+      }
+
+      // Verify wedding ownership
+      const wedding = await storage.getWeddingById(guest.weddingId);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      const user = await storage.getUserById(req.user.userId);
+      const isAdmin = user && (user.isAdmin === true || user.role === 'admin');
+
+      if (!isAdmin && wedding.userId !== req.user.userId) {
+        return res.status(403).json({ message: "Unauthorized access" });
+      }
+
+      const updatedGuest = await storage.updateGuestRSVP(guestId, update);
+      res.json(updatedGuest);
+    } catch (error) {
+      console.error('RSVP update error:', error);
+      res.status(400).json({ message: "Failed to update RSVP" });
+    }
+  });
+
+  // Get photos for a specific wedding - with ownership verification
+  app.get("/api/weddings/:id/photos", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const photos = await storage.getPhotosByWeddingId(weddingId);
+      res.json(photos);
+    } catch (error) {
+      console.error('Get photos error:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Create photo for a specific wedding - with ownership verification
+  app.post("/api/weddings/:id/photos", authenticateToken, verifyWeddingOwnership, upload.single('photo'), async (req: any, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      
+      if (!req.file) {
+        return res.status(400).json({ message: "Photo file required" });
+      }
+
+      const photoData = {
+        weddingId,
+        url: `/uploads/${req.file.filename}`,
+        caption: req.body.caption || '',
+        uploadedBy: req.body.uploadedBy || 'Wedding Owner'
+      };
+      
+      const photo = await storage.createPhoto(photoData);
+      res.status(201).json(photo);
+    } catch (error) {
+      console.error('Photo upload error:', error);
+      res.status(400).json({ message: "Failed to upload photo" });
+    }
+  });
+
+  // Delete photo endpoint for wedding owners - with proper ownership verification
+  app.delete("/api/photos/:id", authenticateToken, async (req: any, res) => {
     try {
       const photoId = parseInt(req.params.id);
+      
+      // Get all photos to find the one being deleted (this needs storage improvement)
+      const allUsers = await storage.getAllUsers();
+      let targetPhoto = null;
+      let targetWedding = null;
+
+      for (const user of allUsers) {
+        const weddings = await storage.getWeddingsByUserId(user.id);
+        for (const wedding of weddings) {
+          const photos = await storage.getPhotosByWeddingId(wedding.id);
+          const photo = photos.find(p => p.id === photoId);
+          if (photo) {
+            targetPhoto = photo;
+            targetWedding = wedding;
+            break;
+          }
+        }
+        if (targetPhoto) break;
+      }
+
+      if (!targetPhoto || !targetWedding) {
+        return res.status(404).json({ message: "Photo not found" });
+      }
+
+      // Verify ownership
+      const user = await storage.getUserById(req.user.userId);
+      const isAdmin = user && (user.isAdmin === true || user.role === 'admin');
+
+      if (!isAdmin && targetWedding.userId !== req.user.userId) {
+        return res.status(403).json({ message: "Unauthorized access" });
+      }
+
       const success = await storage.deletePhoto(photoId);
       
       if (success) {
@@ -645,7 +774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/guests/:weddingId", async (req, res) => {
+  app.get("/api/admin/guests/:weddingId", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const weddingId = parseInt(req.params.weddingId);
       const guests = await storage.getGuestsByWeddingId(weddingId);
@@ -655,7 +784,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/guests", async (req, res) => {
+  app.post("/api/admin/guests", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const guestData = req.body;
       const guest = await storage.createGuest(guestData);
@@ -666,7 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User management routes for admin
-  app.put("/api/admin/users/:id", async (req, res) => {
+  app.put("/api/admin/users/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const updates = req.body;
@@ -683,7 +812,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/users/:id", async (req, res) => {
+  app.delete("/api/admin/users/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const success = await storage.deleteUser(userId);
@@ -698,19 +827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user's own weddings - requires authentication
-  app.get("/api/user/weddings", authenticateToken, async (req: any, res) => {
-    try {
-      const userId = req.user.userId;
-      const weddings = await storage.getWeddingsByUserId(userId);
-      res.json(weddings);
-    } catch (error: any) {
-      console.error('Get user weddings error:', error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-
-  app.get("/api/admin/stats", async (req, res) => {
+  app.get("/api/admin/stats", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const realUsers = users.filter(u => !u.email.includes('guest_'));
@@ -744,7 +861,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // RSVP management endpoints for admin
-  app.get("/api/admin/rsvp-stats", async (req, res) => {
+  app.get("/api/admin/rsvp-stats", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       let totalRSVPs = 0;
@@ -791,7 +908,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/rsvp", async (req, res) => {
+  app.get("/api/admin/rsvp", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const allGuests = [];
@@ -821,7 +938,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Photo management endpoints for admin
-  app.get("/api/admin/photos", async (req, res) => {
+  app.get("/api/admin/photos", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const allPhotos = [];
@@ -849,7 +966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/photos", async (req, res) => {
+  app.post("/api/admin/photos", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const photoData = req.body;
       const photo = await storage.createPhoto(photoData);
@@ -859,7 +976,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/photos/:id", async (req, res) => {
+  app.put("/api/admin/photos/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const photoId = parseInt(req.params.id);
       const updates = req.body;
@@ -871,7 +988,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/photos/:id", async (req, res) => {
+  app.delete("/api/admin/photos/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const photoId = parseInt(req.params.id);
       const success = await storage.deletePhoto(photoId);
@@ -1006,7 +1123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Wedding routes
-  app.post("/api/weddings", async (req, res) => {
+  app.post("/api/weddings", authenticateToken, async (req, res) => {
     try {
       console.log("Wedding creation request:", JSON.stringify(req.body, null, 2));
 
