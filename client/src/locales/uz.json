@@ -127,38 +127,6 @@
     "backgroundMusic": "Fon Musiqasi",
     "backgroundMusicDesc": "Mehmonlaringiz uchun ohista chaladigan moslashtirilgan fon musiqasi bilan mukammal kayfiyat yarating."
   },
-  "pricing": {
-    "title": "Oddiy, Shaffof Narxlar",
-    "subtitle": "Maxsus kuningiz uchun mukammal rejani tanlang",
-    "basic": "Asosiy",
-    "premium": "Premium",
-    "deluxe": "Deluxe",
-    "perYear": "/yil",
-    "basicFeatures": [
-      "Asosiy veb-sayt shabloni",
-      "50 tagacha mehmon",
-      "RSVP boshqaruvi",
-      "Foto galereya (10 ta rasm)"
-    ],
-    "premiumFeatures": [
-      "Barcha Asosiy xususiyatlar",
-      "Cheksiz mehmonlar",
-      "Premium shablonlar",
-      "Cheksiz rasmlar",
-      "Maxsus domen",
-      "Fon musiqasi"
-    ],
-    "deluxeFeatures": [
-      "Barcha Premium xususiyatlar",
-      "Kengaytirilgan sozlash",
-      "Birinchi navbatdagi yordam",
-      "Mehmonlar xabarlashuvi",
-      "Tahlil paneli"
-    ],
-    "chooseBasic": "Boshlash",
-    "choosePremium": "Premium Tanlash",
-    "chooseDeluxe": "Deluxe Tanlash"
-  },
   "dashboard": {
     "overview": "Umumiy Ko'rinish",
     "rsvpStatus": "RSVP Holati",
