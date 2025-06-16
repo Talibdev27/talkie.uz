@@ -392,62 +392,64 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white">
-      <header className="bg-white shadow-sm border-b border-[#D4B08C]/20">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      {/* Mobile-Optimized Header */}
+      <header className="bg-white shadow-sm border-b border-[#D4B08C]/20 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#D4B08C] rounded-full flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#D4B08C] rounded-full flex items-center justify-center flex-shrink-0">
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-playfair font-bold text-[#2C3338]">
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-2xl font-playfair font-bold text-[#2C3338] truncate">
                   Admin Dashboard
                 </h1>
-                <p className="text-[#2C3338]/70">Wedding Platform Management</p>
+                <p className="text-xs sm:text-sm text-[#2C3338]/70 hidden sm:block">Wedding Platform Management</p>
               </div>
             </div>
             <Button 
               variant="outline" 
               onClick={handleLogout}
-              className="text-[#2C3338] border-[#2C3338] hover:bg-[#2C3338] hover:text-white"
+              className="text-[#2C3338] border-[#2C3338] hover:bg-[#2C3338] hover:text-white text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 min-h-[44px] sm:min-h-[36px]"
             >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
+              <LogOut className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Logout</span>
+              <span className="sm:hidden">Exit</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* System Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        {/* Mobile-Optimized System Stats Overview */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <Card className="wedding-card">
-            <CardContent className="p-6 text-center">
-              <Globe className="h-8 w-8 text-[#D4B08C] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">{stats.totalWeddings || 0}</p>
-              <p className="text-[#2C3338]/70 text-sm">Total Weddings</p>
+            <CardContent className="p-3 sm:p-6 text-center">
+              <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-[#D4B08C] mx-auto mb-1 sm:mb-2" />
+              <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats.totalWeddings || 0}</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Total Weddings</p>
             </CardContent>
           </Card>
 
           <Card className="wedding-card">
-            <CardContent className="p-6 text-center">
-              <Users className="h-8 w-8 text-[#89916B] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">{stats?.totalUsers || 0}</p>
-              <p className="text-[#2C3338]/70 text-sm">Real Users</p>
-              <p className="text-xs text-[#2C3338]/50">({stats?.guestUsers || 0} guest accounts)</p>
+            <CardContent className="p-3 sm:p-6 text-center">
+              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-[#89916B] mx-auto mb-1 sm:mb-2" />
+              <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats?.totalUsers || 0}</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Real Users</p>
+              <p className="text-xs text-[#2C3338]/50 hidden sm:block">({stats?.guestUsers || 0} guest accounts)</p>
             </CardContent>
           </Card>
 
           <Card className="wedding-card">
-            <CardContent className="p-6 text-center">
-              <Heart className="h-8 w-8 text-[#D4B08C] mx-auto mb-2" />
-              <p className="text-2xl font-bold text-[#2C3338]">{stats?.publicWeddings || 0}</p>
-              <p className="text-[#2C3338]/70 text-sm">Public Weddings</p>
+            <CardContent className="p-3 sm:p-6 text-center">
+              <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-[#D4B08C] mx-auto mb-1 sm:mb-2" />
+              <p className="text-lg sm:text-2xl font-bold text-[#2C3338]">{stats?.publicWeddings || 0}</p>
+              <p className="text-[#2C3338]/70 text-xs sm:text-sm">Public Weddings</p>
             </CardContent>
           </Card>
 
           <Card className="wedding-card">
-            <CardContent className="p-6 text-center">
+            <CardContent className="p-3 sm:p-6 text-center">
               <BarChart3 className="h-8 w-8 text-[#89916B] mx-auto mb-2" />
               <p className="text-2xl font-bold text-[#2C3338]">
                 {weddings?.filter((w: Wedding) => 
