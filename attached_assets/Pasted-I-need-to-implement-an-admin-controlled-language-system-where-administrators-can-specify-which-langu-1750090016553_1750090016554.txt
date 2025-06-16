@@ -1,0 +1,156 @@
+I need to implement an admin-controlled language system where administrators can specify which languages should be available for each wedding. This should work alongside our existing user language preferences. Here are the detailed requirements:
+
+1. **Admin Dashboard Features**:
+   - New "Language Settings" section in wedding management
+   - Multi-select interface for available languages
+   - Preview of how the wedding page appears in each language
+   - Default language selection for each wedding
+
+2. **Database Changes Required**:
+   ```javascript
+   // Updated Wedding Schema
+   const WeddingSchema = new Schema({
+     // ... existing fields ...
+     languages: {
+       type: [String],
+       enum: ['en', 'uz', 'ru'],
+       default: ['en']
+     },
+     defaultLanguage: {
+       type: String,
+       default: 'en'
+     }
+   });
+Backend API Endpoints:
+
+javascript
+// GET /api/weddings/:id/languages - Get available languages
+// PUT /api/weddings/:id/languages - Update language settings
+router.put('/:id/languages', authMiddleware, adminMiddleware, async (req, res) => {
+  const { languages, defaultLanguage } = req.body;
+  const wedding = await Wedding.findByIdAndUpdate(
+    req.params.id,
+    { $set: { languages, defaultLanguage } },
+    { new: true }
+  );
+  res.json(wedding);
+});
+Frontend Implementation:
+
+jsx
+// Admin Language Control Component
+function WeddingLanguageSettings({ wedding }) {
+  const [selectedLangs, setSelectedLangs] = useState(wedding.languages);
+  const [defaultLang, setDefaultLang] = useState(wedding.defaultLanguage);
+
+  const handleSave = async () => {
+    await api.put(`/weddings/${wedding._id}/languages`, {
+      languages: selectedLangs,
+      defaultLanguage: defaultLang
+    });
+  };
+
+  return (
+    <div className="language-settings">
+      <h3>Available Languages</h3>
+      <MultiSelect
+        options={SUPPORTED_LANGUAGES}
+        selected={selectedLangs}
+        onChange={setSelectedLangs}
+      />
+      
+      <h3>Default Language</h3>
+      <Select 
+        options={selectedLangs}
+        value={defaultLang}
+        onChange={setDefaultLang}
+      />
+      
+      <button onClick={handleSave}>Save Settings</button>
+    </div>
+  );
+}
+Wedding Page Language Logic:
+
+javascript
+// Wedding page language resolution
+function determineWeddingLanguage(req, wedding) {
+  // 1. Check URL parameter (?lang=)
+  // 2. Check user preference (logged-in)
+  // 3. Check browser language
+  // 4. Use wedding default
+  return req.query.lang || 
+         req.user?.languagePreference ||
+         req.acceptsLanguages(wedding.languages) ||
+         wedding.defaultLanguage;
+}
+Visitor Language Selector:
+
+jsx
+function WeddingLanguageSwitcher({ wedding }) {
+  const { i18n } = useTranslation();
+  
+  return (
+    <div className="wedding-lang-switcher">
+      {wedding.languages.map(lang => (
+        <button 
+          key={lang}
+          className={i18n.language === lang ? 'active' : ''}
+          onClick={() => i18n.changeLanguage(lang)}
+        >
+          {LANGUAGE_NAMES[lang]}
+        </button>
+      ))}
+    </div>
+  );
+}
+Required Features:
+
+Language availability should override system defaults
+
+Graceful fallback when translations are incomplete
+
+Clear visual indication of available languages
+
+SEO-friendly language alternates (hreflang)
+
+Testing Requirements:
+
+Verify admin can restrict languages
+
+Test language fallback chain
+
+Check guest user experience
+
+Validate wedding-specific translations
+
+Please provide:
+
+Complete admin interface components
+
+Backend API implementation
+
+Wedding page language resolution logic
+
+Updated translation loading system
+
+Migration script for existing weddings
+
+text
+
+## Additional Recommendations
+
+1. **Translation Management**:
+   - Add warning when disabling a language with existing translations
+   - Implement per-wedding translation overrides
+   - Include progress indicators for each language
+
+2. **UX Considerations**:
+   - Make language selector prominent on wedding pages
+   - Add visual flags to language options
+   - Show "translation available" badges in admin
+
+3. **Advanced Features**:
+   - Language-specific content versions
+   - Per-language publish status
+   - Translation workflow for wedding owners
