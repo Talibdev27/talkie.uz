@@ -34,7 +34,7 @@ const resources = {
       // Wedding Site
       'wedding.dearGuests': 'Dear Guests',
       'wedding.ourStory': 'Our Love Story',
-      'wedding.rsvp': 'Iltimos, qatnashishingizni bildiring',
+      'wedding.rsvp': 'Please let us know if you\'ll be attending',
       'wedding.photos': 'Our Memories',
       'wedding.guestBook': 'Guest Book',
       'wedding.weddingDetails': 'Wedding Details',
@@ -785,7 +785,7 @@ const resources = {
       // Wedding Site
       'wedding.dearGuests': 'Hurmatli mehmonlar',
       'wedding.ourStory': 'Bizning sevgi hikoyamiz',
-      'wedding.rsvp': 'Tasdiq',
+      'wedding.rsvp': 'Iltimos, qatnashishingizni bildiring',
       'wedding.photos': 'Bizning xotiralarimiz',
       'wedding.guestBook': 'Mehmonlar kitobi',
       'wedding.weddingDetails': 'To\'y tafsilotlari',
@@ -1591,11 +1591,19 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'uz',
+    lng: localStorage.getItem('language') || 'en',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },
+    react: {
+      useSuspense: false,
+    },
   });
+
+// Save language to localStorage when it changes
+i18n.on('languageChanged', (lng) => {
+  localStorage.setItem('language', lng);
+});
 
 export default i18n;

@@ -22,6 +22,9 @@ export function LanguageToggle() {
 
   const changeLanguage = (langCode: string) => {
     i18n.changeLanguage(langCode);
+    localStorage.setItem('language', langCode);
+    // Force a re-render by triggering a storage event
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (
