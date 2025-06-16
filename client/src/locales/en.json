@@ -127,6 +127,38 @@
     "backgroundMusic": "Background Music",
     "backgroundMusicDesc": "Set the perfect mood with customizable background music that plays softly for your guests."
   },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the perfect plan for your special day",
+    "basic": "Basic",
+    "premium": "Premium",
+    "deluxe": "Deluxe",
+    "perYear": "/year",
+    "basicFeatures": [
+      "Basic website template",
+      "Up to 50 guests",
+      "RSVP management",
+      "Photo gallery (10 photos)"
+    ],
+    "premiumFeatures": [
+      "All Basic features",
+      "Unlimited guests",
+      "Premium templates",
+      "Unlimited photos",
+      "Custom domain",
+      "Background music"
+    ],
+    "deluxeFeatures": [
+      "All Premium features",
+      "Advanced customization",
+      "Priority support",
+      "Guest messaging",
+      "Analytics dashboard"
+    ],
+    "chooseBasic": "Get Started",
+    "choosePremium": "Choose Premium",
+    "chooseDeluxe": "Choose Deluxe"
+  },
   "dashboard": {
     "overview": "Overview",
     "rsvpStatus": "RSVP Status",
