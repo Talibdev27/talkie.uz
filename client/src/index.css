@@ -31,6 +31,11 @@
   --soft-white: 42 25% 96%;
   --sage-green: 72 17% 57%;
   --charcoal: 20 14% 20%;
+
+  /* Mobile-specific variables */
+  --mobile-padding: 12px;
+  --mobile-gap: 8px;
+  --touch-target: 44px;
 }
 
 .dark {
@@ -228,4 +233,95 @@
 
 .animate-wave {
   animation: wave 2s ease-in-out infinite;
+}
+
+/* Mobile-First Responsive Utilities */
+@layer utilities {
+  /* Touch-friendly targets */
+  .touch-target {
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+  }
+
+  /* Mobile text sizes */
+  @media (max-width: 575.98px) {
+    .mobile-text-xs { font-size: 0.75rem; }
+    .mobile-text-sm { font-size: 0.875rem; }
+    .mobile-text-base { font-size: 1rem; }
+    .mobile-text-lg { font-size: 1.125rem; }
+  }
+
+  /* Mobile spacing */
+  @media (max-width: 575.98px) {
+    .mobile-p-2 { padding: 0.5rem; }
+    .mobile-p-3 { padding: 0.75rem; }
+    .mobile-p-4 { padding: 1rem; }
+    .mobile-gap-2 { gap: 0.5rem; }
+    .mobile-gap-3 { gap: 0.75rem; }
+  }
+
+  /* Responsive truncation */
+  .mobile-truncate {
+    @media (max-width: 575.98px) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 150px;
+    }
+  }
+
+  /* Responsive grid adjustments */
+  .mobile-grid-cols-1 {
+    @media (max-width: 575.98px) {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+  }
+
+  .mobile-grid-cols-2 {
+    @media (max-width: 575.98px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Mobile-specific layouts */
+  .mobile-stack {
+    @media (max-width: 575.98px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .mobile-center {
+    @media (max-width: 575.98px) {
+      text-align: center;
+      justify-content: center;
+    }
+  }
+
+  /* Enhanced button sizing for mobile */
+  .mobile-btn {
+    @media (max-width: 575.98px) {
+      min-height: 44px;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  /* Responsive card padding */
+  .mobile-card-padding {
+    @media (max-width: 575.98px) {
+      padding: 0.75rem;
+    }
+    @media (min-width: 576px) {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Mobile-optimized form inputs */
+  .mobile-input {
+    @media (max-width: 575.98px) {
+      font-size: 16px; /* Prevents zoom on iOS */
+      padding: 0.75rem;
+    }
+  }
 }
