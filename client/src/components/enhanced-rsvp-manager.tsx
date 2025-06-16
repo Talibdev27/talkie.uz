@@ -11,7 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Guest, Wedding } from '@shared/schema';
-import { User, Mail, Phone, Check, X, Clock, HelpCircle, Users, Search, Filter } from 'lucide-react';
+import { User, Mail, Phone, Check, X, Clock, HelpCircle, Users, Search, Filter, MessageSquare, Calendar } from 'lucide-react';
 
 interface EnhancedRSVPManagerProps {
   wedding: Wedding;
@@ -23,17 +23,22 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [commentFilter, setCommentFilter] = useState<string>('all');
   const [selectedGuests, setSelectedGuests] = useState<number[]>([]);
   const [bulkAction, setBulkAction] = useState<string>('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Filter guests based on search and status
+  // Filter guests based on search, status, and comments
   const filteredGuests = (guests || []).filter(guest => {
     const matchesSearch = guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (guest.email && guest.email.toLowerCase().includes(searchTerm.toLowerCase()));
+                         (guest.email && guest.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (guest.message && guest.message.toLowerCase().includes(searchTerm.toLowerCase())));
     const matchesStatus = statusFilter === 'all' || guest.rsvpStatus === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesComment = commentFilter === 'all' || 
+                          (commentFilter === 'with-comments' && guest.message && guest.message.trim()) ||
+                          (commentFilter === 'no-comments' && (!guest.message || !guest.message.trim()));
+    return matchesSearch && matchesStatus && matchesComment;
   });
 
   // Calculate RSVP statistics
@@ -43,6 +48,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
     pending: (guests || []).filter(g => g.rsvpStatus === 'pending').length,
     declined: (guests || []).filter(g => g.rsvpStatus === 'declined').length,
     maybe: (guests || []).filter(g => g.rsvpStatus === 'maybe').length,
+    withComments: (guests || []).filter(g => g.message && g.message.trim()).length,
   };
 
   const responseRate = stats.total > 0 
@@ -163,7 +169,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
           </div>
 
           {/* Statistics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="text-center p-4 rounded-lg bg-green-50 border border-green-200">
               <div className="text-2xl font-bold text-green-600">{stats.confirmed}</div>
               <div className="text-sm text-green-700 font-medium">{t('guests.status.confirmed')}</div>
@@ -179,6 +185,13 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
             <div className="text-center p-4 rounded-lg bg-red-50 border border-red-200">
               <div className="text-2xl font-bold text-red-600">{stats.declined}</div>
               <div className="text-sm text-red-700 font-medium">{t('guests.status.declined')}</div>
+            </div>
+            <div className="text-center p-4 rounded-lg bg-purple-50 border border-purple-200">
+              <div className="text-2xl font-bold text-purple-600">{stats.withComments}</div>
+              <div className="text-sm text-purple-700 font-medium flex items-center justify-center gap-1">
+                <MessageSquare className="h-3 w-3" />
+                Comments
+              </div>
             </div>
           </div>
         </CardContent>
@@ -201,7 +214,7 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   id="search"
-                  placeholder={t('guests.searchGuestsByName')}
+                  placeholder="Search guests by name, email, or comment..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
