@@ -27,7 +27,9 @@ import {
   Download,
   Filter,
   Search,
-  MoreHorizontal
+  MoreHorizontal,
+  MessageSquare,
+  Calendar
 } from 'lucide-react';
 import { insertGuestSchema, type Guest } from '@shared/schema';
 import { z } from 'zod';
@@ -48,7 +50,9 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [commentFilter, setCommentFilter] = useState<string>('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
 
   const { data: guests = [] } = useQuery<Guest[]>({
     queryKey: ['/api/guests/wedding', weddingId],
@@ -99,12 +103,16 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   const declinedGuests = guests.filter(g => g.rsvpStatus === 'declined').length;
   const responseRate = totalGuests > 0 ? ((confirmedGuests + declinedGuests) / totalGuests) * 100 : 0;
 
-  // Filter guests based on search and status
+  // Filter guests based on search, status, and comments
   const filteredGuests = guests.filter(guest => {
     const matchesSearch = guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (guest.email?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
+                         (guest.email?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+                         (guest.message?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
     const matchesStatus = statusFilter === 'all' || guest.rsvpStatus === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesComment = commentFilter === 'all' || 
+                          (commentFilter === 'with-comments' && guest.message) ||
+                          (commentFilter === 'no-comments' && !guest.message);
+    return matchesSearch && matchesStatus && matchesComment;
   });
 
   const onSubmit = (data: AddGuestFormData) => {
@@ -132,6 +140,17 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
       case 'declined': return <XCircle className="h-4 w-4 text-red-600" />;
       default: return <Clock className="h-4 w-4 text-yellow-600" />;
     }
+  };
+
+  const formatCommentPreview = (message: string | null) => {
+    if (!message) return null;
+    const preview = message.length > 20 ? `${message.substring(0, 20)}...` : message;
+    return preview;
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString();
   };
 
   return (
@@ -313,7 +332,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder={t('guests.searchGuests')}
+                    placeholder="Search guests by name, email, or comment..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -331,44 +350,96 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                     <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
                   </SelectContent>
                 </Select>
+                <Select value={commentFilter} onValueChange={setCommentFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Comments</SelectItem>
+                    <SelectItem value="with-comments">With Comments</SelectItem>
+                    <SelectItem value="no-comments">No Comments</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Guest List */}
               <div className="space-y-2">
                 {filteredGuests.map((guest) => (
                   <Card key={guest.id} className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(guest.rsvpStatus)}
-                          <div>
-                            <div className="font-medium">{guest.name}</div>
-                            <div className="text-sm text-gray-500 flex items-center gap-4">
-                              {guest.email && (
-                                <span className="flex items-center gap-1">
-                                  <Mail className="h-3 w-3" />
-                                  {guest.email}
-                                </span>
-                              )}
-                              {guest.phone && (
-                                <span className="flex items-center gap-1">
-                                  <Phone className="h-3 w-3" />
-                                  {guest.phone}
-                                </span>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(guest.rsvpStatus)}
+                            <div>
+                              <div className="font-medium flex items-center gap-2">
+                                {guest.name}
+                                {guest.message && (
+                                  <MessageSquare className="h-4 w-4 text-blue-600" title="Has comment" />
+                                )}
+                              </div>
+                              <div className="text-sm text-gray-500 flex items-center gap-4">
+                                {guest.email && (
+                                  <span className="flex items-center gap-1">
+                                    <Mail className="h-3 w-3" />
+                                    {guest.email}
+                                  </span>
+                                )}
+                                {guest.phone && (
+                                  <span className="flex items-center gap-1">
+                                    <Phone className="h-3 w-3" />
+                                    {guest.phone}
+                                  </span>
+                                )}
+                                {guest.respondedAt && (
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    {formatDate(guest.respondedAt)}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {guest.plusOne && (
+                            <Badge variant="outline">+1</Badge>
+                          )}
+                          {getStatusBadge(guest.rsvpStatus)}
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => setSelectedGuest(guest)}
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Comment Preview */}
+                      {guest.message && (
+                        <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 border-l-4 border-blue-200">
+                          <div className="flex items-start gap-2">
+                            <MessageSquare className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
+                                <span className="font-medium">Comment:</span>{' '}
+                                {formatCommentPreview(guest.message)}
+                              </p>
+                              {guest.message.length > 20 && (
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  className="p-0 h-auto text-blue-600 hover:text-blue-800"
+                                  onClick={() => setSelectedGuest(guest)}
+                                >
+                                  Read full comment
+                                </Button>
                               )}
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {guest.plusOne && (
-                          <Badge variant="outline">+1</Badge>
-                        )}
-                        {getStatusBadge(guest.rsvpStatus)}
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      )}
                     </div>
                   </Card>
                 ))}

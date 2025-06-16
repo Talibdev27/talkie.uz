@@ -1,0 +1,91 @@
+I need to modify the guest management interface in my Node.js wedding platform to display guest comments that are currently only visible on the admin dashboard. Here are the specific requirements:
+
+1. **Data Visibility Requirements**:
+   - Guest comments should be visible in both:
+     * The main guest management list view
+     * The individual guest detail view
+   - Comments should be displayed in a readable format with:
+     * The comment text
+     * Date when the comment was made
+     * Associated RSVP status
+
+2. **Frontend Modifications Needed**:
+   - Update the guest list table to include a "Comments" column
+   - Implement a comment preview system (show first 20 characters with "..." and full comment on hover)
+   - Add comment display to the guest detail modal/popup
+   - Ensure proper formatting for long comments (text wrapping)
+
+3. **Backend Changes Required**:
+   - Modify the API endpoint `/api/guests` to include comment data in the response
+   - Ensure comments are properly populated when fetching guest lists
+   - Add comment field to the guest model if not already present
+
+4. **Example UI Implementation**:
+   ```javascript
+   // In your guest list component
+   {guests.map(guest => (
+     <tr key={guest._id}>
+       <td>{guest.name}</td>
+       <td>{guest.email}</td>
+       <td>{guest.rsvpStatus}</td>
+       <td className="comment-cell">
+         {guest.comment ? 
+           `${guest.comment.substring(0, 20)}${guest.comment.length > 20 ? '...' : ''}`
+           : 'No comment'}
+       </td>
+     </tr>
+   ))}
+Security Considerations:
+
+Maintain existing privacy/access controls
+
+Only show comments to:
+
+The wedding owner (user who created the wedding)
+
+Administrators
+
+Guest managers assigned to that wedding
+
+Never expose comments to unauthorized users
+
+Additional Features:
+
+Add filtering by comments (show only guests who left comments)
+
+Enable search within comments
+
+Add export functionality that includes comments
+
+Please provide:
+
+Complete frontend component code for displaying comments
+
+Backend API endpoint modifications
+
+Database schema updates if needed
+
+Authorization middleware adjustments
+
+Any necessary migration scripts for existing data
+
+text
+
+## Additional Recommendations
+
+1. **UI/UX Considerations**:
+   - Use a speech bubble icon (💬) to indicate guests with comments
+   - Implement a "New Comment" badge for recent/unread comments
+   - Consider different text colors for positive/neutral/negative sentiment comments
+
+2. **Performance Optimization**:
+   - Add pagination for weddings with many guests
+   - Implement lazy loading for comments in large lists
+   - Add caching for frequently accessed guest data
+
+3. **Future Enhancements**:
+   - Allow replies to guest comments
+   - Add comment tagging/categorization
+   - Implement notification system for new comments
+
+This implementation will ensure wedding organizers have full visibility of guest feedback while maintaining proper access controls and system performance.
