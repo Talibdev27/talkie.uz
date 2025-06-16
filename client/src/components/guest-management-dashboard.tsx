@@ -101,6 +101,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   const confirmedGuests = guests.filter(g => g.rsvpStatus === 'confirmed').length;
   const pendingGuests = guests.filter(g => g.rsvpStatus === 'pending').length;
   const declinedGuests = guests.filter(g => g.rsvpStatus === 'declined').length;
+  const guestsWithComments = guests.filter(g => g.message && g.message.trim()).length;
   const responseRate = totalGuests > 0 ? ((confirmedGuests + declinedGuests) / totalGuests) * 100 : 0;
 
   // Filter guests based on search, status, and comments
@@ -150,7 +151,11 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString();
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return dateString;
+    }
   };
 
   return (
@@ -253,7 +258,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                           <FormItem>
                             <FormLabel>{t('guests.email')}</FormLabel>
                             <FormControl>
-                              <Input {...field} type="email" placeholder={t('guests.enterEmail')} />
+                              <Input {...field} type="email" placeholder={t('guests.enterEmail')} value={field.value || ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -375,7 +380,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                               <div className="font-medium flex items-center gap-2">
                                 {guest.name}
                                 {guest.message && (
-                                  <MessageSquare className="h-4 w-4 text-blue-600" title="Has comment" />
+                                  <MessageSquare className="h-4 w-4 text-blue-600" />
                                 )}
                               </div>
                               <div className="text-sm text-gray-500 flex items-center gap-4">
@@ -447,7 +452,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
 
               {filteredGuests.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  {searchTerm || statusFilter !== 'all' 
+                  {searchTerm || statusFilter !== 'all' || commentFilter !== 'all'
                     ? t('guests.noGuestsFound') 
                     : t('guests.noGuestsYet')
                   }
@@ -455,8 +460,131 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
               )}
             </TabsContent>
 
+            {/* Guest Detail Modal */}
+            {selectedGuest && (
+              <Dialog open={!!selectedGuest} onOpenChange={() => setSelectedGuest(null)}>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      {getStatusIcon(selectedGuest.rsvpStatus)}
+                      {selectedGuest.name}
+                      {selectedGuest.message && (
+                        <MessageSquare className="h-5 w-5 text-blue-600" />
+                      )}
+                    </DialogTitle>
+                  </DialogHeader>
+                  
+                  <div className="space-y-6">
+                    {/* Guest Information */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">RSVP Status</label>
+                        <div className="mt-1">{getStatusBadge(selectedGuest.rsvpStatus)}</div>
+                      </div>
+                      
+                      {selectedGuest.email && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Email</label>
+                          <div className="mt-1 flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm">{selectedGuest.email}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {selectedGuest.phone && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Phone</label>
+                          <div className="mt-1 flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm">{selectedGuest.phone}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {selectedGuest.respondedAt && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Response Date</label>
+                          <div className="mt-1 flex items-center gap-2">
+                            <Calendar className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm">{formatDate(selectedGuest.respondedAt)}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {selectedGuest.plusOne && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Plus One</label>
+                          <div className="mt-1">
+                            <Badge variant="outline">
+                              {selectedGuest.plusOneName || 'Plus One Invited'}
+                            </Badge>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Full Comment Display */}
+                    {selectedGuest.message && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4" />
+                          Guest Comment
+                        </label>
+                        <div className="mt-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border-l-4 border-blue-200">
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                            {selectedGuest.message}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Additional Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Category</label>
+                        <div className="mt-1">
+                          <Badge variant="outline">{selectedGuest.category || 'Not specified'}</Badge>
+                        </div>
+                      </div>
+                      
+                      {selectedGuest.side && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Wedding Side</label>
+                          <div className="mt-1">
+                            <Badge variant="outline">
+                              {selectedGuest.side === 'bride' ? "Bride's Side" : 
+                               selectedGuest.side === 'groom' ? "Groom's Side" : 'Both Sides'}
+                            </Badge>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {selectedGuest.dietaryRestrictions && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Dietary Restrictions</label>
+                        <div className="mt-1 text-sm text-gray-600">
+                          {selectedGuest.dietaryRestrictions}
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedGuest.notes && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Internal Notes</label>
+                        <div className="mt-1 text-sm text-gray-600">
+                          {selectedGuest.notes}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+
             <TabsContent value="analytics" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -505,7 +633,77 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                     </div>
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5" />
+                      Guest Comments
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="text-2xl font-bold">{guestsWithComments}</div>
+                      <div className="text-sm text-gray-600">
+                        out of {totalGuests} guests
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {totalGuests > 0 ? ((guestsWithComments / totalGuests) * 100).toFixed(1) : 0}% left comments
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
+
+              {/* Recent Comments */}
+              {guestsWithComments > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5" />
+                      Recent Comments
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {guests
+                        .filter(g => g.message && g.message.trim())
+                        .slice(0, 3)
+                        .map((guest) => (
+                          <div key={guest.id} className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 border-l-4 border-blue-200">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-medium text-sm">{guest.name}</span>
+                                  {getStatusBadge(guest.rsvpStatus)}
+                                </div>
+                                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                  {guest.message}
+                                </p>
+                                {guest.respondedAt && (
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {formatDate(guest.respondedAt)}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      
+                      {guestsWithComments > 3 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCommentFilter('with-comments')}
+                          className="w-full"
+                        >
+                          View all {guestsWithComments} comments
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>
