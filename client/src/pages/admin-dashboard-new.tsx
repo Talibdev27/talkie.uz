@@ -123,7 +123,7 @@ export default function AdminDashboard() {
       }
       
       // Get the JWT token from localStorage
-      const token = localStorage.getItem('adminToken');
+      const token = localStorage.getItem('authToken');
       if (!token) {
         throw new Error('Authentication required. Please log in again.');
       }

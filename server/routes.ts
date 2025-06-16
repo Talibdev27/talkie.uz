@@ -1221,24 +1221,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Wedding creation request:", JSON.stringify(req.body, null, 2));
 
-      const userId = req.user.userId; // Use authenticated user's ID
+      const authenticatedUserId = req.user.userId;
       const weddingFields = req.body;
 
-      // Check if user exists and is not a guest user
-      const user = await storage.getUserById(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
+      // Check if the authenticated user is admin
+      const authenticatedUser = await storage.getUserById(authenticatedUserId);
+      if (!authenticatedUser) {
+        return res.status(404).json({ message: "Authenticated user not found" });
       }
 
-      // Prevent guest users from creating weddings
-      if (user.email.includes('guest_')) {
+      // Determine target user ID (admin can create for others, users create for themselves)
+      let targetUserId = authenticatedUserId;
+      if (authenticatedUser.isAdmin && weddingFields.userId) {
+        targetUserId = parseInt(weddingFields.userId);
+      }
+
+      // Check if target user exists
+      const targetUser = await storage.getUserById(targetUserId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "Target user not found" });
+      }
+
+      // Prevent guest users from creating weddings (unless admin is creating for them)
+      if (targetUser.email.includes('guest_') && !authenticatedUser.isAdmin) {
         return res.status(403).json({ 
           message: "Guest users cannot create weddings. Please register for a full account." 
         });
       }
 
-      // Check if user has paid subscription
-      if (!user.hasPaidSubscription && !user.isAdmin) {
+      // Check if user has paid subscription (admins can bypass this)
+      if (!targetUser.hasPaidSubscription && !authenticatedUser.isAdmin) {
         return res.status(403).json({ 
           message: "Payment required to create wedding website. Please complete payment first." 
         });
@@ -1276,7 +1288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("Processed wedding data:", weddingData);
 
-      const wedding = await storage.createWedding(userId, weddingData);
+      const wedding = await storage.createWedding(targetUserId, weddingData);
       console.log("Wedding created successfully:", wedding);
       res.status(201).json(wedding);
     } catch (error) {
