@@ -13,7 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images,
+  Upload, Check, X
 } from "lucide-react";
 import type { Wedding, User } from "@shared/schema";
 
@@ -22,6 +23,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [weddingToDelete, setWeddingToDelete] = useState<number | null>(null);
+  const [uploadedCouplePhoto, setUploadedCouplePhoto] = useState<File | null>(null);
   const { toast } = useToast();
 
   // Create wedding form state
@@ -204,6 +206,66 @@ export default function AdminDashboard() {
 
 
 
+  const handleCouplePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please select a photo under 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Upload the file to the server
+      const formData = new FormData();
+      formData.append('photo', file);
+      formData.append('photoType', 'couple');
+
+      const response = await fetch('/api/photos/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const uploadResult = await response.json();
+      
+      // Set the uploaded photo state and URL in form
+      setUploadedCouplePhoto(file);
+      handleFormChange('couplePhotoUrl', uploadResult.url);
+      
+      toast({
+        title: "Photo uploaded",
+        description: "Couple photo uploaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+
+
   // User management mutations
   const updateUserMutation = useMutation({
     mutationFn: async ({ userId, updates }: { userId: number; updates: any }) => {
@@ -303,7 +365,7 @@ export default function AdminDashboard() {
     },
   });
 
-  const handleFormChange = (field: string, value: string | boolean | string[]) => {
+  const handleFormChange = (field: string, value: any) => {
     setNewWedding(prev => ({ ...prev, [field]: value }));
   };
 
@@ -1170,13 +1232,54 @@ export default function AdminDashboard() {
                           <label htmlFor="custom-photo" className="text-sm">Upload custom photo</label>
                         </div>
                         {!newWedding.useTemplatePhoto && (
-                          <input
-                            type="url"
-                            placeholder="Enter photo URL..."
-                            className="w-full p-3 border border-gray-200 rounded-lg bg-white"
-                            value={newWedding.couplePhotoUrl}
-                            onChange={(e) => handleFormChange('couplePhotoUrl', e.target.value)}
-                          />
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-center w-full">
+                              <label
+                                htmlFor="couple-photo-upload"
+                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                              >
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                  {uploadedCouplePhoto ? (
+                                    <div className="text-center">
+                                      <Check className="w-8 h-8 mb-2 text-green-500 mx-auto" />
+                                      <p className="text-sm text-gray-600">Photo uploaded successfully</p>
+                                      <p className="text-xs text-gray-500">{uploadedCouplePhoto.name}</p>
+                                    </div>
+                                  ) : (
+                                    <div className="text-center">
+                                      <Upload className="w-8 h-8 mb-2 text-gray-400" />
+                                      <p className="mb-2 text-sm text-gray-500">
+                                        <span className="font-semibold">Click to upload</span> couple photo
+                                      </p>
+                                      <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                                    </div>
+                                  )}
+                                </div>
+                                <input
+                                  id="couple-photo-upload"
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={handleCouplePhotoUpload}
+                                />
+                              </label>
+                            </div>
+                            {uploadedCouplePhoto && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setUploadedCouplePhoto(null);
+                                  handleFormChange('couplePhotoUrl', '');
+                                }}
+                                className="w-full"
+                              >
+                                <X className="w-4 h-4 mr-2" />
+                                Remove Photo
+                              </Button>
+                            )}
+                          </div>
                         )}
                         
                         <div className="flex items-center space-x-2">
