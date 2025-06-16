@@ -76,6 +76,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   const addGuestMutation = useMutation({
     mutationFn: (data: AddGuestFormData) => apiRequest('/api/guests', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     }),
     onSuccess: () => {
@@ -271,7 +272,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                           <FormItem>
                             <FormLabel>{t('guests.phone')}</FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder={t('guests.enterPhone')} />
+                              <Input {...field} placeholder={t('guests.enterPhone')} value={field.value || ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
