@@ -34,6 +34,8 @@ export const weddings = pgTable("weddings", {
   accentColor: text("accent_color").notNull().default("#89916B"),
   backgroundMusicUrl: text("background_music_url"),
   isPublic: boolean("is_public").notNull().default(true),
+  availableLanguages: text("available_languages").array().notNull().default(['en']),
+  defaultLanguage: text("default_language").notNull().default("en"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
