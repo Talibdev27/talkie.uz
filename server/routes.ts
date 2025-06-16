@@ -450,7 +450,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story } = req.body;
+      const { 
+        userId, bride, groom, weddingDate, venue, venueAddress, template, story,
+        welcomeMessage, welcomeMessageUz, welcomeMessageRu,
+        couplePhotoUrl, useTemplatePhoto, templatePhotoStyle,
+        availableLanguages, defaultLanguage
+      } = req.body;
 
       // Validate required fields
       if (!userId || !bride || !groom || !weddingDate) {
@@ -474,12 +479,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
         story: story?.trim() || "",
+        welcomeMessage: welcomeMessage?.trim() || "",
+        welcomeMessageUz: welcomeMessageUz?.trim() || "",
+        welcomeMessageRu: welcomeMessageRu?.trim() || "",
+        couplePhotoUrl: couplePhotoUrl?.trim() || "",
+        useTemplatePhoto: useTemplatePhoto || false,
+        templatePhotoStyle: templatePhotoStyle || "classic",
         template: template || "gardenRomance",
         primaryColor: "#D4B08C",
         accentColor: "#89916B",
         backgroundMusicUrl: null,
         venueCoordinates: null,
         isPublic: true,
+        availableLanguages: availableLanguages || ['en'],
+        defaultLanguage: defaultLanguage || 'en',
         uniqueUrl
       };
 
