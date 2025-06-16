@@ -19,6 +19,9 @@ export function RestrictedAdminDashboard({ user }: RestrictedAdminDashboardProps
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
+    localStorage.setItem('language', language);
+    // Force a re-render by triggering a storage event
+    window.dispatchEvent(new Event('storage'));
   };
 
   // Fetch user's accessible weddings
