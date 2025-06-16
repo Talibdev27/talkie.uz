@@ -29,6 +29,11 @@ export const weddings = pgTable("weddings", {
   venueCoordinates: jsonb("venue_coordinates").$type<{ lat: number; lng: number }>(),
   story: text("story"),
   welcomeMessage: text("welcome_message"),
+  welcomeMessageUz: text("welcome_message_uz"),
+  welcomeMessageRu: text("welcome_message_ru"),
+  couplePhotoUrl: text("couple_photo_url"),
+  useTemplatePhoto: boolean("use_template_photo").notNull().default(false),
+  templatePhotoStyle: text("template_photo_style").notNull().default("classic"), // classic, traditional, modern
   template: text("template").notNull().default("garden-romance"),
   primaryColor: text("primary_color").notNull().default("#D4B08C"),
   accentColor: text("accent_color").notNull().default("#89916B"),

@@ -33,7 +33,15 @@ export default function AdminDashboard() {
     venue: '',
     venueAddress: '',
     template: 'gardenRomance',
-    story: ''
+    story: '',
+    welcomeMessage: '',
+    welcomeMessageUz: '',
+    welcomeMessageRu: '',
+    couplePhotoUrl: '',
+    useTemplatePhoto: false,
+    templatePhotoStyle: 'classic',
+    availableLanguages: ['en'],
+    defaultLanguage: 'en'
   });
 
   // Check admin authentication
@@ -141,7 +149,15 @@ export default function AdminDashboard() {
         venue: '',
         venueAddress: '',
         template: 'gardenRomance',
-        story: ''
+        story: '',
+        welcomeMessage: '',
+        welcomeMessageUz: '',
+        welcomeMessageRu: '',
+        couplePhotoUrl: '',
+        useTemplatePhoto: false,
+        templatePhotoStyle: 'classic',
+        availableLanguages: ['en'],
+        defaultLanguage: 'en'
       });
     },
     onError: (error: any) => {
@@ -334,7 +350,15 @@ export default function AdminDashboard() {
       venue: '',
       venueAddress: '',
       template: 'gardenRomance',
-      story: ''
+      story: '',
+      welcomeMessage: '',
+      welcomeMessageUz: '',
+      welcomeMessageRu: '',
+      couplePhotoUrl: '',
+      useTemplatePhoto: false,
+      templatePhotoStyle: 'classic',
+      availableLanguages: ['en'],
+      defaultLanguage: 'en'
     });
   };
 
