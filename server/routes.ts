@@ -1676,11 +1676,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { weddingId, caption, isHero, photoType } = req.body;
 
+      // If no wedding ID, return just the file URL for temporary storage (wedding creation)
       if (!weddingId) {
-        return res.status(400).json({ message: "Wedding ID is required" });
+        const photoUrl = `/uploads/${req.file.filename}`;
+        return res.status(201).json({ 
+          url: photoUrl,
+          filename: req.file.filename,
+          originalName: req.file.originalname,
+          size: req.file.size
+        });
       }
 
-      // Create photo record with actual file URL
+      // If wedding ID exists, save to database
       const photoData = {
         weddingId: parseInt(weddingId),
         url: `/uploads/${req.file.filename}`,
