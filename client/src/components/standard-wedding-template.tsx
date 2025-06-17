@@ -77,7 +77,7 @@ export function StandardWeddingTemplate({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white font-open-sans">
       
       {/* MANDATORY SECTION 1: Header with Large Couple Photo */}
       <header className="relative h-screen w-full overflow-hidden">
