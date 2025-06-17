@@ -181,7 +181,7 @@ export default function WeddingSite() {
         <div className="absolute top-4 right-4 z-50">
           <WeddingLanguageSwitcher wedding={wedding} />
         </div>
-        <SimpleWeddingTemplate wedding={wedding} />
+        <SimpleWeddingTemplate />
       </div>
     );
   }
