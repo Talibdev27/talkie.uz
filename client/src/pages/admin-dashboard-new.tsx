@@ -184,9 +184,23 @@ export default function AdminDashboard() {
   // Delete wedding mutation
   const deleteWeddingMutation = useMutation({
     mutationFn: async (weddingId: number) => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
       const response = await fetch(`/api/admin/weddings/${weddingId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete wedding');
+      }
+      
       return response.json();
     },
     onSuccess: () => {
