@@ -178,8 +178,8 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
             {t('welcome_guests')}
           </h2>
           <div className="text-center text-gray-700 leading-relaxed">
-            <p>Sizni {wedding.bride} va {wedding.groom}ning nikoh to'yiga taklif qilamiz...</p>
-            <p>Qalblar ezguliklarga to'la bo'lgan ushbu qutlug' kunda do'stlar yonida bo'ling!</p>
+            <p>{t('welcome_message_line1')}</p>
+            <p>{t('welcome_message_line2')}</p>
           </div>
         </div>
       </section>
@@ -194,12 +194,12 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <div>
               <strong className="text-gray-800 block mb-2">{t('couple_names')}</strong>
-              <p className="text-lg">{wedding.bride} {currentLanguage === 'uz' ? 'va' : currentLanguage === 'ru' ? 'и' : 'және'} {wedding.groom}</p>
+              <p className="text-lg">{wedding.bride} {t('and_connector')} {wedding.groom}</p>
             </div>
             
             <div>
               <strong className="text-gray-800 block mb-2">{t('wedding_time')}</strong>
-              <p className="text-lg">{formatDate(wedding.weddingDate)} / {currentLanguage === 'uz' ? 'soat' : currentLanguage === 'ru' ? 'время' : 'уақыт'} {wedding.weddingTime || '19:00'}</p>
+              <p className="text-lg">{formatDate(wedding.weddingDate)} / {t('time_at')} {wedding.weddingTime || '19:00'}</p>
             </div>
             
             <div>
@@ -266,7 +266,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
             {t('confirmation')}
           </h2>
           
-          <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} />
+          <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} t={t} />
         </div>
       </section>
 
