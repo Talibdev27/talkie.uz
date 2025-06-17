@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, Clock, MapPin, MessageSquare, Heart, Camera, Upload } from 'lucide-react';
+import { Calendar, Clock, MapPin, Heart, Camera, Upload } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,33 +10,66 @@ import { useToast } from '@/hooks/use-toast';
 import { CouplePhotoUpload } from './couple-photo-upload';
 import { PhotoGallery } from './photo-gallery';
 import { RSVPForm } from './rsvp-form';
+import type { Wedding, GuestBookEntry, Photo } from '@shared/schema';
 
-
-
-interface Wedding {
-  id: number;
-  bride: string;
-  groom: string;
-  weddingDate: string | Date;
-  weddingTime?: string;
-  venue?: string;
-  venueAddress?: string;
-}
-
-interface GuestBookEntry {
-  id: number;
-  guestName: string;
-  message: string;
-  createdAt: string;
-}
-
-function GuestBookForm({ weddingId }: { weddingId: number }) {
+export function SimpleWeddingTemplate() {
+  const params = useParams();
+  const weddingUrl = params.uniqueUrl as string;
+  const { toast } = useToast();
+  
   const [guestName, setGuestName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Fetch wedding data
+  const { data: wedding, isLoading } = useQuery<Wedding>({
+    queryKey: [`/api/weddings/url/${weddingUrl}`],
+    enabled: !!weddingUrl,
+  });
+
+  // Fetch guest book entries
+  const { data: guestBookEntries = [] } = useQuery<GuestBookEntry[]>({
+    queryKey: [`/api/guestbook/${wedding?.id}`],
+    enabled: !!wedding?.id,
+  });
+
+  // Fetch photos for this wedding
+  const { data: photos = [] } = useQuery<Photo[]>({
+    queryKey: [`/api/photos/wedding/${wedding?.id}`],
+    enabled: !!wedding?.id,
+  });
+
+  // Check if current user is the wedding owner
+  const { data: currentUser } = useQuery({
+    queryKey: ['/api/user/current'],
+    queryFn: () => fetch('/api/user/current').then(res => res.json()),
+  });
+
+  const isOwner = currentUser && wedding && currentUser.id === wedding.userId;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!wedding) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">To'y topilmadi</h1>
+          <p className="text-gray-600">Ushbu URL bo'yicha to'y ma'lumotlari topilmadi.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleGuestBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!guestName.trim() || !message.trim()) {
       toast({
@@ -55,7 +88,7 @@ function GuestBookForm({ weddingId }: { weddingId: number }) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          weddingId,
+          weddingId: wedding.id,
           guestName: guestName.trim(),
           message: message.trim()
         })
@@ -73,7 +106,6 @@ function GuestBookForm({ weddingId }: { weddingId: number }) {
       setGuestName('');
       setMessage('');
       
-      // Refresh the page to show new entry
       window.location.reload();
     } catch (error) {
       toast({
@@ -85,71 +117,6 @@ function GuestBookForm({ weddingId }: { weddingId: number }) {
       setIsSubmitting(false);
     }
   };
-
-  return (
-    <Card className="max-w-md mx-auto">
-      <CardContent className="pt-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              placeholder="Ismingiz"
-              value={guestName}
-              onChange={(e) => setGuestName(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-          <div>
-            <Textarea
-              placeholder="Xabar yozing..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              disabled={isSubmitting}
-              rows={4}
-            />
-          </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
-}
-
-interface SimpleWeddingTemplateProps {
-  wedding?: Wedding;
-}
-
-export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingTemplateProps = {}) {
-  const { weddingUrl } = useParams();
-
-  const { data: fetchedWedding, isLoading: weddingLoading } = useQuery<Wedding>({
-    queryKey: ['/api/weddings/url', weddingUrl],
-    enabled: !passedWedding && !!weddingUrl,
-  });
-
-  const wedding = passedWedding || fetchedWedding;
-
-  const { data: guestBookEntries = [], isLoading: entriesLoading } = useQuery<GuestBookEntry[]>({
-    queryKey: ['/api/guest-book/wedding', wedding?.id],
-    enabled: !!wedding?.id,
-  });
-
-  if (!passedWedding && weddingLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">Yuklanmoqda...</div>
-      </div>
-    );
-  }
-
-  if (!wedding) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">To'y topilmadi</div>
-      </div>
-    );
-  }
 
   const formatDate = (dateStr: string | Date) => {
     const date = new Date(dateStr);
@@ -308,7 +275,38 @@ export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingT
           
           {/* Guest book form */}
           <div className="mb-12">
-            <GuestBookForm weddingId={wedding.id} />
+            <Card className="max-w-md mx-auto">
+              <CardContent className="pt-6">
+                <form onSubmit={handleGuestBookSubmit} className="space-y-4">
+                  <div>
+                    <Input
+                      type="text"
+                      placeholder="Ismingiz"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Textarea
+                      placeholder="Xabaringiz"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      rows={4}
+                      required
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    style={{ backgroundColor: '#8e4a49' }}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
           
           {/* Guest book entries */}
