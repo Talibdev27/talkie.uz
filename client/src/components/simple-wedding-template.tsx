@@ -183,7 +183,7 @@ export function SimpleWeddingTemplate() {
           
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <div>
-              <strong className="text-gray-800 block mb-2">{t('eventDetailsTitle')}:</strong>
+              <strong className="text-gray-800 block mb-2">{t('eventDetailsTitle')}</strong>
               <p className="text-lg">{wedding.bride} va {wedding.groom}</p>
             </div>
             
@@ -193,7 +193,7 @@ export function SimpleWeddingTemplate() {
             </div>
             
             <div>
-              <strong className="text-gray-800 block mb-2">{t('venue')}:</strong>
+              <strong className="text-gray-800 block mb-2">{t('venue')}</strong>
               <p className="text-lg">{wedding.venue}</p>
               {wedding.venueAddress && <p className="text-gray-600">{wedding.venueAddress}</p>}
               <button 
@@ -250,7 +250,7 @@ export function SimpleWeddingTemplate() {
       <section className="py-10 px-6 border-b border-gray-200" style={{ backgroundColor: '#f9f5f2' }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            {t('rsvp')}
+            {t('rsvpSection')}
           </h2>
           
           <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} />
@@ -272,7 +272,7 @@ export function SimpleWeddingTemplate() {
                   <div>
                     <Input
                       type="text"
-                      placeholder={t('guestBookNamePlaceholder')}
+                      placeholder={t('yourName')}
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
                       required
@@ -280,7 +280,7 @@ export function SimpleWeddingTemplate() {
                   </div>
                   <div>
                     <Textarea
-                      placeholder={t('guestBookMessagePlaceholder')}
+                      placeholder={t('yourMessage')}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={4}
@@ -293,7 +293,7 @@ export function SimpleWeddingTemplate() {
                     style={{ backgroundColor: '#8e4a49' }}
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? t('guestBookSubmitting') : t('guestBookSubmit')}
+                    {isSubmitting ? t('submitting') : t('submitMessage')}
                   </Button>
                 </form>
               </CardContent>
