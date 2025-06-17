@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { PhotoGallery } from './photo-gallery';
 import { RSVPForm } from './rsvp-form';
-import { DebugWeddingData } from './debug-wedding-data';
+import { useWeddingLanguage } from '@/hooks/useWeddingLanguage';
 import type { Wedding, GuestBookEntry, Photo } from '@shared/schema';
 
 interface SimpleWeddingTemplateProps {
@@ -32,6 +32,9 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
   });
 
   const wedding = propWedding || fetchedWedding;
+  
+  // Language system
+  const { currentLanguage, availableLanguages, changeLanguage, t } = useWeddingLanguage(wedding);
 
   // Fetch guest book entries
   const { data: guestBookEntries = [] } = useQuery<GuestBookEntry[]>({
@@ -52,7 +55,6 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
-        <DebugWeddingData />
       </div>
     );
   }
@@ -64,7 +66,6 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Wedding Not Found</h1>
           <p className="text-gray-600">Wedding not found at this URL.</p>
         </div>
-        <DebugWeddingData />
       </div>
     );
   }
@@ -131,12 +132,29 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
   const couplePhoto = photos.find(photo => photo.photoType === 'couple');
   const memoryPhotos = photos.filter(photo => photo.photoType === 'memory');
 
-  console.log('SimpleWeddingTemplate rendering with wedding:', wedding);
-
   return (
     <div className="min-h-screen bg-white">
-      {/* Debug component */}
-      <DebugWeddingData />
+      {/* Language Switcher */}
+      {availableLanguages.length > 1 && (
+        <div className="fixed top-4 right-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg border p-2">
+            <select
+              value={currentLanguage}
+              onChange={(e) => changeLanguage(e.target.value)}
+              className="border-0 bg-transparent text-sm font-medium focus:outline-none cursor-pointer"
+            >
+              {availableLanguages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang === 'uz' && 'O\'zbek'}
+                  {lang === 'ru' && 'Русский'}
+                  {lang === 'kz' && 'Қазақ'}
+                  {lang === 'kaa' && 'Qaraqalpaq'}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
       
       {/* 1. Couple Photo Header - Only show if photo exists */}
       {couplePhoto && (
@@ -157,7 +175,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
       <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            Aziz mehmonlar!
+            {t('welcome_guests')}
           </h2>
           <div className="text-center text-gray-700 leading-relaxed">
             <p>Sizni {wedding.bride} va {wedding.groom}ning nikoh to'yiga taklif qilamiz...</p>
@@ -170,29 +188,29 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
       <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            To'y haqida
+            {t('wedding_details')}
           </h2>
           
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <div>
-              <strong className="text-gray-800 block mb-2">To'y egalari:</strong>
-              <p className="text-lg">{wedding.bride} va {wedding.groom}</p>
+              <strong className="text-gray-800 block mb-2">{t('couple_names')}</strong>
+              <p className="text-lg">{wedding.bride} {currentLanguage === 'uz' ? 'va' : currentLanguage === 'ru' ? 'и' : 'және'} {wedding.groom}</p>
             </div>
             
             <div>
-              <strong className="text-gray-800 block mb-2">Bayramni boshlash vaqti:</strong>
-              <p className="text-lg">{formatDate(wedding.weddingDate)} / soat {wedding.weddingTime || '19:00'}</p>
+              <strong className="text-gray-800 block mb-2">{t('wedding_time')}</strong>
+              <p className="text-lg">{formatDate(wedding.weddingDate)} / {currentLanguage === 'uz' ? 'soat' : currentLanguage === 'ru' ? 'время' : 'уақыт'} {wedding.weddingTime || '19:00'}</p>
             </div>
             
             <div>
-              <strong className="text-gray-800 block mb-2">To'y manzili:</strong>
+              <strong className="text-gray-800 block mb-2">{t('wedding_venue')}</strong>
               <p className="text-lg">{wedding.venue}</p>
               {wedding.venueAddress && <p className="text-gray-600">{wedding.venueAddress}</p>}
               <button 
                 className="mt-4 px-6 py-2 rounded text-white font-medium"
                 style={{ backgroundColor: '#8e4a49' }}
               >
-                Karta orqali ochish
+                {t('open_map')}
               </button>
             </div>
           </div>
@@ -204,7 +222,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
         <section className="py-10 px-6 border-b border-gray-200">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-              Fotoalbom
+              {t('photo_gallery')}
             </h2>
             
             <PhotoGallery weddingId={wedding.id} />
@@ -245,10 +263,10 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
       <section className="py-10 px-6 border-b border-gray-200" style={{ backgroundColor: '#f9f5f2' }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            Tasdiqlash
+            {t('confirmation')}
           </h2>
           
-          <RSVPForm weddingId={wedding.id} currentLanguage="uz" />
+          <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} />
         </div>
       </section>
 
@@ -256,7 +274,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
       <section className="py-10 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            Mehmonlar kitobi
+            {t('guest_book')}
           </h2>
           
           {/* Guest book form */}
@@ -267,7 +285,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
                   <div>
                     <Input
                       type="text"
-                      placeholder="Ismingiz"
+                      placeholder={t('your_name')}
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
                       required
@@ -275,7 +293,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
                   </div>
                   <div>
                     <Textarea
-                      placeholder="Xabaringiz"
+                      placeholder={t('your_message')}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={4}
@@ -288,7 +306,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
                     style={{ backgroundColor: '#8e4a49' }}
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
+                    {isSubmitting ? t('submitting') : t('submit')}
                   </Button>
                 </form>
               </CardContent>
