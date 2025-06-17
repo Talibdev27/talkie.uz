@@ -665,6 +665,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get wedding language settings
+  app.get("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
+    try {
+      const wedding = req.wedding; // Set by verifyWeddingOwnership middleware
+      
+      res.json({
+        availableLanguages: wedding.availableLanguages || ['en'],
+        defaultLanguage: wedding.defaultLanguage || 'en'
+      });
+    } catch (error) {
+      console.error('Error fetching language settings:', error);
+      res.status(500).json({ message: "Failed to fetch language settings" });
+    }
+  });
+
   // Update wedding language settings
   app.put("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
     try {

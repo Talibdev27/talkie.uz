@@ -39,13 +39,24 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
   // Fetch current language settings
   const { data: languageSettings, isLoading } = useQuery({
     queryKey: ['/api/weddings', wedding.id, 'languages'],
-    queryFn: () => fetch(`/api/weddings/${wedding.id}/languages`).then(res => res.json()),
+    queryFn: async () => {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`/api/weddings/${wedding.id}/languages`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch language settings');
+      }
+      return response.json();
+    },
   });
 
   // Update language settings mutation
   const updateLanguagesMutation = useMutation({
     mutationFn: async (data: { availableLanguages: string[]; defaultLanguage: string }) => {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/weddings/${wedding.id}/languages`, {
         method: 'PUT',
         headers: {
