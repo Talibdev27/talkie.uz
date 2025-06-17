@@ -26,7 +26,7 @@ export const weddingTranslations = {
     time_at: "at",
     wedding_venue: "Wedding Venue",
     open_map: "Open Map",
-    confirmation: "RSVP"
+    confirmation: "RSVP",
     
     // Photo sections
     photoGallery: "Photo Gallery",
@@ -88,7 +88,7 @@ export const weddingTranslations = {
     time_at: "soat",
     wedding_venue: "To'y joyi",
     open_map: "Kartani ochish",
-    confirmation: "Tasdiqlash"
+    confirmation: "Tasdiqlash",
     
     // Photo sections
     photoGallery: "Fotosurat",
@@ -150,7 +150,7 @@ export const weddingTranslations = {
     time_at: "время",
     wedding_venue: "Место проведения",
     open_map: "Открыть карту",
-    confirmation: "Подтверждение"
+    confirmation: "Подтверждение",
     
     // Photo sections
     photoGallery: "Фотогалерея",
@@ -202,6 +202,17 @@ export const weddingTranslations = {
     welcomeSection: "Қош келдіңіздер",
     coupleNames: "Біздің махabbат тарихы",
     aboutCouple: "Біз осы ерекше сәтті жақындарымызбен бөлісуге қуаныштымыз. Біздің жолымыздың бөлігі болғаныңыз үшін рахмет!",
+    welcome_guests: "Құрметті қонақтар!",
+    welcome_message_line1: "Біз сіздерді біздің ерекше күнімізді бірге тойлауға шақырамыз.",
+    welcome_message_line2: "Сіздердің қатысуыңыз біздің үйлену тойымызды толық етеді!",
+    wedding_details: "Үйлену тойы туралы",
+    couple_names: "Жас жұбайлар",
+    and_connector: "және",
+    wedding_time: "Той уақыты",
+    time_at: "сағат",
+    wedding_venue: "Той орны",
+    open_map: "Картада көру",
+    confirmation: "Растау",
     
     // Photo sections
     photoGallery: "Фото галерея",
@@ -263,7 +274,7 @@ export const weddingTranslations = {
     time_at: "saqat",
     wedding_venue: "Tóy ornı",
     open_map: "Kartada kóriw",
-    confirmation: "Tastıyqlash"
+    confirmation: "Tastıyqlash",
     
     // Photo sections
     photoGallery: "Foto galereyası",
