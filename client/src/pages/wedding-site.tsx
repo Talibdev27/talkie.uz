@@ -15,7 +15,7 @@ import { GuestBookForm } from '@/components/guest-book-form';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
-import { StandardWeddingTemplate } from '@/components/standard-wedding-template';
+import { SimpleWeddingTemplate } from '@/components/simple-wedding-template';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, MessageCircle } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -181,12 +181,7 @@ export default function WeddingSite() {
         <div className="absolute top-4 right-4 z-50">
           <WeddingLanguageSwitcher wedding={wedding} />
         </div>
-        <StandardWeddingTemplate 
-          wedding={wedding}
-          photos={photos}
-          guestBookEntries={guestBookEntries}
-          isOwner={isOwner}
-        />
+        <SimpleWeddingTemplate />
       </div>
     );
   }
