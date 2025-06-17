@@ -166,8 +166,7 @@ export default function AdminDashboard() {
         couplePhotoUrl: '',
         useTemplatePhoto: false,
         templatePhotoStyle: 'classic',
-        availableLanguages: ['en'],
-        defaultLanguage: 'en'
+
       });
     },
     onError: (error: any) => {
@@ -1175,63 +1174,7 @@ export default function AdminDashboard() {
                       </select>
                     </div>
 
-                    {/* Language Preferences */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Available Languages
-                      </label>
-                      <div className="space-y-2">
-                        {[
-                          { code: 'en', name: 'English', flag: '🇺🇸' },
-                          { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
-                          { code: 'ru', name: 'Русский', flag: '🇷🇺' }
-                        ].map((lang) => (
-                          <label key={lang.code} className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              checked={newWedding.availableLanguages.includes(lang.code)}
-                              onChange={(e) => {
-                                const languages = e.target.checked
-                                  ? [...newWedding.availableLanguages, lang.code]
-                                  : newWedding.availableLanguages.filter(l => l !== lang.code);
-                                handleFormChange('availableLanguages', languages);
-                                // Ensure default language is still available
-                                if (!languages.includes(newWedding.defaultLanguage) && languages.length > 0) {
-                                  handleFormChange('defaultLanguage', languages[0]);
-                                }
-                              }}
-                              className="rounded"
-                            />
-                            <span className="text-sm">{lang.flag} {lang.name}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
 
-                    {/* Default Language */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Default Language
-                      </label>
-                      <select 
-                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
-                        value={newWedding.defaultLanguage}
-                        onChange={(e) => handleFormChange('defaultLanguage', e.target.value)}
-                      >
-                        {newWedding.availableLanguages.map((langCode) => {
-                          const lang = [
-                            { code: 'en', name: 'English' },
-                            { code: 'uz', name: "O'zbekcha" },
-                            { code: 'ru', name: 'Русский' }
-                          ].find(l => l.code === langCode);
-                          return (
-                            <option key={langCode} value={langCode}>
-                              {lang?.name || langCode}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
                   </div>
 
                   <div className="space-y-4">
@@ -1340,35 +1283,7 @@ export default function AdminDashboard() {
                       ></textarea>
                     </div>
 
-                    {newWedding.availableLanguages.includes('uz') && (
-                      <div>
-                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Welcome Message (Uzbek)
-                        </label>
-                        <textarea 
-                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                          rows={2}
-                          placeholder="Hurmatli mehmonlar..."
-                          value={newWedding.welcomeMessageUz}
-                          onChange={(e) => handleFormChange('welcomeMessageUz', e.target.value)}
-                        ></textarea>
-                      </div>
-                    )}
 
-                    {newWedding.availableLanguages.includes('ru') && (
-                      <div>
-                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Welcome Message (Russian)
-                        </label>
-                        <textarea 
-                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                          rows={2}
-                          placeholder="Дорогие гости..."
-                          value={newWedding.welcomeMessageRu}
-                          onChange={(e) => handleFormChange('welcomeMessageRu', e.target.value)}
-                        ></textarea>
-                      </div>
-                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
