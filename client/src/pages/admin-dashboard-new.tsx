@@ -42,8 +42,7 @@ export default function AdminDashboard() {
     couplePhotoUrl: '',
     useTemplatePhoto: false,
     templatePhotoStyle: 'classic',
-    availableLanguages: ['en'],
-    defaultLanguage: 'en'
+
   });
 
   // Check admin authentication
@@ -441,9 +440,7 @@ export default function AdminDashboard() {
       welcomeMessageRu: '',
       couplePhotoUrl: '',
       useTemplatePhoto: false,
-      templatePhotoStyle: 'classic',
-      availableLanguages: ['en'],
-      defaultLanguage: 'en'
+      templatePhotoStyle: 'classic'
     });
   };
 
