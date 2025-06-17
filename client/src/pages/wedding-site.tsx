@@ -15,6 +15,7 @@ import { GuestBookForm } from '@/components/guest-book-form';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
+import { StandardWeddingTemplate } from '@/components/standard-wedding-template';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, MessageCircle } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -125,12 +126,15 @@ export default function WeddingSite() {
     },
     standard: {
       heroImage: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-      bgGradient: "from-white to-gray-50",
-      primaryColor: "#4A5568",
-      accentColor: "#68D391",
-      textColor: "text-gray-800",
-      cardBg: "bg-white shadow-md border border-gray-100",
-      overlayBg: "bg-gray-900/30"
+      bgGradient: "from-slate-50 to-white",
+      primaryColor: "#1F2937",
+      accentColor: "#D4B08C",
+      textColor: "text-gray-900",
+      cardBg: "bg-white shadow-lg border border-gray-200",
+      overlayBg: "bg-gray-900/40",
+      headerBg: "bg-white/95 backdrop-blur-md",
+      sectionSpacing: "py-16",
+      containerWidth: "max-w-4xl"
     }
   };
 
@@ -168,6 +172,24 @@ export default function WeddingSite() {
     '--primary': config.primaryColor,
     '--accent': config.accentColor,
   } as React.CSSProperties;
+
+  // Use standardized template for 'standard' template type
+  if (currentTemplate === 'standard') {
+    return (
+      <div style={customStyles}>
+        {/* Header with Wedding Language Switcher */}
+        <div className="absolute top-4 right-4 z-50">
+          <WeddingLanguageSwitcher wedding={wedding} />
+        </div>
+        <StandardWeddingTemplate 
+          wedding={wedding}
+          photos={photos}
+          guestBookEntries={guestBookEntries}
+          isOwner={isOwner}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
