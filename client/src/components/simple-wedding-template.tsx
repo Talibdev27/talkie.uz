@@ -13,7 +13,7 @@ interface Wedding {
   id: number;
   bride: string;
   groom: string;
-  weddingDate: string;
+  weddingDate: string | Date;
   weddingTime?: string;
   venue?: string;
   venueAddress?: string;
@@ -112,19 +112,26 @@ function GuestBookForm({ weddingId }: { weddingId: number }) {
   );
 }
 
-export function SimpleWeddingTemplate() {
+interface SimpleWeddingTemplateProps {
+  wedding?: Wedding;
+}
+
+export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingTemplateProps = {}) {
   const { weddingUrl } = useParams();
 
-  const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
+  const { data: fetchedWedding, isLoading: weddingLoading } = useQuery<Wedding>({
     queryKey: ['/api/weddings/url', weddingUrl],
+    enabled: !passedWedding && !!weddingUrl,
   });
+
+  const wedding = passedWedding || fetchedWedding;
 
   const { data: guestBookEntries = [], isLoading: entriesLoading } = useQuery<GuestBookEntry[]>({
     queryKey: ['/api/guest-book/wedding', wedding?.id],
     enabled: !!wedding?.id,
   });
 
-  if (weddingLoading) {
+  if (!passedWedding && weddingLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">Yuklanmoqda...</div>
