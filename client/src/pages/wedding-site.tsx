@@ -179,9 +179,9 @@ export default function WeddingSite() {
       <div style={customStyles}>
         {/* Header with Wedding Language Switcher */}
         <div className="absolute top-4 right-4 z-50">
-          <WeddingLanguageSwitcher wedding={wedding} />
+          {/* <WeddingLanguageSwitcher wedding={wedding} /> */}
         </div>
-        <SimpleWeddingTemplate />
+        <SimpleWeddingTemplate wedding={wedding} />
       </div>
     );
   }
@@ -190,7 +190,7 @@ export default function WeddingSite() {
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
       {/* Header with Wedding Language Switcher */}
       <div className="absolute top-4 right-4 z-50">
-        <WeddingLanguageSwitcher wedding={wedding} />
+        {/* <WeddingLanguageSwitcher wedding={wedding} /> */}
       </div>
 
       {/* Hero Section */}

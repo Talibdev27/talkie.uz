@@ -9,9 +9,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { PhotoGallery } from './photo-gallery';
 import { RSVPForm } from './rsvp-form';
+import { DebugWeddingData } from './debug-wedding-data';
 import type { Wedding, GuestBookEntry, Photo } from '@shared/schema';
 
-export function SimpleWeddingTemplate() {
+interface SimpleWeddingTemplateProps {
+  wedding?: Wedding;
+}
+
+export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTemplateProps = {}) {
   const params = useParams();
   const weddingUrl = params.uniqueUrl as string;
   const { toast } = useToast();
@@ -20,11 +25,13 @@ export function SimpleWeddingTemplate() {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch wedding data
-  const { data: wedding, isLoading } = useQuery<Wedding>({
+  // Fetch wedding data - use prop if provided, otherwise fetch from API
+  const { data: fetchedWedding, isLoading } = useQuery<Wedding>({
     queryKey: [`/api/weddings/url/${weddingUrl}`],
-    enabled: !!weddingUrl,
+    enabled: !!weddingUrl && !propWedding,
   });
+
+  const wedding = propWedding || fetchedWedding;
 
   // Fetch guest book entries
   const { data: guestBookEntries = [] } = useQuery<GuestBookEntry[]>({
@@ -38,13 +45,14 @@ export function SimpleWeddingTemplate() {
     enabled: !!wedding?.id,
   });
 
-  if (isLoading) {
+  if (isLoading && !propWedding) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
+        <DebugWeddingData />
       </div>
     );
   }
@@ -56,6 +64,7 @@ export function SimpleWeddingTemplate() {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Wedding Not Found</h1>
           <p className="text-gray-600">Wedding not found at this URL.</p>
         </div>
+        <DebugWeddingData />
       </div>
     );
   }
