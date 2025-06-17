@@ -19,7 +19,9 @@ interface WeddingLanguageSettingsProps {
 const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' }
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
+  { code: 'kaa', name: 'Qaraqalpaqsha', flag: '🇺🇿' }
 ];
 
 export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProps) {
@@ -43,10 +45,12 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
   // Update language settings mutation
   const updateLanguagesMutation = useMutation({
     mutationFn: async (data: { availableLanguages: string[]; defaultLanguage: string }) => {
+      const token = localStorage.getItem('auth_token');
       const response = await fetch(`/api/weddings/${wedding.id}/languages`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });

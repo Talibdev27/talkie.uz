@@ -12,7 +12,9 @@ interface WeddingLanguageSwitcherProps {
 const LANGUAGE_NAMES = {
   en: { name: 'English', flag: '🇺🇸' },
   uz: { name: "O'zbekcha", flag: '🇺🇿' },
-  ru: { name: 'Русский', flag: '🇷🇺' }
+  ru: { name: 'Русский', flag: '🇷🇺' },
+  kk: { name: 'Қазақша', flag: '🇰🇿' },
+  kaa: { name: 'Qaraqalpaqsha', flag: '🇺🇿' }
 } as const;
 
 export function WeddingLanguageSwitcher({ wedding, className = '' }: WeddingLanguageSwitcherProps) {
