@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, Clock, MapPin, MessageSquare, Heart } from 'lucide-react';
+import { Calendar, Clock, MapPin, MessageSquare, Heart, Camera, Upload } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { CouplePhotoUpload } from './couple-photo-upload';
+import { PhotoGallery } from './photo-gallery';
+import { RSVPForm } from './rsvp-form';
+
 
 
 interface Wedding {
@@ -156,19 +160,38 @@ export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingT
     });
   };
 
+  // Get couple photo from photos
+  const couplePhoto = photos.find(photo => photo.photoType === 'couple');
+  const memoryPhotos = photos.filter(photo => photo.photoType === 'memory');
+
   return (
     <div className="min-h-screen bg-white">
       {/* 1. Couple Photo Header */}
       <header className="text-center py-10 px-6" style={{ backgroundColor: '#f9f5f2' }}>
         <div className="max-w-4xl mx-auto">
-          <img
-            src="/uploads/couple-photo.jpg"
-            alt={`${wedding.bride} va ${wedding.groom}`}
-            className="w-full max-h-96 object-cover rounded-lg mb-5"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
-          />
+          {isOwner && !couplePhoto && (
+            <div className="mb-6">
+              <CouplePhotoUpload weddingId={wedding.id} />
+            </div>
+          )}
+          
+          {couplePhoto && (
+            <div className="mb-6">
+              <img
+                src={couplePhoto.url}
+                alt={`${wedding.bride} va ${wedding.groom}`}
+                className="w-full max-h-96 object-cover rounded-lg shadow-lg"
+              />
+              {isOwner && (
+                <div className="mt-4">
+                  <CouplePhotoUpload 
+                    weddingId={wedding.id} 
+                    currentPhotoUrl={couplePhoto.url}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </header>
 
@@ -185,30 +208,30 @@ export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingT
         </div>
       </section>
 
-      {/* 3. Wedding Details with Countdown */}
+      {/* 3. Wedding Details - Centered */}
       <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
             To'y haqida
           </h2>
           
-          <div className="space-y-6">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
             <div>
-              <strong className="text-gray-800">To'y egalari:</strong>
-              <p className="mt-1">{wedding.bride} va {wedding.groom}</p>
+              <strong className="text-gray-800 block mb-2">To'y egalari:</strong>
+              <p className="text-lg">{wedding.bride} va {wedding.groom}</p>
             </div>
             
             <div>
-              <strong className="text-gray-800">Bayramni boshlash vaqti:</strong>
-              <p className="mt-1">{formatDate(wedding.weddingDate)} / soat {wedding.weddingTime || '19:00'}</p>
+              <strong className="text-gray-800 block mb-2">Bayramni boshlash vaqti:</strong>
+              <p className="text-lg">{formatDate(wedding.weddingDate)} / soat {wedding.weddingTime || '19:00'}</p>
             </div>
             
             <div>
-              <strong className="text-gray-800">To'y manzili:</strong>
-              <p className="mt-1">{wedding.venue}</p>
+              <strong className="text-gray-800 block mb-2">To'y manzili:</strong>
+              <p className="text-lg">{wedding.venue}</p>
               {wedding.venueAddress && <p className="text-gray-600">{wedding.venueAddress}</p>}
               <button 
-                className="mt-3 px-6 py-2 rounded text-white font-medium"
+                className="mt-4 px-6 py-2 rounded text-white font-medium"
                 style={{ backgroundColor: '#8e4a49' }}
               >
                 Karta orqali ochish
@@ -218,17 +241,23 @@ export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingT
         </div>
       </section>
 
-      {/* 4. Optional Photo Gallery - Hidden for now */}
-      {false && (
-        <section className="py-10 px-6 border-b border-gray-200">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-              Fotoalbom
-            </h2>
-            <div id="gallery-content"></div>
-          </div>
-        </section>
-      )}
+      {/* 4. Photo Gallery - Now functional */}
+      <section className="py-10 px-6 border-b border-gray-200">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
+            Fotoalbom
+          </h2>
+          
+          <PhotoGallery weddingId={wedding.id} />
+          
+          {memoryPhotos.length === 0 && !isOwner && (
+            <div className="text-center py-8 text-gray-500">
+              <Camera className="w-12 h-12 mx-auto mb-4" />
+              <p>Hozircha rasmlar yuklanmagan</p>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* 5. Couple Profiles */}
       <section className="py-10 px-6 border-b border-gray-200">
@@ -244,32 +273,33 @@ export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingT
           
           <div className="flex justify-center gap-10 mt-8">
             <div className="text-center">
-              <img
-                src="/uploads/groom-photo.jpg"
-                alt={wedding.groom}
-                className="w-30 h-30 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
+              <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center">
+                <Heart className="w-8 h-8 text-gray-400" />
+              </div>
               <h3 className="font-bold text-lg">{wedding.groom}</h3>
             </div>
             <div className="text-center">
-              <img
-                src="/uploads/bride-photo.jpg"
-                alt={wedding.bride}
-                className="w-30 h-30 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
+              <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center">
+                <Heart className="w-8 h-8 text-gray-400" />
+              </div>
               <h3 className="font-bold text-lg">{wedding.bride}</h3>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. Guest Book Section (replaces RSVP) */}
+      {/* 6. RSVP Section */}
+      <section className="py-10 px-6 border-b border-gray-200" style={{ backgroundColor: '#f9f5f2' }}>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
+            Tasdiqlash
+          </h2>
+          
+          <RSVPForm weddingId={wedding.id} />
+        </div>
+      </section>
+
+      {/* 7. Guest Book Section */}
       <section className="py-10 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>

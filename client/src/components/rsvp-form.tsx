@@ -1,213 +1,204 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
-import { insertGuestSchema } from '@shared/schema';
-
-const rsvpFormSchema = insertGuestSchema.extend({
-  email: z.string().email().optional().or(z.literal('')),
-});
-
-type RSVPFormData = z.infer<typeof rsvpFormSchema>;
+import { Heart, CheckCircle } from 'lucide-react';
 
 interface RSVPFormProps {
   weddingId: number;
-  className?: string;
 }
 
-export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
-  const { t } = useTranslation();
+export function RSVPForm({ weddingId }: RSVPFormProps) {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    attendance: '',
+    guestCount: 1,
+    message: '',
+    address: ''
+  });
+  const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const form = useForm<RSVPFormData>({
-    resolver: zodResolver(rsvpFormSchema),
-    defaultValues: {
-      weddingId,
-      name: '',
-      email: '',
-      phone: '',
-      rsvpStatus: 'pending',
-      plusOne: false,
-      message: '',
-    },
-  });
-
-  const submitRSVP = useMutation({
-    mutationFn: async (data: RSVPFormData) => {
-      const response = await apiRequest('POST', '/api/guests', data);
+  const rsvpMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const response = await fetch('/api/guests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          weddingId,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          message: data.message,
+          rsvpStatus: data.attendance,
+          guestCount: data.guestCount
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('RSVP submission failed');
+      }
+      
       return response.json();
     },
     onSuccess: () => {
-      setIsSubmitted(true);
+      setSubmitted(true);
       toast({
-        title: t('rsvp.thankYou'),
-        description: "We've received your RSVP!",
+        title: "RSVP Submitted",
+        description: "Thank you for your response!",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
     },
     onError: () => {
       toast({
-        title: t('common.error'),
-        description: "Something went wrong. Please try again.",
+        title: "Submission Failed",
+        description: "Please try again later.",
         variant: "destructive",
       });
     },
   });
 
-  const onSubmit = (data: RSVPFormData) => {
-    submitRSVP.mutate(data);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.attendance) {
+      toast({
+        title: "Required Fields",
+        description: "Please fill in your name and attendance status.",
+        variant: "destructive",
+      });
+      return;
+    }
+    rsvpMutation.mutate(formData);
   };
 
-  if (isSubmitted) {
+  if (submitted) {
     return (
-      <Card className={`max-w-md mx-auto ${className}`}>
+      <Card className="max-w-md mx-auto bg-green-50 border-green-200">
         <CardContent className="pt-6 text-center">
-          <div className="text-6xl mb-4">💝</div>
-          <h3 className="text-xl font-playfair font-semibold text-charcoal mb-2">
-            {t('rsvp.thankYou')}
-          </h3>
-          <p className="text-charcoal opacity-70">
-            We can't wait to celebrate with you!
-          </p>
+          <CheckCircle className="w-12 h-12 mx-auto mb-4 text-green-600" />
+          <h3 className="font-semibold text-green-800 mb-2">RSVP Submitted!</h3>
+          <p className="text-green-700">Thank you for your response. We look forward to celebrating with you!</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className={`max-w-md mx-auto ${className}`}>
+    <Card className="max-w-md mx-auto">
       <CardContent className="pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('rsvp.guestName')}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t('rsvp.enterFullName')} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <p className="text-gray-700 mb-4">
+              Hurmatli mehmon, iltimos to'yga tashrif buyurishingizni tasdiqlang:
+            </p>
+            
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="attendance"
+                  value="confirmed"
+                  checked={formData.attendance === 'confirmed'}
+                  onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
+                  className="text-blue-600"
+                />
+                <span>Ha, men boraman!</span>
+              </label>
+              
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="attendance"
+                  value="with-partner"
+                  checked={formData.attendance === 'with-partner'}
+                  onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
+                  className="text-blue-600"
+                />
+                <span>Turmush o'rtog'im bilan boraman</span>
+              </label>
+              
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="attendance"
+                  value="declined"
+                  checked={formData.attendance === 'declined'}
+                  onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
+                  className="text-blue-600"
+                />
+                <span>Afsuski, kela olmayman</span>
+              </label>
+            </div>
+          </div>
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('rsvp.email')}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="email" 
-                      placeholder={t('rsvp.enterEmail')} 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Ismingiz va manzilingiz:
+            </label>
+            <Input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder="Ismingiz"
+              required
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="rsvpStatus"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('rsvp.willYouAttend')}</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="confirmed" id="confirmed" />
-                        <Label htmlFor="confirmed">{t('rsvp.yesAttending')}</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="declined" id="declined" />
-                        <Label htmlFor="declined">{t('rsvp.notAttending')}</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="maybe" id="maybe" />
-                        <Label htmlFor="maybe">{t('rsvp.maybe')}</Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          <div>
+            <Input
+              type="text"
+              value={formData.address}
+              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+              placeholder="Manzilingiz"
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="plusOne"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>{t('rsvp.plusOne')}</FormLabel>
-                  </div>
-                </FormItem>
-              )}
+          <div>
+            <Input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              placeholder="Email (ixtiyoriy)"
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('rsvp.message')}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={t('rsvp.shareMessage')}
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          <div>
+            <Input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+              placeholder="Telefon raqam (ixtiyoriy)"
             />
+          </div>
 
-            <Button
-              type="submit"
-              className="w-full wedding-button"
-              disabled={submitRSVP.isPending}
-            >
-              {submitRSVP.isPending ? t('common.loading') : t('rsvp.submit')}
-            </Button>
-          </form>
-        </Form>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              To'y egalariga tilaklaringiz:
+            </label>
+            <Textarea
+              value={formData.message}
+              onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+              placeholder="Tilaklaringizni yozing..."
+              rows={4}
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full"
+            style={{ backgroundColor: '#8e4a49' }}
+            disabled={rsvpMutation.isPending}
+          >
+            {rsvpMutation.isPending ? 'Yuborilmoqda...' : 'Yuborish'}
+          </Button>
+        </form>
       </CardContent>
     </Card>
   );
