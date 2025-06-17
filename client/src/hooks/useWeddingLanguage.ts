@@ -1,24 +1,26 @@
 import { useState, useEffect } from 'react';
 import type { Wedding } from '@shared/schema';
 
+type TranslationKeys = {
+  welcome_guests: string;
+  wedding_details: string;
+  couple_names: string;
+  wedding_time: string;
+  wedding_venue: string;
+  open_map: string;
+  photo_gallery: string;
+  confirmation: string;
+  guest_book: string;
+  your_name: string;
+  your_message: string;
+  submit: string;
+  submitting: string;
+  loading: string;
+  error: string;
+};
+
 interface LanguageTranslations {
-  [key: string]: {
-    welcome_guests: string;
-    wedding_details: string;
-    couple_names: string;
-    wedding_time: string;
-    wedding_venue: string;
-    open_map: string;
-    photo_gallery: string;
-    confirmation: string;
-    guest_book: string;
-    your_name: string;
-    your_message: string;
-    submit: string;
-    submitting: string;
-    loading: string;
-    error: string;
-  };
+  [key: string]: TranslationKeys;
 }
 
 const translations: LanguageTranslations = {
@@ -101,7 +103,7 @@ export function useWeddingLanguage(wedding?: Wedding) {
     }
   }, [wedding?.defaultLanguage]);
 
-  const t = (key: string): string => {
+  const t = (key: keyof TranslationKeys): string => {
     return translations[currentLanguage]?.[key] || translations['uz'][key] || key;
   };
 
