@@ -13,6 +13,7 @@ import { getRsvpTranslation } from '@/translations/rsvp';
 interface RSVPFormProps {
   weddingId: number;
   currentLanguage?: string;
+  t?: (key: string) => string;
 }
 
 export function RSVPForm({ weddingId, currentLanguage = 'en' }: RSVPFormProps) {
@@ -152,43 +153,7 @@ export function RSVPForm({ weddingId, currentLanguage = 'en' }: RSVPFormProps) {
             </RadioGroup>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-base font-medium">
-              Email (optional)
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="Email"
-            />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="phone" className="text-base font-medium">
-              Phone (optional)
-            </Label>
-            <Input
-              id="phone"
-              value={formData.phone}
-              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              placeholder="Phone number"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="message" className="text-base font-medium">
-              Message (optional)
-            </Label>
-            <Textarea
-              id="message"
-              value={formData.message}
-              onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              placeholder="Any special message or requests"
-              rows={3}
-            />
-          </div>
 
           <Button 
             type="submit" 

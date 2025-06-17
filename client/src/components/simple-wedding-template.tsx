@@ -235,10 +235,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <p className="text-gray-700 leading-relaxed">
-              Hurmatli mehmon, hayotimizning eng baxtli kunlaridan biri yaqin orada keladi!
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-              Sizni o'sha baxtli kunda biz bilan birga ko'rishni va quvonchimizni baham ko'rishni istaymiz!
+              {t('aboutCouple')}
             </p>
           </div>
           
@@ -266,7 +263,7 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
             {t('confirmation')}
           </h2>
           
-          <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} t={t} />
+          <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} />
         </div>
       </section>
 

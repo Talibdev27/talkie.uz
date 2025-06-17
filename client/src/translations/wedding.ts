@@ -16,6 +16,17 @@ export const weddingTranslations = {
     welcomeSection: "Welcome",
     coupleNames: "Our Love Story",
     aboutCouple: "We are excited to share this special moment with our loved ones. Thank you for being part of our journey!",
+    welcome_guests: "Welcome Dear Guests",
+    welcome_message_line1: "We are delighted to invite you to celebrate our special day with us.",
+    welcome_message_line2: "Your presence will make our wedding celebration complete!",
+    wedding_details: "Wedding Details",
+    couple_names: "Couple Names",
+    and_connector: "and",
+    wedding_time: "Wedding Time", 
+    time_at: "at",
+    wedding_venue: "Wedding Venue",
+    open_map: "Open Map",
+    confirmation: "RSVP"
     
     // Photo sections
     photoGallery: "Photo Gallery",
@@ -67,6 +78,17 @@ export const weddingTranslations = {
     welcomeSection: "Xush kelibsiz",
     coupleNames: "Bizning hikoyamiz",
     aboutCouple: "Hurmatli mehmon, hayotimizning eng baxtli kunlariga bir yagin orada keladi! Sizni o'sha baxtli kunda biz bilan birga ko'rishni va quvonchimizni baham ko'rishni istaymiz!",
+    welcome_guests: "Aziz mehmonlar!",
+    welcome_message_line1: "Hurmatli mehmon, hayotimizning eng baxtli kunlaridan biri yaqin orada keladi!",
+    welcome_message_line2: "Sizni o'sha baxtli kunda biz bilan birga ko'rishni va quvonchimizni baham ko'rishni istaymiz!",
+    wedding_details: "To'y ma'lumotlari",
+    couple_names: "Yosh juftlik",
+    and_connector: "va",
+    wedding_time: "To'y vaqti",
+    time_at: "soat",
+    wedding_venue: "To'y joyi",
+    open_map: "Kartani ochish",
+    confirmation: "Tasdiqlash"
     
     // Photo sections
     photoGallery: "Fotosurat",
@@ -118,6 +140,17 @@ export const weddingTranslations = {
     welcomeSection: "Добро пожаловать",
     coupleNames: "Наша история любви",
     aboutCouple: "Мы рады разделить этот особенный момент с нашими близкими. Спасибо, что являетесь частью нашего пути!",
+    welcome_guests: "Дорогие гости!",
+    welcome_message_line1: "Будьте с нами в этот радостный день, наполненный любовью и счастьем!",
+    welcome_message_line2: "Ваше присутствие сделает наше свадебное торжество незабываемым!",
+    wedding_details: "О свадьбе", 
+    couple_names: "Молодожены",
+    and_connector: "и",
+    wedding_time: "Время начала торжества",
+    time_at: "время",
+    wedding_venue: "Место проведения",
+    open_map: "Открыть карту",
+    confirmation: "Подтверждение"
     
     // Photo sections
     photoGallery: "Фотогалерея",
@@ -220,6 +253,17 @@ export const weddingTranslations = {
     welcomeSection: "Qosh keldiñiz",
     coupleNames: "Bizin makhabbat tarıykhı",
     aboutCouple: "Biz bul ıntalı shátti jaqınlarımız penen bólisiw ushın quwanıp atırımız. Bizin jolımızdıñ bólegi bolganlığınız ushın rakhmet!",
+    welcome_guests: "Qıymatlı qonaqlar!",
+    welcome_message_line1: "Bizler sizlerdi bizin ıntalı kúnimizdi birge bayramlaw ushın shaqırıp atırımız.",
+    welcome_message_line2: "Sizlerdin qatnasıwınız bizin neka tóyimizdi tolıq etip beredi!",
+    wedding_details: "Neka tóyı haqqında",
+    couple_names: "Jas jup",
+    and_connector: "hám",
+    wedding_time: "Tóy waqtı",
+    time_at: "saqat",
+    wedding_venue: "Tóy ornı",
+    open_map: "Kartada kóriw",
+    confirmation: "Tastıyqlash"
     
     // Photo sections
     photoGallery: "Foto galereyası",
