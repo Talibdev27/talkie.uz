@@ -131,8 +131,13 @@ export function SimpleWeddingTemplate({ wedding: propWedding }: SimpleWeddingTem
   const couplePhoto = photos.find(photo => photo.photoType === 'couple');
   const memoryPhotos = photos.filter(photo => photo.photoType === 'memory');
 
+  console.log('SimpleWeddingTemplate rendering with wedding:', wedding);
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Debug component */}
+      <DebugWeddingData />
+      
       {/* 1. Couple Photo Header - Only show if photo exists */}
       {couplePhoto && (
         <header className="text-center py-10 px-6" style={{ backgroundColor: '#f9f5f2' }}>
