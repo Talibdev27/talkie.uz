@@ -7,11 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { CouplePhotoUpload } from './couple-photo-upload';
 import { PhotoGallery } from './photo-gallery';
 import { RSVPForm } from './rsvp-form';
-import { WeddingLanguageSwitcher } from './wedding-language-switcher';
-import { useWeddingTranslation } from '@/hooks/useWeddingTranslation';
 import type { Wedding, GuestBookEntry, Photo } from '@shared/schema';
 
 export function SimpleWeddingTemplate() {
@@ -41,23 +38,12 @@ export function SimpleWeddingTemplate() {
     enabled: !!wedding?.id,
   });
 
-  // Translation system
-  const { t, currentLanguage, availableLanguages, changeLanguage } = useWeddingTranslation(wedding);
-
-  // Check if current user is the wedding owner
-  const { data: currentUser } = useQuery({
-    queryKey: ['/api/user/current'],
-    queryFn: () => fetch('/api/user/current').then(res => res.json()),
-  });
-
-  const isOwner = currentUser && wedding && currentUser.id === wedding.userId;
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{t('loading')}</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -67,7 +53,7 @@ export function SimpleWeddingTemplate() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('error')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Wedding Not Found</h1>
           <p className="text-gray-600">Wedding not found at this URL.</p>
         </div>
       </div>
@@ -78,8 +64,8 @@ export function SimpleWeddingTemplate() {
     e.preventDefault();
     if (!guestName.trim() || !message.trim()) {
       toast({
-        title: t('error'),
-        description: t('nameRequired') + ' ' + t('messageRequired'),
+        title: "Error",
+        description: "Please fill in all fields",
         variant: "destructive",
       });
       return;
@@ -90,13 +76,13 @@ export function SimpleWeddingTemplate() {
       const response = await fetch('/api/guest-book', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           weddingId: wedding.id,
           guestName: guestName.trim(),
-          message: message.trim()
-        })
+          message: message.trim(),
+        }),
       });
 
       if (!response.ok) {
@@ -104,7 +90,7 @@ export function SimpleWeddingTemplate() {
       }
 
       toast({
-        title: t('success'),
+        title: "Success",
         description: "Message added successfully!",
       });
 
@@ -114,7 +100,7 @@ export function SimpleWeddingTemplate() {
       window.location.reload();
     } catch (error) {
       toast({
-        title: t('error'),
+        title: "Error",
         description: "Failed to submit message",
         variant: "destructive",
       });
@@ -138,15 +124,6 @@ export function SimpleWeddingTemplate() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Language Switcher - Fixed position */}
-      <div className="fixed top-4 right-4 z-50">
-        <WeddingLanguageSwitcher
-          currentLanguage={currentLanguage}
-          availableLanguages={availableLanguages}
-          onLanguageChange={changeLanguage}
-        />
-      </div>
-
       {/* 1. Couple Photo Header - Only show if photo exists */}
       {couplePhoto && (
         <header className="text-center py-10 px-6" style={{ backgroundColor: '#f9f5f2' }}>
@@ -166,10 +143,11 @@ export function SimpleWeddingTemplate() {
       <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            {t('welcomeTitle')}
+            Aziz mehmonlar!
           </h2>
           <div className="text-center text-gray-700 leading-relaxed">
-            <p>{t('welcomeMessage')}</p>
+            <p>Sizni {wedding.bride} va {wedding.groom}ning nikoh to'yiga taklif qilamiz...</p>
+            <p>Qalblar ezguliklarga to'la bo'lgan ushbu qutlug' kunda do'stlar yonida bo'ling!</p>
           </div>
         </div>
       </section>
@@ -178,29 +156,29 @@ export function SimpleWeddingTemplate() {
       <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            {t('eventDetails')}
+            To'y haqida
           </h2>
           
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <div>
-              <strong className="text-gray-800 block mb-2">{t('eventDetailsTitle')}</strong>
+              <strong className="text-gray-800 block mb-2">To'y egalari:</strong>
               <p className="text-lg">{wedding.bride} va {wedding.groom}</p>
             </div>
             
             <div>
-              <strong className="text-gray-800 block mb-2">{t('date')}</strong>
-              <p className="text-lg">{formatDate(wedding.weddingDate)} / {t('time')} {wedding.weddingTime || '19:00'}</p>
+              <strong className="text-gray-800 block mb-2">Bayramni boshlash vaqti:</strong>
+              <p className="text-lg">{formatDate(wedding.weddingDate)} / soat {wedding.weddingTime || '19:00'}</p>
             </div>
             
             <div>
-              <strong className="text-gray-800 block mb-2">{t('venue')}</strong>
+              <strong className="text-gray-800 block mb-2">To'y manzili:</strong>
               <p className="text-lg">{wedding.venue}</p>
               {wedding.venueAddress && <p className="text-gray-600">{wedding.venueAddress}</p>}
               <button 
                 className="mt-4 px-6 py-2 rounded text-white font-medium"
                 style={{ backgroundColor: '#8e4a49' }}
               >
-                {t('viewOnMap')}
+                Karta orqali ochish
               </button>
             </div>
           </div>
@@ -212,7 +190,7 @@ export function SimpleWeddingTemplate() {
         <section className="py-10 px-6 border-b border-gray-200">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-              {t('photoGallery')}
+              Fotoalbom
             </h2>
             
             <PhotoGallery weddingId={wedding.id} />
@@ -225,7 +203,10 @@ export function SimpleWeddingTemplate() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <p className="text-gray-700 leading-relaxed">
-              {t('aboutCouple')}
+              Hurmatli mehmon, hayotimizning eng baxtli kunlaridan biri yaqin orada keladi!
+            </p>
+            <p className="text-gray-700 leading-relaxed">
+              Sizni o'sha baxtli kunda biz bilan birga ko'rishni va quvonchimizni baham ko'rishni istaymiz!
             </p>
           </div>
           
@@ -250,10 +231,10 @@ export function SimpleWeddingTemplate() {
       <section className="py-10 px-6 border-b border-gray-200" style={{ backgroundColor: '#f9f5f2' }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            {t('rsvpSection')}
+            Tasdiqlash
           </h2>
           
-          <RSVPForm weddingId={wedding.id} currentLanguage={currentLanguage} />
+          <RSVPForm weddingId={wedding.id} currentLanguage="uz" />
         </div>
       </section>
 
@@ -261,7 +242,7 @@ export function SimpleWeddingTemplate() {
       <section className="py-10 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            {t('guestBook')}
+            Mehmonlar kitobi
           </h2>
           
           {/* Guest book form */}
@@ -272,7 +253,7 @@ export function SimpleWeddingTemplate() {
                   <div>
                     <Input
                       type="text"
-                      placeholder={t('yourName')}
+                      placeholder="Ismingiz"
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
                       required
@@ -280,7 +261,7 @@ export function SimpleWeddingTemplate() {
                   </div>
                   <div>
                     <Textarea
-                      placeholder={t('yourMessage')}
+                      placeholder="Xabaringiz"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={4}
@@ -293,7 +274,7 @@ export function SimpleWeddingTemplate() {
                     style={{ backgroundColor: '#8e4a49' }}
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? t('submitting') : t('submitMessage')}
+                    {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
                   </Button>
                 </form>
               </CardContent>
