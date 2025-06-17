@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,7 +6,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Globe } from 'lucide-react';
-import type { Wedding } from '@shared/schema';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -18,20 +16,20 @@ const languages = [
 ];
 
 interface WeddingLanguageSwitcherProps {
-  wedding: Wedding;
+  currentLanguage: string;
+  availableLanguages: string[];
+  onLanguageChange: (langCode: string) => void;
   className?: string;
 }
 
-export function WeddingLanguageSwitcher({ wedding, className = '' }: WeddingLanguageSwitcherProps) {
-  const [currentLanguage, setCurrentLanguage] = useState(wedding.defaultLanguage || 'en');
-  
+export function WeddingLanguageSwitcher({ 
+  currentLanguage, 
+  availableLanguages, 
+  onLanguageChange, 
+  className = '' 
+}: WeddingLanguageSwitcherProps) {
   const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
-
-  const changeLanguage = (langCode: string) => {
-    setCurrentLanguage(langCode);
-    // Trigger a page reload with the new language
-    window.location.reload();
-  };
+  const availableLanguageOptions = languages.filter(lang => availableLanguages.includes(lang.code));
 
   return (
     <DropdownMenu>
@@ -43,10 +41,10 @@ export function WeddingLanguageSwitcher({ wedding, className = '' }: WeddingLang
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[180px]">
-        {languages.map((language) => (
+        {availableLanguageOptions.map((language) => (
           <DropdownMenuItem
             key={language.code}
-            onClick={() => changeLanguage(language.code)}
+            onClick={() => onLanguageChange(language.code)}
             className="flex items-center cursor-pointer"
           >
             <span className="mr-2">{language.flag}</span>
