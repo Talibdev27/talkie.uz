@@ -1,90 +1,61 @@
-import { useTranslation } from 'react-i18next';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Globe } from 'lucide-react';
 import type { Wedding } from '@shared/schema';
+
+const languages = [
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'uz', name: 'O\'zbekcha', flag: '🇺🇿' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
+  { code: 'kaa', name: 'Qaraqalpaqsha', flag: '🇺🇿' }
+];
 
 interface WeddingLanguageSwitcherProps {
   wedding: Wedding;
   className?: string;
 }
 
-const LANGUAGE_NAMES = {
-  en: { name: 'English', flag: '🇺🇸' },
-  uz: { name: "O'zbekcha", flag: '🇺🇿' },
-  ru: { name: 'Русский', flag: '🇷🇺' },
-  kk: { name: 'Қазақша', flag: '🇰🇿' },
-  kaa: { name: 'Qaraqalpaqsha', flag: '🇺🇿' }
-} as const;
-
 export function WeddingLanguageSwitcher({ wedding, className = '' }: WeddingLanguageSwitcherProps) {
-  const { i18n } = useTranslation();
+  const [currentLanguage, setCurrentLanguage] = useState(wedding.defaultLanguage || 'en');
+  
+  const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
 
-  // Get available languages from wedding settings, fallback to ['en']
-  const availableLanguages = wedding.availableLanguages || ['en'];
-  const defaultLanguage = wedding.defaultLanguage || 'en';
-
-  // If only one language is available, don't show the switcher
-  if (availableLanguages.length <= 1) {
-    return null;
-  }
-
-  // Determine current language - check if current language is available for this wedding
-  const currentLanguage = availableLanguages.includes(i18n.language) 
-    ? i18n.language 
-    : defaultLanguage;
-
-  // Update language if current language is not available for this wedding
-  if (i18n.language !== currentLanguage) {
-    i18n.changeLanguage(currentLanguage);
-  }
-
-  const handleLanguageChange = (langCode: string) => {
-    i18n.changeLanguage(langCode);
-    localStorage.setItem('language', langCode);
-    
-    // Update URL to include language parameter for SEO and sharing
-    const url = new URL(window.location.href);
-    url.searchParams.set('lang', langCode);
-    window.history.replaceState({}, '', url.toString());
+  const changeLanguage = (langCode: string) => {
+    setCurrentLanguage(langCode);
+    // Trigger a page reload with the new language
+    window.location.reload();
   };
-
-  const currentLangInfo = LANGUAGE_NAMES[currentLanguage as keyof typeof LANGUAGE_NAMES];
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className={`bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white ${className}`}
-        >
+        <Button variant="outline" size="sm" className={className}>
           <Globe className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">{currentLangInfo?.flag}</span>
-          <span className="ml-1 hidden md:inline">{currentLangInfo?.name}</span>
+          <span className="mr-1">{currentLang.flag}</span>
+          {currentLang.name}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[120px]">
-        {availableLanguages.map((langCode) => {
-          const langInfo = LANGUAGE_NAMES[langCode as keyof typeof LANGUAGE_NAMES];
-          if (!langInfo) return null;
-          
-          return (
-            <DropdownMenuItem
-              key={langCode}
-              onClick={() => handleLanguageChange(langCode)}
-              className={`flex items-center gap-2 cursor-pointer ${
-                currentLanguage === langCode ? 'bg-primary/10 font-medium' : ''
-              }`}
-            >
-              <span className="text-base">{langInfo.flag}</span>
-              <span>{langInfo.name}</span>
-              {langCode === defaultLanguage && (
-                <span className="text-xs text-muted-foreground ml-auto">Default</span>
-              )}
-            </DropdownMenuItem>
-          );
-        })}
+      <DropdownMenuContent align="end" className="min-w-[180px]">
+        {languages.map((language) => (
+          <DropdownMenuItem
+            key={language.code}
+            onClick={() => changeLanguage(language.code)}
+            className="flex items-center cursor-pointer"
+          >
+            <span className="mr-2">{language.flag}</span>
+            <span>{language.name}</span>
+            {currentLanguage === language.code && (
+              <span className="ml-auto text-blue-600">✓</span>
+            )}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
