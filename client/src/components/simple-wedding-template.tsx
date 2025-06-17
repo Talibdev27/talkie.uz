@@ -41,6 +41,9 @@ export function SimpleWeddingTemplate() {
     enabled: !!wedding?.id,
   });
 
+  // Translation system
+  const { t, currentLanguage, availableLanguages, changeLanguage } = useWeddingTranslation(wedding);
+
   // Check if current user is the wedding owner
   const { data: currentUser } = useQuery({
     queryKey: ['/api/user/current'],
@@ -48,9 +51,6 @@ export function SimpleWeddingTemplate() {
   });
 
   const isOwner = currentUser && wedding && currentUser.id === wedding.userId;
-  
-  // Translation hook
-  const { currentLanguage, changeLanguage, t, availableLanguages } = useWeddingTranslation(wedding);
 
   if (isLoading) {
     return (
