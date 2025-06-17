@@ -672,7 +672,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { availableLanguages, defaultLanguage } = req.body;
       
       // Validate languages
-      const supportedLanguages = ['en', 'uz', 'ru'];
+      const supportedLanguages = ['en', 'uz', 'ru', 'kk', 'kaa'];
       if (!Array.isArray(availableLanguages) || availableLanguages.length === 0) {
         return res.status(400).json({ message: "At least one language must be selected" });
       }
