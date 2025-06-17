@@ -10,6 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import { CouplePhotoUpload } from './couple-photo-upload';
 import { PhotoGallery } from './photo-gallery';
 import { RSVPForm } from './rsvp-form';
+import { WeddingLanguageSwitcher } from './wedding-language-switcher';
+import { useWeddingTranslation } from '@/hooks/useWeddingTranslation';
 import type { Wedding, GuestBookEntry, Photo } from '@shared/schema';
 
 export function SimpleWeddingTemplate() {
@@ -46,13 +48,16 @@ export function SimpleWeddingTemplate() {
   });
 
   const isOwner = currentUser && wedding && currentUser.id === wedding.userId;
+  
+  // Translation hook
+  const { currentLanguage, changeLanguage, t, availableLanguages } = useWeddingTranslation(wedding);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Yuklanmoqda...</p>
+          <p className="text-gray-600">{t('loading')}</p>
         </div>
       </div>
     );
@@ -62,8 +67,8 @@ export function SimpleWeddingTemplate() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">To'y topilmadi</h1>
-          <p className="text-gray-600">Ushbu URL bo'yicha to'y ma'lumotlari topilmadi.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('error')}</h1>
+          <p className="text-gray-600">Wedding not found at this URL.</p>
         </div>
       </div>
     );
@@ -73,8 +78,8 @@ export function SimpleWeddingTemplate() {
     e.preventDefault();
     if (!guestName.trim() || !message.trim()) {
       toast({
-        title: "Xatolik",
-        description: "Iltimos, barcha maydonlarni to'ldiring",
+        title: t('error'),
+        description: t('nameRequired') + ' ' + t('messageRequired'),
         variant: "destructive",
       });
       return;
@@ -99,8 +104,8 @@ export function SimpleWeddingTemplate() {
       }
 
       toast({
-        title: "Muvaffaqiyat",
-        description: "Xabaringiz qo'shildi!",
+        title: t('success'),
+        description: "Message added successfully!",
       });
 
       setGuestName('');
@@ -109,8 +114,8 @@ export function SimpleWeddingTemplate() {
       window.location.reload();
     } catch (error) {
       toast({
-        title: "Xatolik",
-        description: "Xabar yuborishda xatolik yuz berdi",
+        title: t('error'),
+        description: "Failed to submit message",
         variant: "destructive",
       });
     } finally {
