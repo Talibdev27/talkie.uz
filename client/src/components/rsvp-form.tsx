@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { Heart, CheckCircle } from 'lucide-react';
+import { getRsvpTranslation } from '@/translations/rsvp';
 
 interface RSVPFormProps {
   weddingId: number;
+  currentLanguage?: string;
 }
 
-export function RSVPForm({ weddingId }: RSVPFormProps) {
+export function RSVPForm({ weddingId, currentLanguage = 'en' }: RSVPFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,26 +28,24 @@ export function RSVPForm({ weddingId }: RSVPFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const rsvpText = getRsvpTranslation(currentLanguage);
 
   const rsvpMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
       const response = await fetch('/api/guests', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
+          ...data,
           weddingId,
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          address: data.address,
-          message: data.message,
           rsvpStatus: data.attendance,
-          guestCount: data.guestCount
         }),
       });
       
       if (!response.ok) {
-        throw new Error('RSVP submission failed');
+        throw new Error('Failed to submit RSVP');
       }
       
       return response.json();
@@ -92,111 +94,109 @@ export function RSVPForm({ weddingId }: RSVPFormProps) {
 
   return (
     <Card className="max-w-md mx-auto">
-      <CardContent className="pt-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <p className="text-gray-700 mb-4">
-              Hurmatli mehmon, iltimos to'yga tashrif buyurishingizni tasdiqlang:
-            </p>
-            
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="attendance"
-                  value="confirmed"
-                  checked={formData.attendance === 'confirmed'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
-                  className="text-blue-600"
-                />
-                <span>Ha, men boraman!</span>
-              </label>
-              
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="attendance"
-                  value="with-partner"
-                  checked={formData.attendance === 'with-partner'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
-                  className="text-blue-600"
-                />
-                <span>Turmush o'rtog'im bilan boraman</span>
-              </label>
-              
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="attendance"
-                  value="declined"
-                  checked={formData.attendance === 'declined'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
-                  className="text-blue-600"
-                />
-                <span>Afsuski, kela olmayman</span>
-              </label>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Ismingiz va manzilingiz:
-            </label>
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold flex items-center justify-center gap-2" style={{ color: '#8e4a49' }}>
+          <Heart className="h-6 w-6" />
+          {rsvpText.title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="guestName" className="text-base font-medium">
+              {rsvpText.guestName}
+            </Label>
             <Input
-              type="text"
+              id="guestName"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Ismingiz"
+              placeholder={rsvpText.guestName}
+              className="text-base"
               required
             />
           </div>
 
-          <div>
-            <Input
-              type="text"
-              value={formData.address}
-              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-              placeholder="Manzilingiz"
-            />
+          <div className="space-y-4">
+            <Label className="text-base font-medium">
+              {rsvpText.attendanceQuestion}
+            </Label>
+            <RadioGroup 
+              value={formData.attendance} 
+              onValueChange={(value) => setFormData(prev => ({ ...prev, attendance: value }))} 
+              className="space-y-3"
+            >
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value="yes" id="yes" />
+                <Label htmlFor="yes" className="text-base cursor-pointer">
+                  {rsvpText.options.yes}
+                </Label>
+              </div>
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value="withPartner" id="withPartner" />
+                <Label htmlFor="withPartner" className="text-base cursor-pointer">
+                  {rsvpText.options.withPartner}
+                </Label>
+              </div>
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value="no" id="no" />
+                <Label htmlFor="no" className="text-base cursor-pointer">
+                  {rsvpText.options.no}
+                </Label>
+              </div>
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value="maybe" id="maybe" />
+                <Label htmlFor="maybe" className="text-base cursor-pointer">
+                  {rsvpText.options.maybe}
+                </Label>
+              </div>
+            </RadioGroup>
           </div>
 
-          <div>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-base font-medium">
+              Email (optional)
+            </Label>
             <Input
+              id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="Email (ixtiyoriy)"
+              placeholder="Email"
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-base font-medium">
+              Phone (optional)
+            </Label>
             <Input
-              type="tel"
+              id="phone"
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              placeholder="Telefon raqam (ixtiyoriy)"
+              placeholder="Phone number"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              To'y egalariga tilaklaringiz:
-            </label>
+          <div className="space-y-2">
+            <Label htmlFor="message" className="text-base font-medium">
+              Message (optional)
+            </Label>
             <Textarea
+              id="message"
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              placeholder="Tilaklaringizni yozing..."
-              rows={4}
+              placeholder="Any special message or requests"
+              rows={3}
             />
           </div>
 
           <Button 
             type="submit" 
-            className="w-full"
-            style={{ backgroundColor: '#8e4a49' }}
+            className="w-full" 
             disabled={rsvpMutation.isPending}
+            style={{ backgroundColor: '#8e4a49' }}
           >
-            {rsvpMutation.isPending ? 'Yuborilmoqda...' : 'Yuborish'}
+            {rsvpMutation.isPending ? 'Submitting...' : rsvpText.confirmationTitle}
           </Button>
         </form>
       </CardContent>

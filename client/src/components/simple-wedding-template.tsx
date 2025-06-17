@@ -243,7 +243,7 @@ export function SimpleWeddingTemplate() {
             Tasdiqlash
           </h2>
           
-          <RSVPForm weddingId={wedding.id} />
+          <RSVPForm weddingId={wedding.id} currentLanguage={wedding.defaultLanguage || 'en'} />
         </div>
       </section>
 
