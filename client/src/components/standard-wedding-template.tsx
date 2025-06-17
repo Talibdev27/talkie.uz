@@ -69,9 +69,22 @@ export function StandardWeddingTemplate({
 
   // Get couple photo with elegant fallback
   const getCouplePhoto = () => {
+    // First check if couple photo URL is set in wedding data
+    if (wedding.couplePhotoUrl && !wedding.useTemplatePhoto) {
+      return wedding.couplePhotoUrl;
+    }
+    
+    // Check for uploaded couple photos
+    const couplePhoto = photos.find((photo: any) => photo.photoType === 'couple');
+    if (couplePhoto) {
+      return couplePhoto.url;
+    }
+    
+    // Check template config photo
     if (templateConfig.couple.photo) {
       return templateConfig.couple.photo;
     }
+    
     // Elegant geometric pattern fallback
     return "data:image/svg+xml,%3Csvg width='800' height='450' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23D4B08C;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2389916B;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='450' fill='url(%23grad)'/%3E%3Cpath d='M0 225 L400 0 L800 225 L400 450 Z' fill='%23fff' opacity='0.1'/%3E%3C/svg%3E";
   };
@@ -198,17 +211,7 @@ export function StandardWeddingTemplate({
         </div>
       </section>
 
-      {/* MANDATORY SECTION 4: RSVP Section */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white shadow-lg border border-gray-200 rounded-2xl p-12">
-            <h2 className="text-3xl md:text-4xl font-playfair font-bold text-gray-900 text-center mb-12">
-              {t('wedding.rsvpTitle')}
-            </h2>
-            <RSVPForm weddingId={wedding.id} />
-          </div>
-        </div>
-      </section>
+
 
       {/* OPTIONAL SECTION: Photo Gallery */}
       {templateConfig.couple.enableGallery && photos.length > 0 && (
@@ -243,12 +246,12 @@ export function StandardWeddingTemplate({
         </section>
       )}
 
-      {/* MANDATORY SECTION 5: Comments (Guest Book) */}
+      {/* MANDATORY SECTION 4: Comments (Guest Book) */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white shadow-lg border border-gray-200 rounded-2xl p-12">
             <h2 className="text-3xl md:text-4xl font-playfair font-bold text-gray-900 text-center mb-12">
-              {t('wedding.guestBook')}
+              Mehmonlar kitobi
             </h2>
             
             {/* Guest book form */}
