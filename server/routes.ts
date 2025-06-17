@@ -1746,6 +1746,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete couple photo endpoint
+  app.delete("/api/photos/wedding/:weddingId/couple", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      const photos = await storage.getPhotosByWeddingId(weddingId);
+      const couplePhoto = photos.find(photo => photo.photoType === 'couple');
+      
+      if (!couplePhoto) {
+        return res.status(404).json({ message: "Couple photo not found" });
+      }
+
+      const deleted = await storage.deletePhoto(couplePhoto.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Failed to delete couple photo" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   // Guest book routes
   app.post("/api/guest-book", async (req, res) => {
     try {
