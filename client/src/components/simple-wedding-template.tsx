@@ -133,34 +133,20 @@ export function SimpleWeddingTemplate() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 1. Couple Photo Header */}
-      <header className="text-center py-10 px-6" style={{ backgroundColor: '#f9f5f2' }}>
-        <div className="max-w-4xl mx-auto">
-          {isOwner && !couplePhoto && (
-            <div className="mb-6">
-              <CouplePhotoUpload weddingId={wedding.id} />
-            </div>
-          )}
-          
-          {couplePhoto && (
+      {/* 1. Couple Photo Header - Only show if photo exists */}
+      {couplePhoto && (
+        <header className="text-center py-10 px-6" style={{ backgroundColor: '#f9f5f2' }}>
+          <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <img
                 src={couplePhoto.url}
                 alt={`${wedding.bride} va ${wedding.groom}`}
                 className="w-full max-h-96 object-cover rounded-lg shadow-lg"
               />
-              {isOwner && (
-                <div className="mt-4">
-                  <CouplePhotoUpload 
-                    weddingId={wedding.id} 
-                    currentPhotoUrl={couplePhoto.url}
-                  />
-                </div>
-              )}
             </div>
-          )}
-        </div>
-      </header>
+          </div>
+        </header>
+      )}
 
       {/* 2. Custom Welcome Message */}
       <section className="py-10 px-6 border-b border-gray-200">
@@ -208,23 +194,18 @@ export function SimpleWeddingTemplate() {
         </div>
       </section>
 
-      {/* 4. Photo Gallery - Now functional */}
-      <section className="py-10 px-6 border-b border-gray-200">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
-            Fotoalbom
-          </h2>
-          
-          <PhotoGallery weddingId={wedding.id} />
-          
-          {memoryPhotos.length === 0 && !isOwner && (
-            <div className="text-center py-8 text-gray-500">
-              <Camera className="w-12 h-12 mx-auto mb-4" />
-              <p>Hozircha rasmlar yuklanmagan</p>
-            </div>
-          )}
-        </div>
-      </section>
+      {/* 4. Photo Gallery - Only show if photos exist */}
+      {memoryPhotos.length > 0 && (
+        <section className="py-10 px-6 border-b border-gray-200">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
+              Fotoalbom
+            </h2>
+            
+            <PhotoGallery weddingId={wedding.id} />
+          </div>
+        </section>
+      )}
 
       {/* 5. Couple Profiles */}
       <section className="py-10 px-6 border-b border-gray-200">
