@@ -147,117 +147,137 @@ export function SimpleWeddingTemplate({ wedding: passedWedding }: SimpleWeddingT
     );
   }
 
+  const formatDate = (dateStr: string | Date) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('uz-UZ', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section with Geometric Background */}
-      <section className="relative h-screen w-full overflow-hidden">
-        {/* Geometric Pattern Background */}
-        <div 
-          className="absolute inset-0 w-full h-full bg-gradient-to-br from-amber-100 via-amber-200 to-amber-300"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L50 50L100 0L50 50L100 100L50 50L0 100L50 50Z' fill='%23A67C5A' fill-opacity='0.15'/%3E%3C/svg%3E")`,
-            backgroundSize: '100px 100px'
-          }}
-        />
-        
-        {/* Overlay with couple names */}
-        <div className="absolute inset-0 flex items-center justify-center px-6">
-          <div className="bg-black/70 backdrop-blur-sm text-white text-center px-8 md:px-12 py-12 md:py-16 rounded-2xl max-w-2xl w-full mx-auto">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-6 tracking-wide">
-              {wedding.bride} & {wedding.groom}
-            </h1>
-            <div className="space-y-3 text-base md:text-lg">
-              <div className="flex items-center justify-center gap-3">
-                <Calendar className="w-5 h-5" />
-                <span>
-                  {new Date(wedding.weddingDate).toLocaleDateString('uz-UZ', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </span>
-              </div>
-              <div className="flex items-center justify-center gap-3">
-                <Clock className="w-5 h-5" />
-                <span>{wedding.weddingTime || '4:00 PM'}</span>
-              </div>
-            </div>
+      {/* 1. Couple Photo Header */}
+      <header className="text-center py-10 px-6" style={{ backgroundColor: '#f9f5f2' }}>
+        <div className="max-w-4xl mx-auto">
+          <img
+            src="/uploads/couple-photo.jpg"
+            alt={`${wedding.bride} va ${wedding.groom}`}
+            className="w-full max-h-96 object-cover rounded-lg mb-5"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        </div>
+      </header>
+
+      {/* 2. Custom Welcome Message */}
+      <section className="py-10 px-6 border-b border-gray-200">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
+            Aziz mehmonlar!
+          </h2>
+          <div className="text-center text-gray-700 leading-relaxed">
+            <p>Sizni {wedding.bride} va {wedding.groom}ning nikoh to'yiga taklif qilamiz...</p>
+            <p>Qalblar ezguliklarga to'la bo'lgan ushbu qutlug' kunda do'stlar yonida bo'ling!</p>
           </div>
         </div>
       </section>
 
-      {/* Wedding Details Section */}
-      <section className="py-16 md:py-20 px-6 bg-white">
+      {/* 3. Wedding Details with Countdown */}
+      <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 text-center mb-12">
-            wedding.aboutTitle
+          <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
+            To'y haqida
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Family names */}
-            <div className="text-center">
-              <h3 className="text-xl md:text-2xl font-serif font-semibold text-gray-800 mb-6">
-                wedding.families
-              </h3>
-              <div className="space-y-3 text-lg text-gray-700">
-                <p className="font-medium">{wedding.bride}</p>
-                <p className="text-gray-500 text-xl">&</p>
-                <p className="font-medium">{wedding.groom}</p>
-              </div>
+          <div className="space-y-6">
+            <div>
+              <strong className="text-gray-800">To'y egalari:</strong>
+              <p className="mt-1">{wedding.bride} va {wedding.groom}</p>
             </div>
             
-            {/* Date & Location */}
-            <div className="text-center">
-              <h3 className="text-xl md:text-2xl font-serif font-semibold text-gray-800 mb-6">
-                wedding.whenWhere
-              </h3>
-              <div className="space-y-4 text-base md:text-lg text-gray-700">
-                <div className="flex items-center justify-center gap-3">
-                  <Calendar className="w-5 h-5 text-gray-500" />
-                  <span>
-                    {new Date(wedding.weddingDate).toLocaleDateString('uz-UZ', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </span>
-                </div>
-                <div className="flex items-center justify-center gap-3">
-                  <Clock className="w-5 h-5 text-gray-500" />
-                  <span>{wedding.weddingTime || '4:00 PM'}</span>
-                </div>
-                {wedding.venue && (
-                  <div className="flex items-center justify-center gap-3">
-                    <MapPin className="w-5 h-5 text-gray-500" />
-                    <div className="text-center">
-                      <div className="font-medium">{wedding.venue}</div>
-                      {wedding.venueAddress && (
-                        <div className="text-sm text-gray-600">{wedding.venueAddress}</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-                <a
-                  href="#"
-                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors mt-4"
-                >
-                  wedding.viewMap
-                </a>
-              </div>
+            <div>
+              <strong className="text-gray-800">Bayramni boshlash vaqti:</strong>
+              <p className="mt-1">{formatDate(wedding.weddingDate)} / soat {wedding.weddingTime || '19:00'}</p>
+            </div>
+            
+            <div>
+              <strong className="text-gray-800">To'y manzili:</strong>
+              <p className="mt-1">{wedding.venue}</p>
+              {wedding.venueAddress && <p className="text-gray-600">{wedding.venueAddress}</p>}
+              <button 
+                className="mt-3 px-6 py-2 rounded text-white font-medium"
+                style={{ backgroundColor: '#8e4a49' }}
+              >
+                Karta orqali ochish
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Guest Book Section */}
-      <section className="py-16 md:py-20 px-6 bg-gray-50">
+      {/* 4. Optional Photo Gallery - Hidden for now */}
+      {false && (
+        <section className="py-10 px-6 border-b border-gray-200">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
+              Fotoalbom
+            </h2>
+            <div id="gallery-content"></div>
+          </div>
+        </section>
+      )}
+
+      {/* 5. Couple Profiles */}
+      <section className="py-10 px-6 border-b border-gray-200">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 text-center mb-12">
+          <div className="text-center mb-8">
+            <p className="text-gray-700 leading-relaxed">
+              Hurmatli mehmon, hayotimizning eng baxtli kunlaridan biri yaqin orada keladi!
+            </p>
+            <p className="text-gray-700 leading-relaxed">
+              Sizni o'sha baxtli kunda biz bilan birga ko'rishni va quvonchimizni baham ko'rishni istaymiz!
+            </p>
+          </div>
+          
+          <div className="flex justify-center gap-10 mt-8">
+            <div className="text-center">
+              <img
+                src="/uploads/groom-photo.jpg"
+                alt={wedding.groom}
+                className="w-30 h-30 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              <h3 className="font-bold text-lg">{wedding.groom}</h3>
+            </div>
+            <div className="text-center">
+              <img
+                src="/uploads/bride-photo.jpg"
+                alt={wedding.bride}
+                className="w-30 h-30 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              <h3 className="font-bold text-lg">{wedding.bride}</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Guest Book Section (replaces RSVP) */}
+      <section className="py-10 px-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#8e4a49' }}>
             Mehmonlar kitobi
           </h2>
           
           {/* Guest book form */}
-          <div className="mb-16">
+          <div className="mb-12">
             <GuestBookForm weddingId={wedding.id} />
           </div>
           
