@@ -665,21 +665,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get wedding language settings
-  app.get("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
-    try {
-      const wedding = req.wedding; // Set by verifyWeddingOwnership middleware
-      
-      res.json({
-        availableLanguages: wedding.availableLanguages || ['en'],
-        defaultLanguage: wedding.defaultLanguage || 'en'
-      });
-    } catch (error) {
-      console.error('Error fetching language settings:', error);
-      res.status(500).json({ message: "Failed to fetch language settings" });
-    }
-  });
-
   // Update wedding language settings
   app.put("/api/weddings/:id/languages", authenticateToken, verifyWeddingOwnership, async (req: any, res) => {
     try {
@@ -687,7 +672,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { availableLanguages, defaultLanguage } = req.body;
       
       // Validate languages
-      const supportedLanguages = ['en', 'uz', 'ru', 'kk', 'kaa'];
+      const supportedLanguages = ['en', 'uz', 'ru'];
       if (!Array.isArray(availableLanguages) || availableLanguages.length === 0) {
         return res.status(400).json({ message: "At least one language must be selected" });
       }
@@ -1753,28 +1738,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!deleted) {
         return res.status(404).json({ message: "Photo not found" });
-      }
-
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-
-  // Delete couple photo endpoint
-  app.delete("/api/photos/wedding/:weddingId/couple", async (req, res) => {
-    try {
-      const weddingId = parseInt(req.params.weddingId);
-      const photos = await storage.getPhotosByWeddingId(weddingId);
-      const couplePhoto = photos.find(photo => photo.photoType === 'couple');
-      
-      if (!couplePhoto) {
-        return res.status(404).json({ message: "Couple photo not found" });
-      }
-
-      const deleted = await storage.deletePhoto(couplePhoto.id);
-      if (!deleted) {
-        return res.status(404).json({ message: "Failed to delete couple photo" });
       }
 
       res.status(204).send();

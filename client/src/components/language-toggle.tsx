@@ -13,8 +13,6 @@ const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'uz', name: 'O\'zbekcha', flag: '🇺🇿' },
   { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
-  { code: 'kaa', name: 'Qaraqalpaqsha', flag: '🇺🇿' }
 ];
 
 export function LanguageToggle() {

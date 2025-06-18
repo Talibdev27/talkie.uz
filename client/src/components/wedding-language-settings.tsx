@@ -19,9 +19,7 @@ interface WeddingLanguageSettingsProps {
 const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
-  { code: 'kaa', name: 'Qaraqalpaqsha', flag: '🇺🇿' }
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' }
 ];
 
 export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProps) {
@@ -39,29 +37,16 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
   // Fetch current language settings
   const { data: languageSettings, isLoading } = useQuery({
     queryKey: ['/api/weddings', wedding.id, 'languages'],
-    queryFn: async () => {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/weddings/${wedding.id}/languages`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch language settings');
-      }
-      return response.json();
-    },
+    queryFn: () => fetch(`/api/weddings/${wedding.id}/languages`).then(res => res.json()),
   });
 
   // Update language settings mutation
   const updateLanguagesMutation = useMutation({
     mutationFn: async (data: { availableLanguages: string[]; defaultLanguage: string }) => {
-      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/weddings/${wedding.id}/languages`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });
