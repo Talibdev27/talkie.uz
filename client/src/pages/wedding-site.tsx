@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { CountdownTimer } from '@/components/countdown-timer';
+import { EnhancedCountdownTimer } from '@/components/enhanced-countdown-timer';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { PhotoUpload } from '@/components/photo-upload';
 import { SmartImageUpload } from '@/components/smart-image-upload';
@@ -337,18 +337,18 @@ export default function WeddingSite() {
         </div>
       </nav>
 
-      {/* Guest Welcome Section - Only show if there's a welcome message */}
-      {wedding.welcomeMessage && wedding.welcomeMessage.trim() ? (
-        <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
+      {/* Dear Guests Section - Enhanced for Standard template */}
+      {(wedding.dearGuestMessage || wedding.welcomeMessage) && (
+        <section id="dear-guests" className="py-20 bg-gradient-to-b from-white to-soft-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-                {t('wedding.dearGuests')}!
+                {t('wedding.dearGuests')}
               </h2>
               <div className="max-w-3xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20">
+                <div className={`${currentTemplate === 'standard' ? 'bg-white/95' : 'bg-white'} rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20`}>
                   <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
-                    {wedding.welcomeMessage.split('\n').map((paragraph, index) => (
+                    {(wedding.dearGuestMessage || wedding.welcomeMessage)?.split('\n').map((paragraph, index) => (
                       <p key={index} className="mb-4 last:mb-0 text-lg">
                         {paragraph}
                       </p>
@@ -365,7 +365,7 @@ export default function WeddingSite() {
             </div>
           </div>
         </section>
-      ) : null}
+      )}
 
       {/* Our Story Section - Only show if there's a story or couple photo, but hide for Standard template */}
       {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) ? (
