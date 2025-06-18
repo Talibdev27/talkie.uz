@@ -49,11 +49,23 @@ export default function AdminDashboard() {
 
   const { data: weddings = [], isLoading: weddingsLoading } = useQuery<Wedding[]>({
     queryKey: ['/api/admin/weddings'],
+    queryFn: () => {
+      const token = localStorage.getItem('adminToken');
+      return fetch('/api/admin/weddings', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
+    },
     enabled: isAdmin,
   });
 
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
     queryKey: ['/api/admin/users'],
+    queryFn: () => {
+      const token = localStorage.getItem('adminToken');
+      return fetch('/api/admin/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
+    },
     enabled: isAdmin,
   });
 
@@ -73,6 +85,12 @@ export default function AdminDashboard() {
     privateWeddings: number;
   }>({
     queryKey: ['/api/admin/stats'],
+    queryFn: () => {
+      const token = localStorage.getItem('adminToken');
+      return fetch('/api/admin/stats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
+    },
     enabled: isAdmin,
   });
 
@@ -90,16 +108,34 @@ export default function AdminDashboard() {
     maybeRSVPs: number;
   }>({
     queryKey: ['/api/admin/rsvp-stats'],
+    queryFn: () => {
+      const token = localStorage.getItem('adminToken');
+      return fetch('/api/admin/rsvp-stats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
+    },
     enabled: isAdmin,
   });
 
   const { data: allRSVPs = [], isLoading: rsvpLoading } = useQuery<any[]>({
     queryKey: ['/api/admin/rsvp'],
+    queryFn: () => {
+      const token = localStorage.getItem('adminToken');
+      return fetch('/api/admin/rsvp', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
+    },
     enabled: isAdmin,
   });
 
   const { data: allPhotos = [], isLoading: photosLoading } = useQuery<any[]>({
     queryKey: ['/api/admin/photos'],
+    queryFn: () => {
+      const token = localStorage.getItem('adminToken');
+      return fetch('/api/admin/photos', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
+    },
     enabled: isAdmin,
   });
 
@@ -222,8 +258,10 @@ export default function AdminDashboard() {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       return response.json();
     },
@@ -247,8 +285,10 @@ export default function AdminDashboard() {
   // Photo management mutations
   const deletePhotoMutation = useMutation({
     mutationFn: async (photoId: number) => {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/admin/photos/${photoId}`, {
         method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       return response.json();
     },
