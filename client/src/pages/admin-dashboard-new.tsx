@@ -34,7 +34,8 @@ export default function AdminDashboard() {
     venueAddress: '',
     template: 'standard',
     story: '',
-    dearGuestMessage: ''
+    dearGuestMessage: '',
+    couplePhotoUrl: ''
   });
 
   // Check admin authentication
@@ -214,7 +215,9 @@ export default function AdminDashboard() {
         venueAddress: '',
         template: 'standard',
         story: '',
-        dearGuestMessage: ''
+        dearGuestMessage: '',
+        couplePhotoUrl: '',
+        couplePhotoUrl: ''
       });
     },
     onError: (error: any) => {
@@ -1173,6 +1176,21 @@ export default function AdminDashboard() {
                       ></textarea>
                       <p className="text-xs text-gray-500 mt-1">
                         This message will appear in the "Dear Guests" section of the wedding website
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Couple Photo (Optional)
+                      </label>
+                      <Input 
+                        placeholder="Enter couple photo URL" 
+                        className="wedding-input"
+                        value={newWedding.couplePhotoUrl}
+                        onChange={(e) => handleFormChange('couplePhotoUrl', e.target.value)}
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        If provided, this photo will be used as the hero image instead of template background
                       </p>
                     </div>
 
