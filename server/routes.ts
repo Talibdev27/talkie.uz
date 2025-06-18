@@ -5,6 +5,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { nanoid } from "nanoid";
 import { storage } from "./storage";
 import { 
   insertUserSchema, insertWeddingSchema, insertGuestSchema, 
@@ -52,7 +53,7 @@ const upload = multer({
   storage: multer.diskStorage({
     destination: uploadDir,
     filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const uniqueSuffix = nanoid();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
   }),
@@ -134,6 +135,30 @@ const requireAdmin = async (req: any, res: any, next: any) => {
   } catch (error) {
     console.error('Admin verification error:', error);
     res.status(500).json({ message: 'Server error during admin verification' });
+  }
+};
+
+// Admin authentication middleware
+const authenticateAdmin = async (req: any, res: any, next: any) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Admin token required' });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    
+    const user = await storage.getUserById(decoded.userId);
+    if (!user || (!user.isAdmin && user.role !== 'admin')) {
+      return res.status(403).json({ message: 'Admin privileges required' });
+    }
+
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.error('Admin authentication error:', error);
+    res.status(401).json({ message: 'Invalid admin token' });
   }
 };
 
@@ -1205,6 +1230,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Couple photo upload endpoint for admin
+  app.post('/api/upload/couple-photo', authenticateAdmin, upload.single('photo'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      const photoUrl = `/uploads/${req.file.filename}`;
+      res.json({ url: photoUrl, message: 'Couple photo uploaded successfully' });
+    } catch (error) {
+      console.error('Couple photo upload error:', error);
+      res.status(500).json({ message: 'Failed to upload couple photo' });
+    }
+  });
+
   // Wedding routes
   app.post("/api/weddings", authenticateToken, async (req: any, res) => {
     try {
@@ -1254,6 +1294,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         venue: weddingFields.venue || "",
         venueAddress: weddingFields.venueAddress || "",
         story: weddingFields.story || "",
+        dearGuestMessage: weddingFields.dearGuestMessage || null,
+        couplePhotoUrl: weddingFields.couplePhotoUrl || null,
         template: weddingFields.template || "modernElegance",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
