@@ -38,6 +38,41 @@ export default function AdminDashboard() {
     couplePhotoUrl: ''
   });
 
+  const handleCouplePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    try {
+      const response = await fetch('/api/upload/couple-photo', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setNewWedding({...newWedding, couplePhotoUrl: result.url});
+        toast({
+          title: "Photo uploaded successfully",
+          description: "Couple photo has been uploaded and will be used as the hero image."
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload couple photo. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Check admin authentication
   useEffect(() => {
     const adminStatus = localStorage.getItem('isAdmin');
@@ -216,7 +251,6 @@ export default function AdminDashboard() {
         template: 'standard',
         story: '',
         dearGuestMessage: '',
-        couplePhotoUrl: '',
         couplePhotoUrl: ''
       });
     },

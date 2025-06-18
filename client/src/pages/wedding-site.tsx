@@ -170,6 +170,9 @@ export default function WeddingSite() {
     return config.heroImage;
   };
 
+  // Check if using couple photo for enhanced overlay
+  const isUsingCouplePhoto = wedding.couplePhotoUrl && currentTemplate === 'standard';
+
   const heroImage = getStandardHeroImage();
 
   const customStyles = {
