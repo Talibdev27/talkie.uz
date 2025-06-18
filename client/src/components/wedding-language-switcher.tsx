@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
-import type { Wedding } from '@shared/schema';
 
 interface WeddingLanguageSwitcherProps {
-  wedding: Wedding;
+  availableLanguages: string[];
+  defaultLanguage: string;
   className?: string;
 }
 
@@ -15,12 +15,8 @@ const LANGUAGE_NAMES = {
   ru: { name: 'Русский', flag: '🇷🇺' }
 } as const;
 
-export function WeddingLanguageSwitcher({ wedding, className = '' }: WeddingLanguageSwitcherProps) {
+export function WeddingLanguageSwitcher({ availableLanguages, defaultLanguage, className = '' }: WeddingLanguageSwitcherProps) {
   const { i18n } = useTranslation();
-
-  // Get available languages from wedding settings, fallback to ['en']
-  const availableLanguages = wedding.availableLanguages || ['en'];
-  const defaultLanguage = wedding.defaultLanguage || 'en';
 
   // If only one language is available, don't show the switcher
   if (availableLanguages.length <= 1) {
