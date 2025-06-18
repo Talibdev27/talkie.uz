@@ -1,0 +1,85 @@
+Template Structure & Layout
+1. Background & Couple Photo Section
+
+Primary Option: Allow users to upload their own couple photo as the main background
+Alternative Option: If users don't want to upload their own photo, provide 6 pre-designed template backgrounds to choose from
+Photo Positioning: Ensure the couple photo is prominently displayed and not obstructed by text elements
+
+2. Wedding Information Section
+Location: Position this information section slightly below the couple photo area to ensure good visual balance
+Required Information Fields:
+
+Couple Names: Sarah & Ahmed (format: Name & Name)
+Date: July 15, 2025 (format: Month Day, Year)
+Time: 4:00 PM (format: H:MM AM/PM)
+Countdown Timer:
+
+26 Days
+13 Hours
+40 Minutes
+(format: XX Days XX Hours XX Minutes)
+
+
+Venue: Grand Ballroom
+
+Design Requirements:
+
+Text must be clearly readable and not block or interfere with the couple's photo
+Information should be elegantly positioned with proper spacing
+Use appropriate typography that complements the overall design
+Ensure responsive design for different screen sizes
+
+3. Dear Guest Section
+Current Issue: This section is missing from the admin dashboard
+Solution Needed:
+
+Add a "Dear Guest" text input field in the admin dashboard
+Allow administrators to manually type and customize the dear guest message
+This should be a rich text editor or large text area for flexibility
+Position this section appropriately in the template layout
+
+4. RSVP Section
+Requirement: Include RSVP functionality as shown in the reference screenshot
+Features Needed:
+
+RSVP response buttons/form
+Guest name input
+Attendance confirmation options
+Any additional RSVP-related fields as per the existing screenshot
+
+Template Options
+
+Total Templates: 7 templates (1 main customizable + 6 alternative background templates)
+Flexibility: Users can choose between uploading their own photo or selecting from pre-designed templates
+
+Admin Dashboard Updates Required
+
+Add Dear Guest Section: Create input field for custom dear guest messages
+Photo Upload: Ensure smooth couple photo upload functionality
+Template Selection: Interface for choosing between custom photo or pre-designed templates
+Information Fields: All wedding details input fields (names, date, time, venue)
+RSVP Configuration: Settings for RSVP functionality
+
+Design Principles
+
+Visual Hierarchy: Couple photo as focal point, information clearly visible but not overwhelming
+Readability: All text must be legible against any background
+Responsiveness: Template must work on desktop, tablet, and mobile devices
+Elegance: Maintain sophisticated, wedding-appropriate aesthetic
+User Experience: Intuitive for both admins creating invitations and guests viewing them
+
+Technical Considerations
+
+Ensure proper image optimization for uploaded couple photos
+Implement countdown timer with real-time updates
+Make sure RSVP functionality integrates with backend systems
+Provide preview functionality for administrators
+Include print-friendly versions if needed
+
+Quality Assurance
+
+Test with various photo aspect ratios and qualities
+Verify text positioning across all template variations
+Ensure countdown accuracy and timezone handling
+Validate RSVP form submission and data collection
+Check mobile responsiveness and touch interactions

@@ -11,7 +11,7 @@ import { PhotoUpload } from '@/components/photo-upload';
 import { SmartImageUpload } from '@/components/smart-image-upload';
 import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
 import { RSVPForm } from '@/components/rsvp-form';
-import { LanguageToggle } from '@/components/language-toggle';
+import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
@@ -129,17 +129,48 @@ export default function WeddingSite() {
       accentColor: "#68D391",
       textColor: "text-gray-800",
       cardBg: "bg-white shadow-md border border-gray-100",
-      overlayBg: "bg-gray-900/30"
+      overlayBg: "bg-gray-900/30",
+      backgroundTemplates: {
+        template1: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template2: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template3: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template4: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template5: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template6: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080"
+      }
     }
   };
 
   const currentTemplate = wedding.template || 'gardenRomance';
   const config = templateConfigs[currentTemplate as keyof typeof templateConfigs] || templateConfigs.gardenRomance;
 
-  // For Standard template, use the first uploaded photo as hero image
-  const heroImage = currentTemplate === 'standard' && photos.length > 0 
-    ? photos[0].url 
-    : config.heroImage;
+  // For Standard template, determine hero image based on user preference
+  const getStandardHeroImage = () => {
+    if (currentTemplate === 'standard') {
+      // First check if user uploaded a custom couple photo
+      if (wedding.couplePhotoUrl) {
+        return wedding.couplePhotoUrl;
+      }
+      // Then check for specific background template selection
+      const backgroundTemplates = {
+        template1: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template2: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template3: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template4: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template5: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+        template6: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080"
+      };
+      
+      if (wedding.backgroundTemplate && backgroundTemplates[wedding.backgroundTemplate as keyof typeof backgroundTemplates]) {
+        return backgroundTemplates[wedding.backgroundTemplate as keyof typeof backgroundTemplates];
+      }
+      // Fall back to default template background
+      return backgroundTemplates.template1;
+    }
+    return config.heroImage;
+  };
+
+  const heroImage = getStandardHeroImage();
 
   const customStyles = {
     '--primary': config.primaryColor,
@@ -150,7 +181,7 @@ export default function WeddingSite() {
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
       {/* Header with Language Toggle */}
       <div className="absolute top-4 right-4 z-50">
-        <LanguageToggle />
+        <WeddingLanguageSwitcher wedding={wedding} />
       </div>
 
       {/* Hero Section */}
@@ -278,8 +309,8 @@ export default function WeddingSite() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-center space-x-8 py-4">
             {/* Only show navigation items for sections that exist */}
-            {wedding.welcomeMessage && wedding.welcomeMessage.trim() && (
-              <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+            {(wedding.dearGuestMessage || wedding.welcomeMessage) && (
+              <a href="#dear-guests" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
                 {t('wedding.dearGuests')}
               </a>
             )}
