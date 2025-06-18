@@ -40,8 +40,9 @@ export default function AdminDashboard() {
   // Check admin authentication
   useEffect(() => {
     const adminStatus = localStorage.getItem('isAdmin');
-    if (adminStatus !== 'true') {
-      setLocation('/system/auth');
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminStatus || adminStatus !== 'true' || !adminToken) {
+      setLocation('/admin/login');
       return;
     }
     setIsAdmin(true);
