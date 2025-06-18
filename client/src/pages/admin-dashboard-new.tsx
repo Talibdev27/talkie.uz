@@ -53,9 +53,14 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       return fetch('/api/admin/weddings', {
         headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch weddings');
+        }
+        return res.json();
+      }).then(data => Array.isArray(data) ? data : []);
     },
-    enabled: isAdmin,
+    enabled: isAdmin && !!localStorage.getItem('adminToken'),
   });
 
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
@@ -64,9 +69,14 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       return fetch('/api/admin/users', {
         headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch users');
+        }
+        return res.json();
+      }).then(data => Array.isArray(data) ? data : []);
     },
-    enabled: isAdmin,
+    enabled: isAdmin && !!localStorage.getItem('adminToken'),
   });
 
 
@@ -89,7 +99,12 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       return fetch('/api/admin/stats', {
         headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch stats');
+        }
+        return res.json();
+      });
     },
     enabled: isAdmin,
   });
@@ -112,7 +127,12 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       return fetch('/api/admin/rsvp-stats', {
         headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch RSVP stats');
+        }
+        return res.json();
+      });
     },
     enabled: isAdmin,
   });
@@ -123,7 +143,12 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       return fetch('/api/admin/rsvp', {
         headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch RSVPs');
+        }
+        return res.json();
+      }).then(data => Array.isArray(data) ? data : []);
     },
     enabled: isAdmin,
   });
@@ -134,7 +159,12 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       return fetch('/api/admin/photos', {
         headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch photos');
+        }
+        return res.json();
+      }).then(data => Array.isArray(data) ? data : []);
     },
     enabled: isAdmin,
   });
@@ -413,23 +443,24 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('isAdmin');
     localStorage.removeItem('adminUser');
-    setLocation('/');
+    localStorage.removeItem('adminToken');
+    setLocation('/admin/login');
   };
 
   if (!isAdmin) {
     return null; // Redirecting to login
   }
 
-  const filteredWeddings = weddings.filter((wedding: Wedding) => 
+  const filteredWeddings = Array.isArray(weddings) ? weddings.filter((wedding: Wedding) => 
     wedding.bride.toLowerCase().includes(searchTerm.toLowerCase()) ||
     wedding.groom.toLowerCase().includes(searchTerm.toLowerCase()) ||
     wedding.venue.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) : [];
 
-  const filteredUsers = users.filter((user: User) => 
+  const filteredUsers = Array.isArray(users) ? users.filter((user: User) => 
     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) : [];
 
   console.log("Users data:", users);
   console.log("Filtered users:", filteredUsers);
