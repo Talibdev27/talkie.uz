@@ -32,8 +32,9 @@ export default function AdminDashboard() {
     weddingDate: '',
     venue: '',
     venueAddress: '',
-    template: 'gardenRomance',
-    story: ''
+    template: 'standard',
+    story: '',
+    dearGuestMessage: ''
   });
 
   // Check admin authentication
@@ -112,9 +113,13 @@ export default function AdminDashboard() {
         throw new Error('Please fill in all required fields');
       }
       
+      const token = localStorage.getItem('adminToken');
       const response = await fetch('/api/admin/weddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(weddingData)
       });
       
@@ -140,8 +145,9 @@ export default function AdminDashboard() {
         weddingDate: '',
         venue: '',
         venueAddress: '',
-        template: 'gardenRomance',
-        story: ''
+        template: 'standard',
+        story: '',
+        dearGuestMessage: ''
       });
     },
     onError: (error: any) => {
@@ -333,8 +339,9 @@ export default function AdminDashboard() {
       weddingDate: '',
       venue: '',
       venueAddress: '',
-      template: 'gardenRomance',
-      story: ''
+      template: 'standard',
+      story: '',
+      dearGuestMessage: ''
     });
   };
 
@@ -1067,6 +1074,22 @@ export default function AdminDashboard() {
                         <option value="bohoChic">Boho Chic</option>
                         <option value="standard">Standard</option>
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Dear Guest Message
+                      </label>
+                      <textarea 
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
+                        rows={4}
+                        placeholder="Write a welcome message for guests..."
+                        value={newWedding.dearGuestMessage}
+                        onChange={(e) => handleFormChange('dearGuestMessage', e.target.value)}
+                      ></textarea>
+                      <p className="text-xs text-gray-500 mt-1">
+                        This message will appear in the "Dear Guests" section of the wedding website
+                      </p>
                     </div>
 
                     <div>
