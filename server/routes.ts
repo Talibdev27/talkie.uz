@@ -1231,7 +1231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Couple photo upload endpoint for admin
-  app.post('/api/upload/couple-photo', authenticateAdmin, upload.single('photo'), async (req, res) => {
+  app.post('/api/upload/couple-photo', authenticateToken, requireAdmin, upload.single('photo'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
