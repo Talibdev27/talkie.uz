@@ -230,9 +230,14 @@ export default function AdminDashboard() {
   // Delete wedding mutation
   const deleteWeddingMutation = useMutation({
     mutationFn: async (weddingId: number) => {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/admin/weddings/${weddingId}`, {
         method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (!response.ok) {
+        throw new Error('Failed to delete wedding');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -264,11 +269,18 @@ export default function AdminDashboard() {
   // User management mutations
   const updateUserMutation = useMutation({
     mutationFn: async ({ userId, updates }: { userId: number; updates: any }) => {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(updates),
       });
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      }
       return response.json();
     },
     onSuccess: () => {
