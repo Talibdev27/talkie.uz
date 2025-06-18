@@ -450,12 +450,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { 
-        userId, bride, groom, weddingDate, venue, venueAddress, template, story,
-        welcomeMessage, welcomeMessageUz, welcomeMessageRu,
-        couplePhotoUrl, useTemplatePhoto, templatePhotoStyle,
-        availableLanguages, defaultLanguage
-      } = req.body;
+      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story } = req.body;
 
       // Validate required fields
       if (!userId || !bride || !groom || !weddingDate) {
@@ -479,20 +474,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         venue: venue?.trim() || "",
         venueAddress: venueAddress?.trim() || "",
         story: story?.trim() || "",
-        welcomeMessage: welcomeMessage?.trim() || "",
-        welcomeMessageUz: welcomeMessageUz?.trim() || "",
-        welcomeMessageRu: welcomeMessageRu?.trim() || "",
-        couplePhotoUrl: couplePhotoUrl?.trim() || "",
-        useTemplatePhoto: useTemplatePhoto || false,
-        templatePhotoStyle: templatePhotoStyle || "classic",
         template: template || "gardenRomance",
         primaryColor: "#D4B08C",
         accentColor: "#89916B",
         backgroundMusicUrl: null,
         venueCoordinates: null,
         isPublic: true,
-        availableLanguages: availableLanguages || ['en'],
-        defaultLanguage: defaultLanguage || 'en',
         uniqueUrl
       };
 
@@ -1221,36 +1208,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Wedding creation request:", JSON.stringify(req.body, null, 2));
 
-      const authenticatedUserId = req.user.userId;
+      const userId = req.user.userId; // Use authenticated user's ID
       const weddingFields = req.body;
 
-      // Check if the authenticated user is admin
-      const authenticatedUser = await storage.getUserById(authenticatedUserId);
-      if (!authenticatedUser) {
-        return res.status(404).json({ message: "Authenticated user not found" });
+      // Check if user exists and is not a guest user
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
 
-      // Determine target user ID (admin can create for others, users create for themselves)
-      let targetUserId = authenticatedUserId;
-      if (authenticatedUser.isAdmin && weddingFields.userId) {
-        targetUserId = parseInt(weddingFields.userId);
-      }
-
-      // Check if target user exists
-      const targetUser = await storage.getUserById(targetUserId);
-      if (!targetUser) {
-        return res.status(404).json({ message: "Target user not found" });
-      }
-
-      // Prevent guest users from creating weddings (unless admin is creating for them)
-      if (targetUser.email.includes('guest_') && !authenticatedUser.isAdmin) {
+      // Prevent guest users from creating weddings
+      if (user.email.includes('guest_')) {
         return res.status(403).json({ 
           message: "Guest users cannot create weddings. Please register for a full account." 
         });
       }
 
-      // Check if user has paid subscription (admins can bypass this)
-      if (!targetUser.hasPaidSubscription && !authenticatedUser.isAdmin) {
+      // Check if user has paid subscription
+      if (!user.hasPaidSubscription && !user.isAdmin) {
         return res.status(403).json({ 
           message: "Payment required to create wedding website. Please complete payment first." 
         });
@@ -1288,7 +1263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("Processed wedding data:", weddingData);
 
-      const wedding = await storage.createWedding(targetUserId, weddingData);
+      const wedding = await storage.createWedding(userId, weddingData);
       console.log("Wedding created successfully:", wedding);
       res.status(201).json(wedding);
     } catch (error) {
@@ -1688,18 +1663,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { weddingId, caption, isHero, photoType } = req.body;
 
-      // If no wedding ID, return just the file URL for temporary storage (wedding creation)
       if (!weddingId) {
-        const photoUrl = `/uploads/${req.file.filename}`;
-        return res.status(201).json({ 
-          url: photoUrl,
-          filename: req.file.filename,
-          originalName: req.file.originalname,
-          size: req.file.size
-        });
+        return res.status(400).json({ message: "Wedding ID is required" });
       }
 
-      // If wedding ID exists, save to database
+      // Create photo record with actual file URL
       const photoData = {
         weddingId: parseInt(weddingId),
         url: `/uploads/${req.file.filename}`,

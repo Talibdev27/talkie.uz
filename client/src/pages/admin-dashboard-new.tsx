@@ -13,8 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, Calendar, Camera, MessageSquare, Settings,
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
-  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images,
-  Upload, Check, X
+  Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
 } from "lucide-react";
 import type { Wedding, User } from "@shared/schema";
 
@@ -23,7 +22,6 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [weddingToDelete, setWeddingToDelete] = useState<number | null>(null);
-  const [uploadedCouplePhoto, setUploadedCouplePhoto] = useState<File | null>(null);
   const { toast } = useToast();
 
   // Create wedding form state
@@ -35,15 +33,7 @@ export default function AdminDashboard() {
     venue: '',
     venueAddress: '',
     template: 'gardenRomance',
-    story: '',
-    welcomeMessage: '',
-    welcomeMessageUz: '',
-    welcomeMessageRu: '',
-    couplePhotoUrl: '',
-    useTemplatePhoto: false,
-    templatePhotoStyle: 'classic',
-    availableLanguages: ['en'],
-    defaultLanguage: 'en'
+    story: ''
   });
 
   // Check admin authentication
@@ -122,18 +112,9 @@ export default function AdminDashboard() {
         throw new Error('Please fill in all required fields');
       }
       
-      // Get the JWT token from localStorage
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        throw new Error('Authentication required. Please log in again.');
-      }
-      
-      const response = await fetch('/api/weddings', {
+      const response = await fetch('/api/admin/weddings', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(weddingData)
       });
       
@@ -160,15 +141,7 @@ export default function AdminDashboard() {
         venue: '',
         venueAddress: '',
         template: 'gardenRomance',
-        story: '',
-        welcomeMessage: '',
-        welcomeMessageUz: '',
-        welcomeMessageRu: '',
-        couplePhotoUrl: '',
-        useTemplatePhoto: false,
-        templatePhotoStyle: 'classic',
-        availableLanguages: ['en'],
-        defaultLanguage: 'en'
+        story: ''
       });
     },
     onError: (error: any) => {
@@ -184,23 +157,9 @@ export default function AdminDashboard() {
   // Delete wedding mutation
   const deleteWeddingMutation = useMutation({
     mutationFn: async (weddingId: number) => {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        throw new Error('Authentication required. Please log in again.');
-      }
-
       const response = await fetch(`/api/admin/weddings/${weddingId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to delete wedding');
-      }
-      
       return response.json();
     },
     onSuccess: () => {
@@ -224,66 +183,6 @@ export default function AdminDashboard() {
   const handleDeleteWedding = (weddingId: number) => {
     if (confirm("Are you sure you want to delete this wedding? This action cannot be undone.")) {
       deleteWeddingMutation.mutate(weddingId);
-    }
-  };
-
-
-
-  const handleCouplePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please select a photo under 10MB",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image file",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // Upload the file to the server
-      const formData = new FormData();
-      formData.append('photo', file);
-      formData.append('photoType', 'couple');
-
-      const response = await fetch('/api/photos/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const uploadResult = await response.json();
-      
-      // Set the uploaded photo state and URL in form
-      setUploadedCouplePhoto(file);
-      handleFormChange('couplePhotoUrl', uploadResult.url);
-      
-      toast({
-        title: "Photo uploaded",
-        description: "Couple photo uploaded successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Upload failed",
-        description: "Failed to upload photo. Please try again.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -388,7 +287,7 @@ export default function AdminDashboard() {
     },
   });
 
-  const handleFormChange = (field: string, value: any) => {
+  const handleFormChange = (field: string, value: string) => {
     setNewWedding(prev => ({ ...prev, [field]: value }));
   };
 
@@ -435,15 +334,7 @@ export default function AdminDashboard() {
       venue: '',
       venueAddress: '',
       template: 'gardenRomance',
-      story: '',
-      welcomeMessage: '',
-      welcomeMessageUz: '',
-      welcomeMessageRu: '',
-      couplePhotoUrl: '',
-      useTemplatePhoto: false,
-      templatePhotoStyle: 'classic',
-      availableLanguages: ['en'],
-      defaultLanguage: 'en'
+      story: ''
     });
   };
 
@@ -1177,201 +1068,6 @@ export default function AdminDashboard() {
                         <option value="standard">Standard</option>
                       </select>
                     </div>
-
-                    {/* Language Preferences */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Available Languages
-                      </label>
-                      <div className="space-y-2">
-                        {[
-                          { code: 'en', name: 'English', flag: '🇺🇸' },
-                          { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
-                          { code: 'ru', name: 'Русский', flag: '🇷🇺' }
-                        ].map((lang) => (
-                          <label key={lang.code} className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              checked={newWedding.availableLanguages.includes(lang.code)}
-                              onChange={(e) => {
-                                const languages = e.target.checked
-                                  ? [...newWedding.availableLanguages, lang.code]
-                                  : newWedding.availableLanguages.filter(l => l !== lang.code);
-                                handleFormChange('availableLanguages', languages);
-                                // Ensure default language is still available
-                                if (!languages.includes(newWedding.defaultLanguage) && languages.length > 0) {
-                                  handleFormChange('defaultLanguage', languages[0]);
-                                }
-                              }}
-                              className="rounded"
-                            />
-                            <span className="text-sm">{lang.flag} {lang.name}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Default Language */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Default Language
-                      </label>
-                      <select 
-                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
-                        value={newWedding.defaultLanguage}
-                        onChange={(e) => handleFormChange('defaultLanguage', e.target.value)}
-                      >
-                        {newWedding.availableLanguages.map((langCode) => {
-                          const lang = [
-                            { code: 'en', name: 'English' },
-                            { code: 'uz', name: "O'zbekcha" },
-                            { code: 'ru', name: 'Русский' }
-                          ].find(l => l.code === langCode);
-                          return (
-                            <option key={langCode} value={langCode}>
-                              {lang?.name || langCode}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    {/* Couple Photo Options */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Couple Photo
-                      </label>
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="radio"
-                            id="custom-photo"
-                            name="photoOption"
-                            checked={!newWedding.useTemplatePhoto}
-                            onChange={() => handleFormChange('useTemplatePhoto', false)}
-                          />
-                          <label htmlFor="custom-photo" className="text-sm">Upload custom photo</label>
-                        </div>
-                        {!newWedding.useTemplatePhoto && (
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-center w-full">
-                              <label
-                                htmlFor="couple-photo-upload"
-                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-                              >
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                  {uploadedCouplePhoto ? (
-                                    <div className="text-center">
-                                      <Check className="w-8 h-8 mb-2 text-green-500 mx-auto" />
-                                      <p className="text-sm text-gray-600">Photo uploaded successfully</p>
-                                      <p className="text-xs text-gray-500">{uploadedCouplePhoto.name}</p>
-                                    </div>
-                                  ) : (
-                                    <div className="text-center">
-                                      <Upload className="w-8 h-8 mb-2 text-gray-400" />
-                                      <p className="mb-2 text-sm text-gray-500">
-                                        <span className="font-semibold">Click to upload</span> couple photo
-                                      </p>
-                                      <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
-                                    </div>
-                                  )}
-                                </div>
-                                <input
-                                  id="couple-photo-upload"
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={handleCouplePhotoUpload}
-                                />
-                              </label>
-                            </div>
-                            {uploadedCouplePhoto && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setUploadedCouplePhoto(null);
-                                  handleFormChange('couplePhotoUrl', '');
-                                }}
-                                className="w-full"
-                              >
-                                <X className="w-4 h-4 mr-2" />
-                                Remove Photo
-                              </Button>
-                            )}
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="radio"
-                            id="template-photo"
-                            name="photoOption"
-                            checked={newWedding.useTemplatePhoto}
-                            onChange={() => handleFormChange('useTemplatePhoto', true)}
-                          />
-                          <label htmlFor="template-photo" className="text-sm">Use template photo</label>
-                        </div>
-                        {newWedding.useTemplatePhoto && (
-                          <select 
-                            className="w-full p-3 border border-gray-200 rounded-lg bg-white"
-                            value={newWedding.templatePhotoStyle}
-                            onChange={(e) => handleFormChange('templatePhotoStyle', e.target.value)}
-                          >
-                            <option value="classic">Classic Style</option>
-                            <option value="traditional">Traditional Style</option>
-                            <option value="modern">Modern Style</option>
-                          </select>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Welcome Messages */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Welcome Message (English)
-                      </label>
-                      <textarea 
-                        className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                        rows={2}
-                        placeholder="Dear guests, we invite you to celebrate..."
-                        value={newWedding.welcomeMessage}
-                        onChange={(e) => handleFormChange('welcomeMessage', e.target.value)}
-                      ></textarea>
-                    </div>
-
-                    {newWedding.availableLanguages.includes('uz') && (
-                      <div>
-                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Welcome Message (Uzbek)
-                        </label>
-                        <textarea 
-                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                          rows={2}
-                          placeholder="Hurmatli mehmonlar..."
-                          value={newWedding.welcomeMessageUz}
-                          onChange={(e) => handleFormChange('welcomeMessageUz', e.target.value)}
-                        ></textarea>
-                      </div>
-                    )}
-
-                    {newWedding.availableLanguages.includes('ru') && (
-                      <div>
-                        <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                          Welcome Message (Russian)
-                        </label>
-                        <textarea 
-                          className="w-full p-3 border border-gray-200 rounded-lg bg-white resize-none" 
-                          rows={2}
-                          placeholder="Дорогие гости..."
-                          value={newWedding.welcomeMessageRu}
-                          onChange={(e) => handleFormChange('welcomeMessageRu', e.target.value)}
-                        ></textarea>
-                      </div>
-                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
