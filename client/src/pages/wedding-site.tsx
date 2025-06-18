@@ -198,31 +198,31 @@ export default function WeddingSite() {
             objectPosition: 'center 30%'
           } : {}}
         />
-        <div className={`absolute inset-0 ${currentTemplate === 'standard' ? 'bg-gradient-to-b from-black/20 via-black/30 to-black/50' : config.overlayBg}`}></div>
+        <div className={`absolute inset-0 ${currentTemplate === 'standard' ? (isUsingCouplePhoto ? 'bg-gradient-to-b from-black/40 via-black/50 to-black/60' : 'bg-gradient-to-b from-black/20 via-black/30 to-black/50') : config.overlayBg}`}></div>
         <div className="absolute inset-0 flex items-center justify-center text-center text-white">
-          <div className={`max-w-2xl px-4 ${currentTemplate === 'standard' ? 'bg-black/40 backdrop-blur-sm rounded-2xl py-8 px-8' : ''}`}>
-            <h1 className={`text-4xl md:text-6xl font-playfair font-bold mb-4 ${currentTemplate === 'standard' ? 'text-white drop-shadow-2xl' : 'text-shadow'}`}>
+          <div className={`max-w-2xl px-4 ${currentTemplate === 'standard' ? (isUsingCouplePhoto ? 'bg-black/60 backdrop-blur-md rounded-2xl py-6 px-6' : 'bg-black/40 backdrop-blur-sm rounded-2xl py-8 px-8') : ''}`}>
+            <h1 className={`font-playfair font-bold mb-4 ${currentTemplate === 'standard' ? 'text-white drop-shadow-2xl' : 'text-shadow'} ${isUsingCouplePhoto ? 'text-3xl md:text-5xl' : 'text-4xl md:text-6xl'}`}>
               {wedding.bride} & {wedding.groom}
             </h1>
-            <p className={`text-xl md:text-2xl font-cormorant mb-8 ${currentTemplate === 'standard' ? 'text-white/90 drop-shadow-xl' : 'text-shadow'}`}>
+            <p className={`font-cormorant mb-6 ${currentTemplate === 'standard' ? 'text-white/95 drop-shadow-xl' : 'text-shadow'} ${isUsingCouplePhoto ? 'text-lg md:text-xl' : 'text-xl md:text-2xl'}`}>
               {formatDate(wedding.weddingDate, i18n.language)}
             </p>
             
             {/* Ceremony Time */}
-            <div className={`flex items-center justify-center mb-4 ${currentTemplate === 'standard' ? 'text-white/90' : 'text-white opacity-90'}`}>
-              <Clock className="h-5 w-5 mr-2" />
-              <span className="text-lg">{wedding.weddingTime}</span>
+            <div className={`flex items-center justify-center mb-4 ${currentTemplate === 'standard' ? 'text-white/95' : 'text-white opacity-90'}`}>
+              <Clock className={`mr-2 ${isUsingCouplePhoto ? 'h-4 w-4' : 'h-5 w-5'}`} />
+              <span className={isUsingCouplePhoto ? 'text-base' : 'text-lg'}>{wedding.weddingTime}</span>
             </div>
             
-            <EnhancedCountdownTimer targetDate={wedding.weddingDate} variant="compact" className="mb-6" />
+            <EnhancedCountdownTimer targetDate={wedding.weddingDate} variant="compact" className={isUsingCouplePhoto ? 'mb-4' : 'mb-6'} />
             
             {/* Location with Dialog */}
             <div className="flex justify-center">
               <Dialog>
                 <DialogTrigger asChild>
-                  <button className={`flex items-center justify-center hover:scale-105 transition-transform cursor-pointer ${currentTemplate === 'standard' ? 'text-white/90 hover:text-white' : 'text-white opacity-90 hover:opacity-100'}`}>
-                    <MapPin className="h-5 w-5 mr-2" />
-                    <span className="text-lg">{wedding.venue}</span>
+                  <button className={`flex items-center justify-center hover:scale-105 transition-transform cursor-pointer ${currentTemplate === 'standard' ? 'text-white/95 hover:text-white' : 'text-white opacity-90 hover:opacity-100'}`}>
+                    <MapPin className={`mr-2 ${isUsingCouplePhoto ? 'h-4 w-4' : 'h-5 w-5'}`} />
+                    <span className={isUsingCouplePhoto ? 'text-base' : 'text-lg'}>{wedding.venue}</span>
                   </button>
                 </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
