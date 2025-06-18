@@ -461,7 +461,8 @@ export default function AdminDashboard() {
       venueAddress: '',
       template: 'standard',
       story: '',
-      dearGuestMessage: ''
+      dearGuestMessage: '',
+      couplePhotoUrl: ''
     });
   };
 
@@ -1217,15 +1218,31 @@ export default function AdminDashboard() {
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Couple Photo (Optional)
                       </label>
-                      <Input 
-                        placeholder="Enter couple photo URL" 
-                        className="wedding-input"
-                        value={newWedding.couplePhotoUrl}
-                        onChange={(e) => handleFormChange('couplePhotoUrl', e.target.value)}
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCouplePhotoUpload}
+                        className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        If provided, this photo will be used as the hero image instead of template background
+                        Upload a couple photo to use as the hero image instead of template background
                       </p>
+                      {newWedding.couplePhotoUrl && (
+                        <div className="mt-2">
+                          <img 
+                            src={newWedding.couplePhotoUrl} 
+                            alt="Preview" 
+                            className="w-32 h-32 object-cover rounded-lg border"
+                          />
+                          <button 
+                            type="button"
+                            onClick={() => setNewWedding({...newWedding, couplePhotoUrl: ''})}
+                            className="text-red-500 text-sm mt-1 hover:underline block"
+                          >
+                            Remove photo
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div>
