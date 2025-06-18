@@ -211,7 +211,7 @@ export default function WeddingSite() {
               <span className="text-lg">{wedding.weddingTime}</span>
             </div>
             
-            <CountdownTimer targetDate={wedding.weddingDate} className="mb-6" />
+            <EnhancedCountdownTimer targetDate={wedding.weddingDate} variant="compact" className="mb-6" />
             
             {/* Location with Dialog */}
             <div className="flex justify-center">
