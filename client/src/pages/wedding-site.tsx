@@ -11,8 +11,7 @@ import { PhotoUpload } from '@/components/photo-upload';
 import { SmartImageUpload } from '@/components/smart-image-upload';
 import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
 import { RSVPForm } from '@/components/rsvp-form';
-import { GuestBookForm } from '@/components/guest-book-form';
-import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
+import { LanguageToggle } from '@/components/language-toggle';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
 import { formatDate } from '@/lib/utils';
@@ -137,28 +136,6 @@ export default function WeddingSite() {
   const currentTemplate = wedding.template || 'gardenRomance';
   const config = templateConfigs[currentTemplate as keyof typeof templateConfigs] || templateConfigs.gardenRomance;
 
-  // Template photo styles for fallback
-  const templatePhotos = {
-    classic: "https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-    traditional: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-    modern: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-  };
-
-  // Determine couple photo to display
-  const getCouplePhoto = () => {
-    if (wedding.couplePhotoUrl && !wedding.useTemplatePhoto) {
-      return wedding.couplePhotoUrl;
-    }
-    if (wedding.useTemplatePhoto && wedding.templatePhotoStyle) {
-      return templatePhotos[wedding.templatePhotoStyle as keyof typeof templatePhotos] || templatePhotos.classic;
-    }
-    // Fallback to uploaded couple photos
-    const couplePhoto = photos.find((photo: any) => photo.photoType === 'couple');
-    if (couplePhoto) return couplePhoto.url;
-    
-    return templatePhotos.classic; // Default fallback
-  };
-
   // For Standard template, use the first uploaded photo as hero image
   const heroImage = currentTemplate === 'standard' && photos.length > 0 
     ? photos[0].url 
@@ -171,9 +148,9 @@ export default function WeddingSite() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
-      {/* Header with Wedding Language Switcher */}
+      {/* Header with Language Toggle */}
       <div className="absolute top-4 right-4 z-50">
-        <WeddingLanguageSwitcher wedding={wedding} />
+        <LanguageToggle />
       </div>
 
       {/* Hero Section */}
@@ -300,80 +277,54 @@ export default function WeddingSite() {
       <nav className="sticky top-0 bg-white shadow-md z-40">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-center space-x-8 py-4">
-            {/* Navigation items in proper order */}
-            {(() => {
-              const hasWelcomeMessage = wedding.welcomeMessage?.trim() || wedding.welcomeMessageUz?.trim() || wedding.welcomeMessageRu?.trim();
-              return hasWelcomeMessage && (
-                <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-                  {i18n.language === 'uz' ? 'Hurmatli mehmonlar' : i18n.language === 'ru' ? 'Дорогие гости' : 'Dear Guests'}
-                </a>
-              );
-            })()}
-            <a href="#about" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-              {i18n.language === 'uz' ? "To'y haqida" : i18n.language === 'ru' ? 'О свадьбе' : 'About Wedding'}
-            </a>
+            {/* Only show navigation items for sections that exist */}
+            {wedding.welcomeMessage && wedding.welcomeMessage.trim() && (
+              <a href="#welcome" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                {t('wedding.dearGuests')}
+              </a>
+            )}
+            {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) && (
+              <a href="#story" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                {t('wedding.ourStory')}
+              </a>
+            )}
+            {((photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner) && (
+              <a href="#photos" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+                {t('wedding.photos')}
+              </a>
+            )}
             <a href="#rsvp" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
               {t('wedding.rsvp')}
             </a>
+            <a href="#details" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
+              {t('wedding.weddingDetails')}
+            </a>
             <a href="#guestbook" className="text-charcoal hover:text-romantic-gold transition-colors font-medium">
-              {i18n.language === 'uz' ? 'Izohlar' : i18n.language === 'ru' ? 'Комментарии' : 'Comments'}
+              {t('wedding.guestBook')}
             </a>
           </div>
         </div>
       </nav>
 
-      {/* Hurmatli Mehmonlar / Dear Guests Section */}
-      {(() => {
-        const getCurrentWelcomeMessage = () => {
-          if (i18n.language === 'uz' && wedding.welcomeMessageUz?.trim()) {
-            return wedding.welcomeMessageUz;
-          }
-          if (i18n.language === 'ru' && wedding.welcomeMessageRu?.trim()) {
-            return wedding.welcomeMessageRu;
-          }
-          if (wedding.welcomeMessage?.trim()) {
-            return wedding.welcomeMessage;
-          }
-          return null;
-        };
-        
-        const welcomeMessage = getCurrentWelcomeMessage();
-        
-        return welcomeMessage ? (
-          <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                {/* Couple Photo */}
-                <div className="relative">
-                  <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
-                    <img
-                      src={getCouplePhoto()}
-                      alt={`${wedding.bride} & ${wedding.groom}`}
-                      className="w-full h-full object-cover"
-                    />
+      {/* Guest Welcome Section - Only show if there's a welcome message */}
+      {wedding.welcomeMessage && wedding.welcomeMessage.trim() ? (
+        <section id="welcome" className="py-20 bg-gradient-to-b from-white to-soft-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
+                {t('wedding.dearGuests')}!
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-romantic-gold/20">
+                  <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
+                    {wedding.welcomeMessage.split('\n').map((paragraph, index) => (
+                      <p key={index} className="mb-4 last:mb-0 text-lg">
+                        {paragraph}
+                      </p>
+                    ))}
                   </div>
-                  <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-romantic-gold/10 rounded-full blur-xl"></div>
-                  <div className="absolute -top-6 -left-6 w-32 h-32 bg-sage-green/10 rounded-full blur-xl"></div>
-                </div>
-
-                {/* Welcome Message */}
-                <div className="text-center lg:text-left">
-                  <h2 className="text-4xl lg:text-5xl font-playfair font-bold text-romantic-gold mb-8">
-                    {i18n.language === 'uz' ? 'HURMATLI MEHMONLAR!' : 
-                     i18n.language === 'ru' ? 'ДОРОГИЕ ГОСТИ!' : 
-                     'DEAR GUESTS!'}
-                  </h2>
-                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 md:p-10 border border-romantic-gold/20">
-                    <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
-                      {welcomeMessage.split('\n').map((paragraph, index) => (
-                        <p key={index} className="mb-4 last:mb-0 text-lg">
-                          {paragraph}
-                        </p>
-                      ))}
-                    </div>
-                    <div className="mt-8 flex justify-center">
-                      <div className="w-24 h-0.5 bg-romantic-gold"></div>
-                    </div>
+                  <div className="mt-8 flex justify-center">
+                    <div className="w-24 h-0.5 bg-romantic-gold"></div>
                   </div>
                   <p className="mt-6 text-romantic-gold font-playfair font-semibold text-xl">
                     {wedding.bride} & {wedding.groom}
@@ -381,202 +332,309 @@ export default function WeddingSite() {
                 </div>
               </div>
             </div>
-          </section>
-        ) : null;
-      })()}
-
-      {/* To'y haqida / About Wedding Section */}
-      <section id="about" className="py-20 bg-gradient-to-b from-soft-white to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-              {i18n.language === 'uz' ? "TO'Y HAQIDA" : 
-               i18n.language === 'ru' ? 'О СВАДЬБЕ' : 
-               'ABOUT WEDDING'}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Wedding Story */}
-            {wedding.story && wedding.story.trim() && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 border border-romantic-gold/20">
-                <h3 className="text-xl font-playfair font-semibold text-romantic-gold mb-4">
-                  {i18n.language === 'uz' ? 'Bizning hikoyamiz' : 
-                   i18n.language === 'ru' ? 'Наша история' : 
-                   'Our Story'}
-                </h3>
-                <div className="prose prose-lg max-w-none text-charcoal leading-relaxed">
-                  {wedding.story.split('\n').map((paragraph, index) => (
-                    <p key={index} className="mb-4 last:mb-0">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Wedding Details */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-romantic-gold/20">
-              <h3 className="text-xl font-playfair font-semibold text-romantic-gold mb-6">
-                {i18n.language === 'uz' ? "To'y tafsilotlari" : 
-                 i18n.language === 'ru' ? 'Детали свадьбы' : 
-                 'Wedding Details'}
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center text-charcoal">
-                  <Calendar className="h-5 w-5 mr-3 text-romantic-gold" />
-                  <span>{formatDate(wedding.weddingDate, i18n.language)}</span>
-                </div>
-                {wedding.weddingTime && (
-                  <div className="flex items-center text-charcoal">
-                    <Clock className="h-5 w-5 mr-3 text-romantic-gold" />
-                    <span>{wedding.weddingTime}</span>
-                  </div>
-                )}
-                <div className="flex items-center text-charcoal">
-                  <MapPin className="h-5 w-5 mr-3 text-romantic-gold" />
-                  <span>{wedding.venue}</span>
-                </div>
-                {wedding.venueAddress && (
-                  <div className="flex items-start text-charcoal">
-                    <div className="h-5 w-5 mr-3 mt-0.5 text-romantic-gold"></div>
-                    <span className="text-sm text-gray-600">{wedding.venueAddress}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Photos Section */}
-      {((photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner) && (
-        <section id="photos" className="py-20 bg-gradient-to-b from-white to-soft-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-                {t('wedding.photos')}
-              </h2>
-            </div>
-            
-            {isOwner && (
-              <div className="mb-8">
-                <PhotoUpload weddingId={wedding.id} />
-              </div>
-            )}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {photos.filter((photo: any) => photo.photoType === 'memory').map((photo: any) => (
-                <div key={photo.id} className="aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                  <img
-                    src={photo.url}
-                    alt={`Wedding memory ${photo.id}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              ))}
-            </div>
           </div>
         </section>
-      )}
+      ) : null}
 
-      {/* RSVP Section */}
-      <section id="rsvp" className="py-20 bg-gradient-to-b from-soft-white to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-              {t('wedding.rsvp')}
-            </h2>
-            <p className="text-lg text-gray-600">
-              {t('wedding.rsvpDescription')}
-            </p>
-          </div>
-          <div className="max-w-2xl mx-auto">
-            <RSVPForm weddingId={wedding.id} />
-          </div>
-        </div>
-      </section>
+      {/* Our Story Section - Only show if there's a story or couple photo, but hide for Standard template */}
+      {currentTemplate !== 'standard' && ((wedding.story && wedding.story.trim()) || (photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0)) ? (
+        <section id="story" className="py-20">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className={`text-3xl lg:text-4xl font-playfair font-bold ${config.textColor} mb-6`}>
+                {t('wedding.ourStory')}
+              </h2>
+            </div>
 
-      {/* Comments / Guest Book Section */}
-      <section id="guestbook" className="py-20 bg-gradient-to-b from-white to-soft-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal mb-6">
-              {i18n.language === 'uz' ? 'IZOHLAR' : 
-               i18n.language === 'ru' ? 'КОММЕНТАРИИ' : 
-               'COMMENTS'}
-            </h2>
-            <p className="text-lg text-gray-600">
-              {t('wedding.guestBookDescription')}
-            </p>
-          </div>
-
-          {/* Guest Book Entries */}
-          <div className="space-y-6">
-            {guestBookEntries?.length > 0 ? (
-              guestBookEntries.map((entry: any) => (
-                <div key={entry.id} className="bg-white rounded-2xl shadow-lg p-6 border border-romantic-gold/20">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-romantic-gold/10 rounded-full flex items-center justify-center">
-                        <span className="text-romantic-gold font-semibold">
-                          {entry.guestName.charAt(0).toUpperCase()}
-                        </span>
+            {wedding.story && wedding.story.trim() ? (
+              // When there's a custom love story, show it prominently with photo
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  {photos && photos.filter((photo: any) => photo.photoType === 'couple').length > 0 ? (
+                    <div className="rounded-xl shadow-lg w-full aspect-[4/5] overflow-hidden">
+                      <img 
+                        src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
+                        alt={`${wedding.bride} & ${wedding.groom}`}
+                        className="w-full h-full object-cover object-top"
+                      />
+                    </div>
+                  ) : (
+                    <div className="rounded-xl shadow-lg w-full aspect-[4/3] bg-sage-green/10 flex items-center justify-center">
+                      <div className="text-center p-8">
+                        <Heart className="h-16 w-16 text-romantic-gold mx-auto mb-4" />
+                        <p className="text-charcoal opacity-70">
+                          {wedding.bride.split(' ')[0]} & {wedding.groom.split(' ')[0]}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h4 className="font-semibold text-charcoal">{entry.guestName}</h4>
-                        <span className="text-sm text-gray-500">
-                          {new Date(entry.createdAt).toLocaleDateString(i18n.language)}
-                        </span>
-                      </div>
-                      <p className="text-charcoal leading-relaxed">{entry.message}</p>
-                    </div>
+                  )}
+                </div>
+                <div className="space-y-6">
+                  <div className={`prose prose-lg max-w-none ${config.textColor} opacity-80 leading-relaxed`}>
+                    <p className="text-lg">{wedding.story}</p>
                   </div>
                 </div>
-              ))
+              </div>
             ) : (
-              <div className="text-center py-12">
-                <Heart className="h-16 w-16 text-romantic-gold/50 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">
-                  {t('wedding.noMessages')}
-                </p>
+              // When there's no custom story but couple photo exists, show beautiful photo layout
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center">
+                  <div className="rounded-2xl shadow-2xl w-full max-w-md mx-auto aspect-[4/5] overflow-hidden mb-8">
+                    <img 
+                      src={photos.filter((photo: any) => photo.photoType === 'couple')[0].url} 
+                      alt={`${wedding.bride} & ${wedding.groom}`}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <Heart className="h-12 w-12 text-romantic-gold mx-auto" />
+                    <h3 className="text-2xl font-playfair font-semibold text-charcoal">
+                      {wedding.bride} & {wedding.groom}
+                    </h3>
+                    <p className="text-lg text-charcoal opacity-70 max-w-md mx-auto leading-relaxed">
+                      Two hearts, one beautiful journey together
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
+        </section>
+      ) : null}
 
-          {/* Guest Book Form */}
-          <div className="mt-12">
-            <GuestBookForm weddingId={wedding.id} />
+      {/* Photo Gallery Section - Only show if there are memory photos or if owner can upload */}
+      {(photos && photos.filter((photo: any) => photo.photoType === 'memory').length > 0) || isOwner ? (
+        <section id="photos" className="py-20 bg-soft-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+                {t('wedding.photos')}
+              </h2>
+              <p className="mt-4 text-lg text-charcoal opacity-70">
+                {t('wedding.capturingJourney')}
+              </p>
+              
+              {/* Enhanced Photo Upload Options - Only visible to wedding owners */}
+              {isOwner && (
+                <div className="mt-6 flex gap-3 justify-center">
+                  <PhotoUpload 
+                    weddingId={wedding.id} 
+                    isOwner={true}
+                    onSuccess={() => {
+                      // Photos will automatically refresh via React Query
+                    }}
+                  />
+                  <SmartImageUpload 
+                    weddingId={wedding.id} 
+                    isOwner={true}
+                    onSuccess={() => {
+                      // Photos will automatically refresh via React Query
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            
+            <PhotoGallery weddingId={wedding.id} />
+          </div>
+        </section>
+      ) : null}
+
+      {/* RSVP Section - Now available for all templates including Standard */}
+      <section id="rsvp" className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              {t('wedding.rsvp')}
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70">
+              {t('wedding.cantWaitToCelebrate')}
+            </p>
+          </div>
+          
+          <RSVPForm weddingId={wedding.id} />
+        </div>
+      </section>
+
+      {/* Wedding Details Section */}
+      <section id="details" className="py-20 bg-soft-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              {t('wedding.weddingDetails')}
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="wedding-card">
+              <CardContent className="p-8 text-center">
+                <Calendar className="h-12 w-12 text-romantic-gold mx-auto mb-4" />
+                <h3 className="text-xl font-playfair font-semibold text-charcoal mb-2">
+                  {t('wedding.when')}
+                </h3>
+                <p className="text-lg text-charcoal">
+                  {formatDate(wedding.weddingDate)}
+                </p>
+                <p className="text-charcoal opacity-70 mt-2">
+                  {t('wedding.ceremonyBegins')} {wedding.weddingTime || '4:00 PM'}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="wedding-card">
+              <CardContent className="p-8 text-center">
+                <MapPin className="h-12 w-12 text-romantic-gold mx-auto mb-4" />
+                <h3 className="text-xl font-playfair font-semibold text-charcoal mb-2">
+                  {t('wedding.where')}
+                </h3>
+                <p className="text-lg text-charcoal font-medium">
+                  {wedding.venue}
+                </p>
+                {/* Only show address if it's not a Google Maps URL */}
+                {wedding.venueAddress && !wedding.venueAddress.includes('maps.app.goo.gl') && (
+                  <p className="text-charcoal opacity-70 mt-2">
+                    {wedding.venueAddress}
+                  </p>
+                )}
+                {/* Show address text for Google Maps URLs */}
+                {wedding.venueAddress && wedding.venueAddress.includes('maps.app.goo.gl') && (
+                  <p className="text-charcoal opacity-70 mt-2">
+                    {t('wedding.clickToViewLocation')}
+                  </p>
+                )}
+                <Button 
+                  variant="outline" 
+                  className="mt-4 wedding-button-outline"
+                  onClick={() => {
+                    if (wedding.venueAddress) {
+                      // Check if it's already a URL
+                      if (wedding.venueAddress.startsWith('http')) {
+                        window.open(wedding.venueAddress, '_blank');
+                      } else {
+                        // If it's just an address, create a Google Maps search URL
+                        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.venueAddress)}`;
+                        window.open(googleMapsUrl, '_blank');
+                      }
+                    }
+                  }}
+                >
+                  {t('wedding.viewOnMap')}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Wedding Details Footer */}
-      <footer className="bg-charcoal text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-playfair font-bold mb-4">
-            {wedding.bride} & {wedding.groom}
-          </h3>
-          <p className="text-lg mb-6">
-            {formatDate(wedding.weddingDate, i18n.language)}
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-white/80">
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              <span>{wedding.weddingTime}</span>
-            </div>
-            <div className="flex items-center">
-              <MapPin className="h-4 w-4 mr-2" />
-              <span>{wedding.venue}</span>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-8 border-t border-white/20">
-            <p className="text-white/60 text-sm">
-              {t('wedding.poweredBy')} Wedding Management Platform
+      {/* Enhanced Social Share Section */}
+      <section className="py-16 bg-sage-green/5">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <EnhancedSocialShare
+            weddingUrl={wedding.uniqueUrl}
+            coupleName={`${wedding.bride.split(' ')[0]} & ${wedding.groom.split(' ')[0]}`}
+          />
+        </div>
+      </section>
+
+      {/* Guest Book Section */}
+      <section id="guestbook" className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-charcoal">
+              {t('wedding.guestBook')}
+            </h2>
+            <p className="mt-4 text-lg text-charcoal opacity-70">
+              {t('wedding.guestBookSubtitle')}
             </p>
+          </div>
+
+          <div className="space-y-8">
+            {guestBookEntries.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-playfair font-semibold text-charcoal">{t('wedding.messagesFromLovedOnes')}</h3>
+                {guestBookEntries.slice(0, 5).map((entry) => (
+                  <Card key={entry.id} className="wedding-card">
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-4">
+                        <MessageSquare className="h-6 w-6 text-romantic-gold mt-1 flex-shrink-0" />
+                        <div>
+                          <p className="text-charcoal italic leading-relaxed">
+                            "{entry.message}"
+                          </p>
+                          <p className="text-romantic-gold font-medium mt-2">
+                            — {entry.guestName}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Background Music */}
+      {wedding.backgroundMusicUrl && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <Button size="icon" className="rounded-full bg-romantic-gold hover:bg-opacity-90 shadow-lg">
+            <Music className="h-5 w-5" />
+          </Button>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="bg-charcoal text-white py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <Heart className="h-8 w-8 text-romantic-gold mr-2" />
+            <span className="text-2xl font-playfair font-semibold">
+              {wedding.bride} & {wedding.groom}
+            </span>
+          </div>
+          <p className="text-gray-300 mb-8">
+            {t('wedding.thankYouGuests')}
+          </p>
+          
+          {/* Uzbek Advertisement Section */}
+          <div className="border-t border-gray-600 pt-8">
+            <div className="bg-gradient-to-r from-romantic-gold/10 to-romantic-gold/5 rounded-lg p-6 mb-6">
+              <h3 className="text-lg font-semibold text-romantic-gold mb-3">
+                {t('ad.orderInvitation')}
+              </h3>
+              <p className="text-gray-300 mb-4">
+                {t('ad.createWebsite')}
+              </p>
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <a 
+                  href="https://t.me/link_taklif" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors duration-200"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
+                  Telegram
+                </a>
+                <a 
+                  href="https://www.instagram.com/taklif_link?igsh=cjRra3cxcHN3Y3U1" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-lg transition-colors duration-200"
+                >
+                  <ExternalLink className="w-5 h-5 mr-2" />
+                  Instagram
+                </a>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-center text-gray-400 text-sm">
+              <span>Powered by</span>
+              <Heart className="inline h-4 w-4 text-romantic-gold mx-2" />
+              <span className="font-semibold text-romantic-gold">Taklif</span>
+            </div>
           </div>
         </div>
       </footer>

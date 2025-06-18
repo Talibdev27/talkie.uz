@@ -1,0 +1,113 @@
+I need to completely redesign my wedding management platform to be fully responsive and mobile-friendly. Currently, the interface appears messy on phone screens with elements overflowing and poor organization. Please implement the following improvements:
+
+1. **Responsive Layout Requirements**:
+   - Implement a mobile-first CSS approach using Flexbox/Grid
+   - Create breakpoints for:
+     * <576px (phones)
+     * 576-768px (large phones)
+     * 768-992px (tablets)
+   - Ensure all components resize and reflow properly
+
+2. **Dashboard Redesign**:
+   - Convert the 4-card stats layout to a 2x2 grid on mobile
+   - Reduce font sizes for mobile (but maintain readability)
+   - Add horizontal scrolling for wide tables
+   - Replace hover effects with tap-friendly interactions
+
+3. **Wedding List Improvements**:
+   ```javascript
+   // Mobile wedding card example
+   <div class="wedding-card-mobile">
+     <h3>{wedding.coupleNames}</h3>
+     <div class="mobile-details">
+       <span>📅 {formatDate(wedding.date)}</span>
+       <span>📍 {wedding.location}</span>
+     </div>
+     <div class="mobile-meta">
+       <span class="badge {wedding.accessType}">
+         {wedding.accessType}
+       </span>
+       <small>Owner: {abbreviateEmail(wedding.owner)}</small>
+     </div>
+     <button class="mobile-menu-btn">⋮</button>
+   </div>
+Specific Mobile Fixes Needed:
+
+Fix text overflow in wedding names (add ellipsis)
+
+Stack elements vertically instead of horizontal tables
+
+Make all buttons/tappable areas at least 48x48px
+
+Simplify navigation with a bottom tab bar on mobile
+
+Technical Implementation:
+
+Use CSS media queries with these breakpoints:
+
+css
+@media (max-width: 575.98px) { /* Phone styles */ }
+@media (min-width: 576px) and (max-width: 767.98px) { /* Large phone */ }
+Implement touch-friendly dropdowns instead of hover menus
+
+Add viewport meta tag:
+
+html
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+Performance Optimization:
+
+Compress images for mobile
+
+Lazy load below-the-fold content
+
+Minimize CSS/JS bundle sizes
+
+Implement proper caching headers
+
+Requested Deliverables:
+
+Complete mobile-responsive CSS stylesheet
+
+React/Vue component adaptations for mobile
+
+Mobile navigation component
+
+Responsive table/dashboard card components
+
+Media query breakpoint configuration
+
+Mobile form input optimizations
+
+Please ensure:
+
+All text remains readable without zooming
+
+No horizontal scrolling (except for intentionally scrollable components)
+
+Touch targets are properly sized
+
+The interface works on iOS and Android browsers
+
+All functionality remains available on mobile
+
+text
+
+## Additional Recommendations
+
+1. **Mobile-Specific Features**:
+   - Add pull-to-refresh for lists
+   - Implement swipe actions on cards
+   - Use mobile date pickers for date inputs
+   - Enable camera integration for photo uploads
+
+2. **Testing Checklist**:
+   - Test on various screen sizes (360px, 414px, etc.)
+   - Verify landscape orientation behavior
+   - Check performance on slower 3G connections
+   - Test on both iOS and Android devices
+
+3. **UI/UX Improvements**:
+   - Add mobile loading skeletons
+   - Implement snackbar notifications
+   - Use vibration feedback for actions
+   - Add offline capability detection

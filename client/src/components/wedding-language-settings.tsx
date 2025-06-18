@@ -42,20 +42,11 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
 
   // Update language settings mutation
   const updateLanguagesMutation = useMutation({
-    mutationFn: async (data: { availableLanguages: string[]; defaultLanguage: string }) => {
-      const response = await fetch(`/api/weddings/${wedding.id}/languages`, {
+    mutationFn: (data: { availableLanguages: string[]; defaultLanguage: string }) =>
+      apiRequest(`/api/weddings/${wedding.id}/languages`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update language settings');
-      }
-      return response.json();
-    },
+      }),
     onSuccess: () => {
       toast({
         title: t('common.success'),
