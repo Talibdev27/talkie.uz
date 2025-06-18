@@ -18,10 +18,10 @@ const LANGUAGE_NAMES = {
 export function WeddingLanguageSwitcher({ availableLanguages, defaultLanguage, className = '' }: WeddingLanguageSwitcherProps) {
   const { i18n } = useTranslation();
 
-  // If only one language is available, don't show the switcher
-  if (availableLanguages.length <= 1) {
-    return null;
-  }
+  // Always show the switcher for wedding pages (forced 3 languages)
+  // if (availableLanguages.length <= 1) {
+  //   return null;
+  // }
 
   // Determine current language - check if current language is available for this wedding
   const currentLanguage = availableLanguages.includes(i18n.language) 

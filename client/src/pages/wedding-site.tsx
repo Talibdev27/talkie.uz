@@ -179,11 +179,11 @@ export default function WeddingSite() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.bgGradient}`} style={customStyles}>
-      {/* Header with Language Toggle */}
-      <div className="absolute top-4 right-4 z-50">
+      {/* Language switcher - Always show with 3 languages */}
+      <div className="fixed top-4 right-4 z-50">
         <WeddingLanguageSwitcher 
-          availableLanguages={wedding.availableLanguages || ['en', 'ru', 'uz']} 
-          defaultLanguage={wedding.defaultLanguage || 'en'}
+          availableLanguages={['en', 'ru', 'uz']} 
+          defaultLanguage={'en'}
         />
       </div>
 
