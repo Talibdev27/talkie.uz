@@ -603,6 +603,8 @@ export class DatabaseStorage implements IStorage {
       await db.delete(guests).where(eq(guests.weddingId, id));
       await db.delete(invitations).where(eq(invitations.weddingId, id));
       await db.delete(guestCollaborators).where(eq(guestCollaborators.weddingId, id));
+      // Delete wedding access records
+      await db.delete(weddingAccess).where(eq(weddingAccess.weddingId, id));
       
       // Now delete the wedding itself
       const result = await db.delete(weddings).where(eq(weddings.id, id));
