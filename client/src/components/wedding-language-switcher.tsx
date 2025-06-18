@@ -28,11 +28,6 @@ export function WeddingLanguageSwitcher({ availableLanguages, defaultLanguage, c
     ? i18n.language 
     : defaultLanguage;
 
-  // Update language if current language is not available for this wedding
-  if (i18n.language !== currentLanguage) {
-    i18n.changeLanguage(currentLanguage);
-  }
-
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
     localStorage.setItem('language', langCode);
