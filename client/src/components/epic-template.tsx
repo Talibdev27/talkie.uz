@@ -7,12 +7,7 @@ interface EpicTemplateProps {
 }
 
 export function EpicTemplate({ wedding }: EpicTemplateProps) {
-  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number}>({days: 0, hours: 0, minutes: 0});
-
-  // Early return check
-  if (!wedding) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
 
   useEffect(() => {
     if (!wedding?.weddingDate) return;
@@ -36,13 +31,18 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
     return () => clearInterval(timer);
   }, [wedding?.weddingDate]);
 
+  if (!wedding) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-4xl h-[600px] bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col">
+          
           {/* Photo Section */}
           <div className="flex-1 bg-gradient-to-br from-blue-400 to-blue-500 relative flex items-center justify-center min-h-[350px] overflow-hidden">
+            
             {/* Decorative elements */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-5 left-5 w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full opacity-30 transform rotate-45"></div>
