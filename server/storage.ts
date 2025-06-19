@@ -561,10 +561,22 @@ export class DatabaseStorage implements IStorage {
   async createWedding(userId: number, insertWedding: any): Promise<Wedding> {
     try {
       console.log("Creating wedding with data:", { ...insertWedding, userId });
+      
+      // Ensure defaultLanguage is included in the insert
+      const weddingData = {
+        ...insertWedding,
+        userId,
+        defaultLanguage: insertWedding.defaultLanguage || 'en'
+      };
+      
+      console.log("Final wedding data to insert:", weddingData);
+      
       const [wedding] = await db
         .insert(weddings)
-        .values({ ...insertWedding, userId })
+        .values(weddingData)
         .returning();
+      
+      console.log("Wedding created successfully:", wedding);
       return wedding;
     } catch (error) {
       console.error("Database wedding creation error:", error);
