@@ -13,7 +13,10 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
   const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number}>({days: 0, hours: 0, minutes: 0});
 
-  console.log('Epic template rendering with wedding:', wedding);
+  // Early return check
+  if (!wedding) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   // Set language based on wedding's default language
   useEffect(() => {
