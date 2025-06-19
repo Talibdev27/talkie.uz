@@ -524,6 +524,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin wedding update route
+  app.put("/api/admin/weddings/:id", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      console.log("Admin updating wedding:", weddingId, "with data:", updates);
+      
+      // Convert date string to Date object if needed
+      if (updates.weddingDate && typeof updates.weddingDate === 'string') {
+        updates.weddingDate = new Date(updates.weddingDate);
+      }
+      
+      // Handle boolean conversion for isPublic
+      if (updates.isPublic !== undefined) {
+        updates.isPublic = updates.isPublic === true || updates.isPublic === 'true';
+      }
+      
+      const wedding = await storage.updateWedding(weddingId, updates);
+      
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+      
+      console.log("Wedding updated successfully:", wedding);
+      res.json(wedding);
+    } catch (error) {
+      console.error('Admin update wedding error:', error);
+      res.status(500).json({ message: "Failed to update wedding" });
+    }
+  });
+
   app.delete("/api/admin/weddings/:id", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const weddingId = parseInt(req.params.id);

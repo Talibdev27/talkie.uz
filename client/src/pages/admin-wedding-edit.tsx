@@ -75,7 +75,21 @@ export default function AdminWeddingEdit() {
       
       console.log('Updating wedding with filtered data:', updateData);
       console.log('Wedding ID:', wedding?.id);
-      const response = await apiRequest('PUT', `/api/admin/weddings/${wedding?.id}`, updateData);
+      
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/admin/weddings/${wedding?.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to update wedding: ${response.statusText}`);
+      }
+      
       return response.json();
     },
     onSuccess: () => {
@@ -456,6 +470,37 @@ export default function AdminWeddingEdit() {
                 </div>
 
                 {/* Love Story Section */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-[#D4B08C]" />
+                    Dear Guest Message
+                  </h3>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                      Welcome Message for Guests
+                    </label>
+                    <p className="text-sm text-gray-600 mb-3">
+                      This message will appear in the 'Dear Guests' section of the wedding website.
+                    </p>
+                    {editMode ? (
+                      <Textarea
+                        value={weddingData?.dearGuestMessage || ''}
+                        onChange={(e) => handleInputChange('dearGuestMessage', e.target.value)}
+                        className="wedding-input min-h-[120px]"
+                        placeholder="Write a welcome message for your guests..."
+                      />
+                    ) : (
+                      <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                        {wedding.dearGuestMessage ? (
+                          <p className="text-gray-800 leading-relaxed">{wedding.dearGuestMessage}</p>
+                        ) : (
+                          <p className="text-gray-500 italic">No dear guest message added yet.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
                     <Heart className="h-5 w-5 text-[#D4B08C]" />
