@@ -1190,14 +1190,33 @@ export default function AdminDashboard() {
                         value={newWedding.template}
                         onChange={(e) => handleFormChange('template', e.target.value)}
                       >
+                        <option value="standard">Standard</option>
+                        <option value="epic">Epic</option>
                         <option value="gardenRomance">Garden Romance</option>
                         <option value="modernElegance">Modern Elegance</option>
                         <option value="rusticCharm">Rustic Charm</option>
                         <option value="beachBliss">Beach Bliss</option>
                         <option value="classicTradition">Classic Tradition</option>
                         <option value="bohoChic">Boho Chic</option>
-                        <option value="standard">Standard</option>
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Default Language
+                      </label>
+                      <select 
+                        className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                        value={newWedding.defaultLanguage}
+                        onChange={(e) => handleFormChange('defaultLanguage', e.target.value)}
+                      >
+                        <option value="en">English</option>
+                        <option value="ru">Русский</option>
+                        <option value="uz">O'zbek</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        This will be the default language for the wedding website
+                      </p>
                     </div>
 
                     <div>

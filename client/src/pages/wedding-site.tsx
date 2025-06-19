@@ -14,6 +14,7 @@ import { RSVPForm } from '@/components/rsvp-form';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
+import { EpicTemplate } from '@/components/epic-template';
 import { formatDate } from '@/lib/utils';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, ExternalLink, MessageCircle } from 'lucide-react';
 import type { Wedding, GuestBookEntry } from '@shared/schema';
@@ -685,5 +686,16 @@ export default function WeddingSite() {
         </div>
       </footer>
     </div>
+  );
+
+  // Render Epic template
+  if (wedding?.template === 'epic') {
+    return <EpicTemplate wedding={wedding} />;
+  }
+
+  // Render other templates here...
+  
+  return (
+    <div>Template not found</div>
   );
 }
