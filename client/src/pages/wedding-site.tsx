@@ -77,6 +77,15 @@ export default function WeddingSite() {
       cardBg: "bg-white/90 backdrop-blur-sm",
       overlayBg: "bg-emerald-900/40"
     },
+    epic: {
+      heroImage: wedding?.couplePhotoUrl || "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      bgGradient: "from-blue-50 to-indigo-100",
+      primaryColor: "#1976d2",
+      accentColor: "#1565c0",
+      textColor: "text-blue-900",
+      cardBg: "bg-white/95 backdrop-blur-sm border border-blue-200",
+      overlayBg: "bg-blue-900/40"
+    },
     modernElegance: {
       heroImage: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
       bgGradient: "from-slate-50 to-gray-100",

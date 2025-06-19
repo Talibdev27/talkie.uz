@@ -35,7 +35,8 @@ export default function AdminDashboard() {
     template: 'standard',
     story: '',
     dearGuestMessage: '',
-    couplePhotoUrl: ''
+    couplePhotoUrl: '',
+    defaultLanguage: 'en'
   });
 
   const handleCouplePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -462,7 +463,8 @@ export default function AdminDashboard() {
       template: 'standard',
       story: '',
       dearGuestMessage: '',
-      couplePhotoUrl: ''
+      couplePhotoUrl: '',
+      defaultLanguage: 'en'
     });
   };
 
