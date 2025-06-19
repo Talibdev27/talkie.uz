@@ -43,6 +43,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
   const getDateLocale = () => {
     switch (i18n.language) {
       case 'ru': return ru;
+      case 'uz': return enUS; // Use English locale for Uzbek
       default: return enUS;
     }
   };
@@ -57,12 +58,12 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-4xl h-[600px] bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col">
           {/* Photo Section */}
-          <div className="flex-1 bg-gradient-to-45 from-blue-400 to-blue-500 relative flex items-center justify-center min-h-[350px] overflow-hidden">
+          <div className="flex-1 bg-gradient-to-br from-blue-400 to-blue-500 relative flex items-center justify-center min-h-[350px] overflow-hidden">
             {/* Decorative elements */}
             <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-5 left-5 w-15 h-15 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full opacity-30 transform rotate-45"></div>
+              <div className="absolute top-5 left-5 w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full opacity-30 transform rotate-45"></div>
               <div className="absolute top-8 right-8 w-12 h-12 bg-gradient-to-br from-blue-200 to-blue-300 rounded-full opacity-30 transform -rotate-45"></div>
-              <div className="absolute bottom-52 left-8 w-11 h-11 bg-gradient-to-br from-green-300 to-blue-300 rounded-full opacity-30 transform rotate-90"></div>
+              <div className="absolute bottom-20 left-8 w-10 h-10 bg-gradient-to-br from-green-300 to-blue-300 rounded-full opacity-30 transform rotate-90"></div>
             </div>
 
             {wedding?.couplePhotoUrl ? (
@@ -72,7 +73,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center border-3 border-dashed border-white/60 rounded-[20px] bg-white/15 backdrop-blur-sm mx-5 my-5">
+              <div className="w-full h-full flex items-center justify-center border-2 border-dashed border-white/60 rounded-lg bg-white/15 backdrop-blur-sm mx-5 my-5">
                 <div className="text-center text-white">
                   <div className="text-5xl mb-4">📷</div>
                   <p className="text-lg font-light text-shadow">{t('wedding.beautifulMemories')}</p>
@@ -83,14 +84,14 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
           {/* Text Section */}
           <div className="bg-gradient-to-br from-gray-50 to-white p-10 text-center relative">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-15 h-1 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full"></div>
             
             <h1 className="text-4xl lg:text-5xl font-light bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4 tracking-wide">
               {wedding.bride} & {wedding.groom}
             </h1>
             
             <p className="text-lg text-gray-600 mb-8 italic font-light">
-              {format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() })} • {wedding.weddingTime}
+              {format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() })} • {wedding.weddingTime || '4:00 PM'}
             </p>
 
             {/* Countdown */}
@@ -109,7 +110,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </div>
 
             <div className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300">
-              📍 {wedding.venue}
+              📍 {wedding.venue || 'Wedding Venue'}
             </div>
 
             {/* Dear Guest Message */}
