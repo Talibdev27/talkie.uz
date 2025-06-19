@@ -201,7 +201,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
 
             <Button
               type="submit"
-              className="w-full wedding-button"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
               disabled={submitRSVP.isPending}
             >
               {submitRSVP.isPending ? t('common.loading') : t('rsvp.submit')}
