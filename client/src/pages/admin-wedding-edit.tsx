@@ -372,6 +372,61 @@ export default function AdminWeddingEdit() {
                           value={weddingData?.venueAddress || ''}
                           onChange={(e) => handleInputChange('venueAddress', e.target.value)}
                           className="wedding-input"
+                          placeholder="Full venue address"
+                        />
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">{wedding.venueAddress}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Template
+                      </label>
+                      {editMode ? (
+                        <select
+                          value={weddingData?.template || 'standard'}
+                          onChange={(e) => handleInputChange('template', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="standard">Standard</option>
+                          <option value="modern">Modern</option>
+                          <option value="classic">Classic</option>
+                          <option value="epic">Epic</option>
+                        </select>
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.template}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Default Language
+                      </label>
+                      {editMode ? (
+                        <select
+                          value={weddingData?.defaultLanguage || 'en'}
+                          onChange={(e) => handleInputChange('defaultLanguage', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="en">English</option>
+                          <option value="uz">Uzbek</option>
+                          <option value="ru">Russian</option>
+                        </select>
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.defaultLanguage}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Venue Address
+                      </label>
+                      {editMode ? (
+                        <Input
+                          value={weddingData?.venueAddress || ''}
+                          onChange={(e) => handleInputChange('venueAddress', e.target.value)}
+                          className="wedding-input"
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">{wedding.venueAddress}</p>

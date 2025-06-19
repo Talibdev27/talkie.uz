@@ -695,12 +695,7 @@ export default function AdminDashboard() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                console.log('Setting admin flag before navigation');
-                                sessionStorage.setItem('fromAdminDashboard', 'true');
-                                console.log('Admin flag set:', sessionStorage.getItem('fromAdminDashboard'));
-                                setLocation(`/manage/${wedding.uniqueUrl}`);
-                              }}
+                              onClick={() => setLocation(`/admin/weddings/${wedding.uniqueUrl}/edit`)}
                               className="min-h-[44px] sm:min-h-[36px] p-2"
                             >
                               <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
