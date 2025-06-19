@@ -69,6 +69,7 @@ export default function WeddingSite() {
 
   // Check for Epic template first
   if (wedding?.template === 'epic') {
+    console.log('Rendering Epic template for wedding:', wedding);
     return <EpicTemplate wedding={wedding} />;
   }
 

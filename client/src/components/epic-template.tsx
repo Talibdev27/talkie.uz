@@ -13,14 +13,18 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
   const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number}>({days: 0, hours: 0, minutes: 0});
 
+  console.log('Epic template rendering with wedding:', wedding);
+
   // Set language based on wedding's default language
   useEffect(() => {
-    if (wedding.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
+    if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
       i18n.changeLanguage(wedding.defaultLanguage);
     }
-  }, [wedding.defaultLanguage, i18n]);
+  }, [wedding?.defaultLanguage, i18n]);
 
   useEffect(() => {
+    if (!wedding?.weddingDate) return;
+    
     const calculateTimeLeft = () => {
       const weddingDateTime = new Date(wedding.weddingDate);
       const now = new Date();
@@ -38,7 +42,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 60000);
     return () => clearInterval(timer);
-  }, [wedding.weddingDate]);
+  }, [wedding?.weddingDate]);
 
   const getDateLocale = () => {
     switch (i18n.language) {
@@ -87,11 +91,11 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full"></div>
             
             <h1 className="text-4xl lg:text-5xl font-light bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4 tracking-wide">
-              {wedding.bride} & {wedding.groom}
+              {wedding?.bride || 'Bride'} & {wedding?.groom || 'Groom'}
             </h1>
             
             <p className="text-lg text-gray-600 mb-8 italic font-light">
-              {format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() })} • {wedding.weddingTime || '4:00 PM'}
+              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() }) : 'Date TBD'} • {wedding?.weddingTime || '4:00 PM'}
             </p>
 
             {/* Countdown */}
@@ -110,11 +114,11 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </div>
 
             <div className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300">
-              📍 {wedding.venue || 'Wedding Venue'}
+              📍 {wedding?.venue || 'Wedding Venue'}
             </div>
 
             {/* Dear Guest Message */}
-            {wedding.dearGuestMessage && (
+            {wedding?.dearGuestMessage && (
               <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-200">
                 <h3 className="text-xl font-semibold text-blue-800 mb-3">{t('wedding.dearGuests')}</h3>
                 <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
