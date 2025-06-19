@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { PhotoUpload } from '@/components/photo-upload';
 import { EpicRSVPForm } from '@/components/epic-rsvp-form';
 import { GuestBookForm } from '@/components/guest-book-form';
@@ -13,7 +14,16 @@ interface EpicTemplateProps {
 }
 
 export function EpicTemplate({ wedding }: EpicTemplateProps) {
+  const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+
+  // Force language based on wedding settings
+  useEffect(() => {
+    if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
+      console.log('Epic template: Setting language to', wedding.defaultLanguage);
+      i18n.changeLanguage(wedding.defaultLanguage);
+    }
+  }, [wedding?.defaultLanguage, i18n]);
 
   const { data: photos = [] } = useQuery<Photo[]>({
     queryKey: ['/api/photos/wedding', wedding?.id],
@@ -213,7 +223,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy') : t('details.dateTBD')}
               </p>
               <p className="text-gray-600">
-                wedding.ceremony begins {wedding?.weddingTime || '4:00 PM'}
+                {t('details.ceremonyBegins')} {wedding?.weddingTime || '4:00 PM'}
               </p>
             </div>
 
