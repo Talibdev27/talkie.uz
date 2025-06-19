@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { PhotoUpload } from '@/components/photo-upload';
-import { RSVPForm } from '@/components/rsvp-form';
+import { EpicRSVPForm } from '@/components/epic-rsvp-form';
 import { GuestBookForm } from '@/components/guest-book-form';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { MapPin, Heart, MessageSquare, Calendar, Music, Clock, Camera, Users } from 'lucide-react';
@@ -191,7 +191,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
           
           <div className="max-w-2xl mx-auto">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
-              <RSVPForm weddingId={wedding.id} />
+              <EpicRSVPForm weddingId={wedding.id} />
             </div>
           </div>
         </div>
