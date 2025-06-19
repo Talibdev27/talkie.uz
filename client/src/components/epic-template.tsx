@@ -85,56 +85,70 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
         </div>
       </nav>
 
-      {/* Hero Section - Full screen with couple photo and countdown */}
-      <section id="home" className="min-h-screen relative overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          {wedding?.couplePhotoUrl ? (
-            <div className="relative w-full h-full">
+      {/* Hero Section - Epic template with card layout */}
+      <section id="home" className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-20">
+        <div className="w-full max-w-4xl bg-white rounded-[20px] shadow-2xl overflow-hidden">
+          
+          {/* Photo Section */}
+          <div className="h-96 bg-gradient-to-br from-blue-400 to-blue-500 relative flex items-center justify-center overflow-hidden">
+            
+            {/* Decorative elements */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-5 left-5 w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full opacity-30 transform rotate-45"></div>
+              <div className="absolute top-8 right-8 w-12 h-12 bg-gradient-to-br from-blue-200 to-blue-300 rounded-full opacity-30 transform -rotate-45"></div>
+              <div className="absolute bottom-20 left-8 w-10 h-10 bg-gradient-to-br from-green-300 to-blue-300 rounded-full opacity-30 transform rotate-90"></div>
+            </div>
+
+            {wedding?.couplePhotoUrl ? (
               <img 
                 src={wedding.couplePhotoUrl} 
                 alt="Couple" 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
-            </div>
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900"></div>
-          )}
-        </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center border-2 border-dashed border-white/60 rounded-lg bg-white/15 backdrop-blur-sm mx-5 my-5">
+                <div className="text-center text-white">
+                  <div className="text-5xl mb-4">📷</div>
+                  <p className="text-lg font-light">Beautiful memories await</p>
+                </div>
+              </div>
+            )}
+          </div>
 
-        {/* Content Overlay */}
-        <div className="relative z-10 flex items-center justify-center min-h-screen text-center text-white px-4">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-light mb-4 tracking-wide">
+          {/* Info Section */}
+          <div className="bg-gradient-to-br from-gray-50 to-white p-10 text-center relative">
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full"></div>
+            
+            <h1 className="text-4xl lg:text-5xl font-light bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4 tracking-wide">
               {wedding?.bride || 'Bride'} & {wedding?.groom || 'Groom'}
             </h1>
             
-            <p className="text-lg md:text-xl mb-8 opacity-90 font-light">
+            <p className="text-lg text-gray-600 mb-2 italic font-light">
               {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy г.') : 'Date TBD'}
             </p>
 
-            <div className="flex items-center justify-center mb-8 text-lg opacity-90">
+            <div className="flex items-center justify-center mb-8 text-gray-600">
               <Clock className="w-5 h-5 mr-2" />
               {wedding?.weddingTime || '4:00 PM'}
             </div>
 
             {/* Countdown */}
-            <div className="flex justify-center gap-6 mb-8">
+            <div className="flex justify-center gap-5 mb-8">
               {[
                 { value: timeLeft.days, label: 'DAYS' },
                 { value: timeLeft.hours, label: 'HOURS' },
                 { value: timeLeft.minutes, label: 'MINUTES' }
               ].map((item, index) => (
-                <div key={index} className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 min-w-[80px] border border-white/30">
-                  <div className="text-3xl font-bold">{item.value}</div>
-                  <div className="text-xs uppercase tracking-wider opacity-80 mt-1">{item.label}</div>
+                <div key={index} className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-[15px] p-5 min-w-[80px] shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-[15px]"></div>
+                  <div className="text-3xl font-bold text-white relative z-10">{item.value}</div>
+                  <div className="text-xs text-white/90 uppercase tracking-wider font-medium mt-2 relative z-10">{item.label}</div>
                 </div>
               ))}
             </div>
 
-            <div className="flex items-center justify-center text-lg opacity-90">
-              <MapPin className="w-5 h-5 mr-2" />
+            <div className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300">
+              <MapPin className="inline w-4 h-4 mr-2" />
               {wedding?.venue || 'Wedding Venue'}
             </div>
           </div>
