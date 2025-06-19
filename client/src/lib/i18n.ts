@@ -52,6 +52,12 @@ const resources = {
       'wedding.capturingJourney': 'Capturing our journey together',
       'wedding.cantWaitToCelebrate': 'We can\'t wait to celebrate with you!',
       'wedding.weddingDayIsHere': 'The Wedding Day is Here!',
+      'wedding.beautifulMemories': 'Beautiful memories await',
+      'wedding.countdown.days': 'DAYS',
+      'wedding.countdown.hours': 'HOURS',
+      'wedding.countdown.minutes': 'MINUTES',
+      'wedding.countdown.seconds': 'SECONDS',
+      'wedding.withLove': 'With love,',
 
       // RSVP Form
       'rsvp.guestName': 'Guest Name',
@@ -804,6 +810,12 @@ const resources = {
       'wedding.capturingJourney': 'Bizning sayohatimizni suratga olish',
       'wedding.cantWaitToCelebrate': 'Siz bilan quvonchli kunimizni nishonlashni sabrsizlik bilan kutyapmiz!',
       'wedding.weddingDayIsHere': 'To\'y kuni keldi!',
+      'wedding.beautifulMemories': 'Go\'zal xotiralar kutmoqda',
+      'wedding.countdown.days': 'KUN',
+      'wedding.countdown.hours': 'SOAT',
+      'wedding.countdown.minutes': 'DAQIQA',
+      'wedding.countdown.seconds': 'SONIYA',
+      'wedding.withLove': 'Sevgi bilan,',
 
       // RSVP Form
       'rsvp.guestName': 'Mehmon ismi',
