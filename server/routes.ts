@@ -1297,6 +1297,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dearGuestMessage: weddingFields.dearGuestMessage || null,
         couplePhotoUrl: weddingFields.couplePhotoUrl || null,
         template: weddingFields.template || "modernElegance",
+        defaultLanguage: weddingFields.defaultLanguage || "en",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
         backgroundMusicUrl: null,
