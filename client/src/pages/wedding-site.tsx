@@ -67,6 +67,11 @@ export default function WeddingSite() {
     );
   }
 
+  // Check for Epic template first
+  if (wedding?.template === 'epic') {
+    return <EpicTemplate wedding={wedding} />;
+  }
+
   // Template-specific configurations
   const templateConfigs = {
     gardenRomance: {
@@ -686,16 +691,5 @@ export default function WeddingSite() {
         </div>
       </footer>
     </div>
-  );
-
-  // Render Epic template
-  if (wedding?.template === 'epic') {
-    return <EpicTemplate wedding={wedding} />;
-  }
-
-  // Render other templates here...
-  
-  return (
-    <div>Template not found</div>
   );
 }

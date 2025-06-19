@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import { ru, enUS, uz } from 'date-fns/locale';
+import { ru, enUS } from 'date-fns/locale';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import type { Wedding } from '@shared/schema';
 
@@ -43,7 +43,6 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
   const getDateLocale = () => {
     switch (i18n.language) {
       case 'ru': return ru;
-      case 'uz': return uz;
       default: return enUS;
     }
   };
