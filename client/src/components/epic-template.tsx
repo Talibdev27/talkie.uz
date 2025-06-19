@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import { ru, enUS } from 'date-fns/locale';
-import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import type { Wedding } from '@shared/schema';
 
 interface EpicTemplateProps {
@@ -10,20 +7,12 @@ interface EpicTemplateProps {
 }
 
 export function EpicTemplate({ wedding }: EpicTemplateProps) {
-  const { t, i18n } = useTranslation();
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number}>({days: 0, hours: 0, minutes: 0});
 
   // Early return check
   if (!wedding) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
-
-  // Set language based on wedding's default language
-  useEffect(() => {
-    if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
-      i18n.changeLanguage(wedding.defaultLanguage);
-    }
-  }, [wedding?.defaultLanguage, i18n]);
 
   useEffect(() => {
     if (!wedding?.weddingDate) return;
@@ -47,20 +36,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
     return () => clearInterval(timer);
   }, [wedding?.weddingDate]);
 
-  const getDateLocale = () => {
-    switch (i18n.language) {
-      case 'ru': return ru;
-      case 'uz': return enUS; // Use English locale for Uzbek
-      default: return enUS;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Language Switcher */}
-      <div className="fixed top-4 right-4 z-50">
-        <WeddingLanguageSwitcher />
-      </div>
 
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-4xl h-[600px] bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col">
@@ -83,7 +60,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               <div className="w-full h-full flex items-center justify-center border-2 border-dashed border-white/60 rounded-lg bg-white/15 backdrop-blur-sm mx-5 my-5">
                 <div className="text-center text-white">
                   <div className="text-5xl mb-4">📷</div>
-                  <p className="text-lg font-light text-shadow">{t('wedding.beautifulMemories')}</p>
+                  <p className="text-lg font-light">Beautiful memories await</p>
                 </div>
               </div>
             )}
@@ -98,19 +75,19 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </h1>
             
             <p className="text-lg text-gray-600 mb-8 italic font-light">
-              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() }) : 'Date TBD'} • {wedding?.weddingTime || '4:00 PM'}
+              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy') : 'Date TBD'} • {wedding?.weddingTime || '4:00 PM'}
             </p>
 
             {/* Countdown */}
             <div className="flex justify-center gap-5 mb-8">
               {[
-                { value: timeLeft.days, label: t('wedding.countdown.days') },
-                { value: timeLeft.hours, label: t('wedding.countdown.hours') },
-                { value: timeLeft.minutes, label: t('wedding.countdown.minutes') }
+                { value: timeLeft.days, label: 'DAYS' },
+                { value: timeLeft.hours, label: 'HOURS' },
+                { value: timeLeft.minutes, label: 'MINUTES' }
               ].map((item, index) => (
                 <div key={index} className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-[15px] p-5 min-w-[80px] shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-[15px]"></div>
-                  <div className="text-3xl font-bold text-white text-shadow relative z-10">{item.value}</div>
+                  <div className="text-3xl font-bold text-white relative z-10">{item.value}</div>
                   <div className="text-xs text-white/90 uppercase tracking-wider font-medium mt-2 relative z-10">{item.label}</div>
                 </div>
               ))}
@@ -123,7 +100,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             {/* Dear Guest Message */}
             {wedding?.dearGuestMessage && (
               <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-200">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">{t('wedding.dearGuests')}</h3>
+                <h3 className="text-xl font-semibold text-blue-800 mb-3">Dear Guests</h3>
                 <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
                   {wedding.dearGuestMessage}
                 </p>
