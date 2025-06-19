@@ -178,27 +178,29 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </section>
 
       {/* RSVP Section */}
-      <section id="rsvp" className="py-20 bg-white">
+      <section id="rsvp" className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-light mb-4 text-gray-800">
+            <h2 className="text-3xl md:text-4xl font-light mb-4 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               Пожалуйста, подтвердите ваше присутствие
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-700 max-w-2xl mx-auto text-lg">
               Мы не можем дождаться празднования с вами!
             </p>
           </div>
           
           <div className="max-w-2xl mx-auto">
-            <RSVPForm weddingId={wedding.id} />
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
+              <RSVPForm weddingId={wedding.id} />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Wedding Details Section */}
-      <section id="details" className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <section id="details" className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-light text-center mb-16 text-gray-800">
+          <h2 className="text-3xl md:text-4xl font-light text-center mb-16 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
             Детали свадьбы
           </h2>
           
@@ -245,28 +247,29 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </section>
 
       {/* Guest Book Section */}
-      <section id="guestbook" className="py-20 bg-white">
+      <section id="guestbook" className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-light mb-4 text-gray-800">
+            <h2 className="text-3xl md:text-4xl font-light mb-4 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               Книга гостей
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-700 max-w-2xl mx-auto text-lg">
               Оставьте нам сообщение, чтобы сделать наш день еще более особенным
             </p>
           </div>
           
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
+                <h3 className="text-xl font-semibold mb-6 text-gray-800">Оставить сообщение</h3>
                 <GuestBookForm weddingId={wedding.id} />
               </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-6">Сообщения от близких</h3>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
+                <h3 className="text-xl font-semibold mb-6 text-gray-800">Сообщения от близких</h3>
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {guestBookEntries.length > 0 ? (
                     guestBookEntries.map((entry) => (
-                      <div key={entry.id} className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                      <div key={entry.id} className="bg-blue-50/80 p-6 rounded-2xl border border-blue-100">
                         <p className="text-gray-700 mb-3">{entry.message}</p>
                         <p className="text-blue-600 font-medium">— {entry.guestName}</p>
                       </div>
