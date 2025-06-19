@@ -1,156 +1,92 @@
+import React from 'react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
-import { MessageSquare, Heart } from 'lucide-react';
-
-const guestBookSchema = z.object({
-  weddingId: z.number(),
-  guestName: z.string().min(1, 'Name is required'),
-  message: z.string().min(1, 'Message is required').max(500, 'Message too long'),
-});
-
-type GuestBookFormData = z.infer<typeof guestBookSchema>;
 
 interface GuestBookFormProps {
   weddingId: number;
-  coupleName: string;
 }
 
-export function GuestBookForm({ weddingId, coupleName }: GuestBookFormProps) {
-  const { t } = useTranslation();
+export function GuestBookForm({ weddingId }: GuestBookFormProps) {
+  const [guestName, setGuestName] = useState('');
+  const [message, setMessage] = useState('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const form = useForm<GuestBookFormData>({
-    resolver: zodResolver(guestBookSchema),
-    defaultValues: {
-      weddingId,
-      guestName: '',
-      message: '',
-    },
-  });
-
-  const submitGuestBookMutation = useMutation({
-    mutationFn: async (data: GuestBookFormData) => {
-      const response = await apiRequest('POST', '/api/guest-book', data);
+  const createEntryMutation = useMutation({
+    mutationFn: async (data: { guestName: string; message: string }) => {
+      const response = await fetch('/api/guest-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, weddingId }),
+      });
+      if (!response.ok) throw new Error('Failed to add message');
       return response.json();
     },
     onSuccess: () => {
-      setIsSubmitted(true);
       toast({
-        title: t('guestBook.success'),
-        description: t('guestBook.thankYou'),
+        title: 'Message Added!',
+        description: 'Your message has been added to the guest book.',
       });
-      queryClient.invalidateQueries({ queryKey: [`/api/guest-book/wedding/${weddingId}`] });
-      form.reset();
+      setGuestName('');
+      setMessage('');
+      queryClient.invalidateQueries({ queryKey: ['/api/guest-book/wedding', weddingId] });
     },
     onError: () => {
       toast({
-        title: t('guestBook.error'),
-        description: t('guestBook.tryAgain'),
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to add message. Please try again.',
+        variant: 'destructive',
       });
     },
   });
 
-  const onSubmit = (data: GuestBookFormData) => {
-    submitGuestBookMutation.mutate(data);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!guestName.trim() || !message.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please enter your name and message.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    createEntryMutation.mutate({ guestName: guestName.trim(), message: message.trim() });
   };
 
-  if (isSubmitted) {
-    return (
-      <Card className="border-[#D4B08C]/20 bg-gradient-to-r from-white to-[#F8F1F1]/30">
-        <CardContent className="p-8 text-center">
-          <Heart className="h-12 w-12 text-[#D4B08C] mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-[#2C3338] mb-2">
-            {t('guestBook.thankYouTitle')}
-          </h3>
-          <p className="text-[#2C3338]/70">
-            {t('guestBook.messageSaved')}
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="border-[#D4B08C]/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-[#2C3338]">
-          <MessageSquare className="h-5 w-5 text-[#D4B08C]" />
-          {t('guestBook.leaveMessage')}
-        </CardTitle>
-        <p className="text-sm text-[#2C3338]/70">
-          {t('guestBook.shareThoughts', { couple: coupleName })}
-        </p>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="guestName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('guestBook.yourName')}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={t('guestBook.namePlaceholder')} 
-                      {...field} 
-                      className="border-[#D4B08C]/30 focus:border-[#D4B08C]"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <Card>
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Input
+              placeholder="Your name"
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              required
             />
-            
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('guestBook.yourMessage')}</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder={t('guestBook.messagePlaceholder')}
-                      className="border-[#D4B08C]/30 focus:border-[#D4B08C] min-h-[100px]"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </div>
+          <div>
+            <Textarea
+              placeholder="Write your message for the couple..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={4}
+              required
             />
-
-            <Button 
-              type="submit" 
-              className="w-full bg-[#D4B08C] hover:bg-[#C09E7A] text-white"
-              disabled={submitGuestBookMutation.isPending}
-            >
-              {submitGuestBookMutation.isPending ? t('common.sending') : t('guestBook.submit')}
-            </Button>
-          </form>
-        </Form>
+          </div>
+          <Button 
+            type="submit" 
+            className="w-full bg-blue-600 hover:bg-blue-700"
+            disabled={createEntryMutation.isPending}
+          >
+            {createEntryMutation.isPending ? 'Adding...' : 'Add Message'}
+          </Button>
+        </form>
       </CardContent>
     </Card>
   );
