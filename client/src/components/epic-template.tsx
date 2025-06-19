@@ -67,10 +67,10 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
         <div className="container mx-auto px-4">
           <div className="flex justify-center space-x-8 py-4">
             {[
-              { id: 'home', label: 'Дорогие гости', icon: Heart },
-              { id: 'rsvp', label: 'Пожалуйста, подтвердите ваше присутствие', icon: Users },
-              { id: 'details', label: 'Детали свадьбы', icon: Calendar },
-              { id: 'guestbook', label: 'Книга гостей', icon: MessageSquare }
+              { id: 'home', label: 'Home', icon: Heart },
+              { id: 'rsvp', label: 'RSVP', icon: Users },
+              { id: 'details', label: 'Details', icon: Calendar },
+              { id: 'guestbook', label: 'Guest Book', icon: MessageSquare }
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -182,10 +182,10 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-light mb-4 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-              Пожалуйста, подтвердите ваше присутствие
+              Please confirm your attendance
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto text-lg">
-              Мы не можем дождаться празднования с вами!
+              We can't wait to celebrate with you!
             </p>
           </div>
           
@@ -201,14 +201,14 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       <section id="details" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-light text-center mb-16 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-            Детали свадьбы
+            Wedding Details
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
             {/* When */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg border border-blue-100">
               <Calendar className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-4 text-gray-800">Когда</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">When</h3>
               <p className="text-gray-700 text-lg mb-2">
                 {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy г.') : 'Date TBD'}
               </p>
@@ -220,7 +220,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             {/* Where */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg border border-blue-100">
               <MapPin className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-4 text-gray-800">Где</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">Where</h3>
               <p className="text-gray-700 text-lg mb-2">{wedding?.venue || 'Wedding Venue'}</p>
               <p className="text-gray-600 mb-4">{wedding?.venueAddress}</p>
               <button className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
@@ -251,21 +251,21 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-light mb-4 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-              Книга гостей
+              Guest Book
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto text-lg">
-              Оставьте нам сообщение, чтобы сделать наш день еще более особенным
+              Leave us a message to make our day even more special
             </p>
           </div>
           
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
-                <h3 className="text-xl font-semibold mb-6 text-gray-800">Оставить сообщение</h3>
+                <h3 className="text-xl font-semibold mb-6 text-gray-800">Leave a Message</h3>
                 <GuestBookForm weddingId={wedding.id} />
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
-                <h3 className="text-xl font-semibold mb-6 text-gray-800">Сообщения от близких</h3>
+                <h3 className="text-xl font-semibold mb-6 text-gray-800">Messages from Loved Ones</h3>
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {guestBookEntries.length > 0 ? (
                     guestBookEntries.map((entry) => (
@@ -275,7 +275,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-500 italic">Пока нет сообщений. Станьте первым!</p>
+                    <p className="text-gray-500 italic">No messages yet. Be the first!</p>
                   )}
                 </div>
               </div>
