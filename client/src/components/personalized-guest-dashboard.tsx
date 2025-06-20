@@ -55,6 +55,11 @@ export function PersonalizedGuestDashboard({
   useEffect(() => {
     if (!wedding?.id) return;
 
+    // Skip WebSocket in development due to port configuration issues
+    if (process.env.NODE_ENV === 'development') {
+      return;
+    }
+    
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
     const socket = new WebSocket(wsUrl);
@@ -90,7 +95,10 @@ export function PersonalizedGuestDashboard({
     };
 
     socket.onclose = () => setIsConnected(false);
-    socket.onerror = () => setIsConnected(false);
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      setIsConnected(false);
+    };
 
     setWs(socket);
 
