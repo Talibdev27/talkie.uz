@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
+import { uz, ru, enUS } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { PhotoUpload } from '@/components/photo-upload';
@@ -24,6 +25,15 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       i18n.changeLanguage(wedding.defaultLanguage);
     }
   }, [wedding?.defaultLanguage, i18n]);
+
+  // Get the appropriate locale for date formatting
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'uz': return uz;
+      case 'ru': return ru;
+      default: return enUS;
+    }
+  };
 
   const { data: photos = [] } = useQuery<Photo[]>({
     queryKey: ['/api/photos/wedding', wedding?.id],
@@ -134,7 +144,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </h1>
             
             <p className="text-lg text-gray-600 mb-2 italic font-light">
-              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy') : t('details.dateTBD')}
+              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() }) : t('details.dateTBD')}
             </p>
 
             <div className="flex items-center justify-center mb-8 text-gray-600">
@@ -220,7 +230,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               <Calendar className="w-12 h-12 text-blue-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('details.when')}</h3>
               <p className="text-gray-700 text-lg mb-2">
-                {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy') : t('details.dateTBD')}
+                {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() }) : t('details.dateTBD')}
               </p>
               <p className="text-gray-600">
                 {t('details.ceremonyBegins')} {wedding?.weddingTime || '4:00 PM'}
@@ -249,7 +259,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               <EnhancedSocialShare 
                 weddingUrl={`${window.location.origin}/wedding/${wedding.uniqueUrl}`}
                 coupleNames={`${wedding.bride} & ${wedding.groom}`}
-                weddingDate={format(new Date(wedding.weddingDate), 'MMMM d, yyyy')}
+                weddingDate={wedding.weddingDate ? format(new Date(wedding.weddingDate), 'MMMM d, yyyy', { locale: getDateLocale() }) : ''}
               />
             </div>
           </div>
