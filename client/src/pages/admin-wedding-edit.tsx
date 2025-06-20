@@ -423,6 +423,7 @@ export default function AdminWeddingEdit() {
                       </label>
                       {editMode ? (
                         <select
+<<<<<<< HEAD
                           value={weddingData?.defaultLanguage || 'uz'}
                           onChange={(e) => handleInputChange('defaultLanguage', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -430,6 +431,15 @@ export default function AdminWeddingEdit() {
                           <option value="uz">O'zbekcha</option>
                           <option value="en">English</option>
                           <option value="ru">Русский</option>
+=======
+                          value={weddingData?.defaultLanguage || 'en'}
+                          onChange={(e) => handleInputChange('defaultLanguage', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="en">English</option>
+                          <option value="uz">Uzbek</option>
+                          <option value="ru">Russian</option>
+>>>>>>> 30b9d871cb43208f647cefb439d8a6d58c3c9d7f
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.defaultLanguage}</p>
