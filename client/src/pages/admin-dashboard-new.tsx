@@ -1205,9 +1205,9 @@ export default function AdminDashboard() {
                         value={newWedding.defaultLanguage}
                         onChange={(e) => handleFormChange('defaultLanguage', e.target.value)}
                       >
+                        <option value="uz">O'zbekcha</option>
                         <option value="en">English</option>
                         <option value="ru">Русский</option>
-                        <option value="uz">O'zbek</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
                         This will be the default language for the wedding website

@@ -2,6 +2,158 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const resources = {
+  uz: {
+    translation: {
+      // Navigation
+      'nav.features': 'Xususiyatlar',
+      'nav.templates': 'Shablonlar',
+      'nav.pricing': 'Narxlar',
+      'nav.signIn': 'Kirish',
+      'nav.getStarted': 'Boshlash',
+
+      // Hero Section
+      'hero.title': 'Mukammal',
+      'hero.titleHighlight': 'To\'y Veb-Saytini Yarating',
+      'hero.subtitle': 'Sevgi hikoyangizni chiroyli, shaxsiy to\'y veb-sayti orqali ulashing. RSVP\'larni boshqaring, rasmlarni namoyish eting va mehmonlaringiz bilan esda qoladigan xotiralar yarating.',
+      'hero.startCreating': 'Yaratishni Boshlash',
+      'hero.viewDemo': 'Demo Ko\'rish',
+      'hero.freeTrial': '30 kunlik bepul sinov',
+      'hero.noCreditCard': 'Kredit karta talab qilinmaydi',
+      'hero.joinOver': 'Qo\'shiling',
+      'hero.happyCouples': 'baxtli juftliklar',
+
+      // Demo Section
+      'demo.title': 'To\'y Veb-Saytingiz Hayotga Kelishini Ko\'ring',
+      'demo.subtitle': 'Shaxsiy to\'y veb-saytingiz qanday ko\'rinishini interaktiv demo orqali ko\'ring',
+      'demo.ourStory': 'Bizning Sevgi Hikoyamiz',
+      'demo.ourMemories': 'Bizning Xotiralarimiz',
+      'demo.storyText': 'Biz yomg\'irli seshanba kuni sevimli qahvaxonamizda uchrashdik. Tasodifiy uchrashuv sifatida boshlangan narsa biz tasavvur qila olgan eng go\'zal sevgi hikoyasiga aylandi...',
+      'demo.howWeMet': 'Qanday Tanishdik',
+      'demo.howWeMetText': 'Har bir sevgi hikoyasi o\'ziga xos va bizniki eng kutilmagan tarzda boshlandi...',
+
+      // Wedding Site
+      'wedding.dearGuests': 'Aziz Mehmonlar',
+      'wedding.ourStory': 'Bizning Sevgi Hikoyamiz',
+      'wedding.rsvp': 'Iltimos, qatnashishingizni bildiring',
+      'wedding.photos': 'Bizning Xotiralarimiz',
+      'wedding.guestBook': 'Mehmonlar Kitobi',
+      'wedding.weddingDetails': 'To\'y Tafsilotlari',
+      'wedding.countdown': 'Hisoblash',
+      'wedding.when': 'Qachon',
+      'wedding.where': 'Qayerda',
+      'wedding.venue': 'To\'y Maskani',
+      'wedding.ceremonyTime': 'Marosim soat 16:00 da boshlanadi',
+      'wedding.clickToViewLocation': 'Manzilni ko\'rish uchun bosing',
+      'wedding.viewOnMap': 'Xaritada Ko\'rish',
+      'wedding.guestBookSubtitle': 'Bizning kunimizni yanada o\'ziga xos qilish uchun xabar qoldiring',
+      'wedding.messagesFromLovedOnes': 'Yaqinlarimizdan xabarlar',
+      'wedding.thankYouGuests': 'O\'ziga xos kunimizda ishtirok etganingiz uchun rahmat',
+      'wedding.createdWith': 'Yaratilgan',
+      
+      // Navigation
+      'nav.home': 'Bosh sahifa',
+      'nav.rsvp': 'RSVP',
+      'nav.details': 'Tafsilotlar',
+      'nav.guestbook': 'Mehmonlar Kitobi',
+      
+      // Sections
+      'sections.dearGuests': 'Aziz Mehmonlar',
+      'sections.weddingDetails': 'To\'y Tafsilotlari',
+      'sections.guestBook': 'Mehmonlar Kitobi',
+      
+      // Countdown
+      'countdown.days': 'KUN',
+      'countdown.hours': 'SOAT',
+      'countdown.minutes': 'DAQIQA',
+      
+      // Details
+      'details.when': 'Qachon',
+      'details.where': 'Qayerda',
+      'details.showOnMap': 'Xaritada Ko\'rish',
+      'details.ceremonyBegins': 'To\'y marosimi boshlanadi',
+      'details.dateTBD': 'Sana belgilanmagan',
+      
+      // RSVP
+      'rsvp.title': 'Iltimos, qatnashishingizni tasdiqlang',
+      'rsvp.subtitle': 'Siz bilan nishonlashni intiqorlik bilan kutamiz!',
+      
+      // Guest Book
+      'guestBook.subtitle': 'Bizning kunimizni yanada o\'ziga xos qilish uchun xabar qoldiring',
+      'guestBook.leaveMessage': 'Xabar Qoldirish',
+      'guestBook.messages': 'Yaqinlardan Xabarlar',
+      'guestBook.noMessages': 'Hali xabarlar yo\'q. Birinchi bo\'ling!',
+      'wedding.using': 'LoveStory yordamida',
+      'wedding.capturingJourney': 'Birgalikdagi sayohatimizni saqlab qolish',
+      'wedding.cantWaitToCelebrate': 'Siz bilan nishonlashni intiqorlik bilan kutamiz!',
+      'wedding.weddingDayIsHere': 'To\'y Kuni Keldi!',
+      'wedding.beautifulMemories': 'Go\'zal xotiralar kutmoqda',
+      'wedding.countdown.days': 'KUN',
+      'wedding.countdown.hours': 'SOAT',
+      'wedding.countdown.minutes': 'DAQIQA',
+      'wedding.countdown.seconds': 'SONIYA',
+      'wedding.withLove': 'Sevgi bilan,',
+
+      // RSVP Form
+      'rsvp.guestName': 'Mehmon Ismi',
+      'rsvp.email': 'Email Manzil',
+      'rsvp.willYouAttend': 'Qatnashasizmi?',
+      'rsvp.yesAttending': 'Ha, men boraman',
+      'rsvp.noAttending': 'Yo\'q, qatnasha olmayman',
+      'rsvp.submitRSVP': 'RSVP Yuborish',
+      'rsvp.thankYou': 'Rahmat!',
+      'rsvp.confirmationSent': 'Tasdiqnoma yuborildi',
+      'rsvp.pleaseEnterName': 'Iltimos, ismingizni kiriting',
+      'rsvp.pleaseEnterEmail': 'Iltimos, email manzilingizni kiriting',
+      'rsvp.pleaseSelectAttendance': 'Iltimos, qatnashishni tanlang',
+      'rsvp.submitting': 'Yuborilmoqda...',
+
+      // Management
+      'manage.weddingDetails': 'To\'y Tafsilotlari',
+      'manage.guestManagement': 'Mehmonlarni Boshqarish',
+      'manage.guestDashboard': 'Mehmonlar Paneli',
+      'manage.guestBook': 'Mehmonlar Kitobi',
+      'manage.photoManagement': 'Rasmlarni Boshqarish',
+
+      // Admin
+      'admin.dashboard': 'Boshqaruv Paneli',
+      'admin.users': 'Foydalanuvchilar',
+      'admin.weddings': 'To\'ylar',
+      'admin.photos': 'Rasmlar',
+      'admin.settings': 'Sozlamalar',
+
+      // Forms
+      'form.name': 'Ism',
+      'form.email': 'Email',
+      'form.message': 'Xabar',
+      'form.submit': 'Yuborish',
+      'form.cancel': 'Bekor qilish',
+      'form.save': 'Saqlash',
+      'form.edit': 'Tahrirlash',
+      'form.delete': 'O\'chirish',
+
+      // Messages
+      'message.success': 'Muvaffaqiyatli!',
+      'message.error': 'Xatolik yuz berdi',
+      'message.loading': 'Yuklanmoqda...',
+      'message.saving': 'Saqlanmoqda...',
+      'message.deleting': 'O\'chirilmoqda...',
+
+      // Photo editing
+      'imageEdit.title': 'Rasmni Tahrirlash',
+      'imageEdit.crop': 'Kesish',
+      'imageEdit.resize': 'O\'lchamni O\'zgartirish',
+      'imageEdit.filter': 'Filtr',
+      'imageEdit.brightness': 'Yorqinlik',
+      'imageEdit.contrast': 'Kontrast',
+      'imageEdit.saturation': 'To\'yinganlik',
+      'imageEdit.reset': 'Qayta Tiklash',
+      'imageEdit.apply': 'Qo\'llash',
+      'imageEdit.upload': 'Yuklash',
+      'imageEdit.backToEdit': 'Tahrirga Qaytish',
+      'imageEdit.uploading': 'Yuklanmoqda...',
+      'imageEdit.uploadPhoto': 'Rasm Yuklash'
+    }
+  },
   en: {
     translation: {
       // Navigation
@@ -1677,7 +1829,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem('language') || 'en',
+    lng: localStorage.getItem('language') || 'uz',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,

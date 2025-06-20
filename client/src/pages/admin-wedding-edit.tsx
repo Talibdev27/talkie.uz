@@ -129,8 +129,12 @@ export default function AdminWeddingEdit() {
   // Photo management mutations
   const deletePhotoMutation = useMutation({
     mutationFn: async (photoId: number) => {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/admin/photos/${photoId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       return response.json();
     },
@@ -419,13 +423,13 @@ export default function AdminWeddingEdit() {
                       </label>
                       {editMode ? (
                         <select
-                          value={weddingData?.defaultLanguage || 'en'}
+                          value={weddingData?.defaultLanguage || 'uz'}
                           onChange={(e) => handleInputChange('defaultLanguage', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
+                          <option value="uz">O'zbekcha</option>
                           <option value="en">English</option>
-                          <option value="uz">Uzbek</option>
-                          <option value="ru">Russian</option>
+                          <option value="ru">Русский</option>
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.defaultLanguage}</p>

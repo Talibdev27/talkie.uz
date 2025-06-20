@@ -10,8 +10,8 @@ import {
 import { Globe } from 'lucide-react';
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'uz', name: 'O\'zbekcha', flag: '🇺🇿' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'ru', name: 'Русский', flag: '🇷🇺' },
 ];
 

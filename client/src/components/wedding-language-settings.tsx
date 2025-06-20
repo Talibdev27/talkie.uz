@@ -17,8 +17,8 @@ interface WeddingLanguageSettingsProps {
 }
 
 const SUPPORTED_LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'ru', name: 'Русский', flag: '🇷🇺' }
 ];
 
@@ -28,10 +28,10 @@ export function WeddingLanguageSettings({ wedding }: WeddingLanguageSettingsProp
   const queryClient = useQueryClient();
 
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
-    wedding.availableLanguages || ['en']
+    wedding.availableLanguages || ['uz']
   );
   const [defaultLanguage, setDefaultLanguage] = useState<string>(
-    wedding.defaultLanguage || 'en'
+    wedding.defaultLanguage || 'uz'
   );
 
   // Fetch current language settings
