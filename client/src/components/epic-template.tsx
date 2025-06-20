@@ -241,9 +241,9 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
           {/* Social Share */}
           <div className="text-center">
-            <h3 className="text-xl font-semibold mb-6 text-gray-800">Поделитесь нашей свадьбой</h3>
+            <h3 className="text-xl font-semibold mb-6 text-gray-800">{t('share.title')}</h3>
             <p className="text-gray-600 mb-8">
-              Расскажите друзьям и семье о нашем особенном дне
+              {t('share.subtitle')}
             </p>
             <div className="max-w-lg mx-auto">
               <EnhancedSocialShare 
@@ -302,11 +302,11 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             {wedding?.bride} & {wedding?.groom}
           </h3>
           <p className="text-gray-300 mb-8">
-            Спасибо за участие в нашем особенном дне
+            {t('wedding.thankYouGuests')}
           </p>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto mb-8">
-            <h4 className="text-lg font-medium mb-4">Order a website invitation</h4>
+            <h4 className="text-lg font-medium mb-4">{t('ad.orderInvitation')}</h4>
             <div className="flex justify-center space-x-4">
               <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full transition-colors flex items-center space-x-2">
                 <span>Telegram</span>
@@ -318,7 +318,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
           </div>
 
           <div className="flex items-center justify-center text-gray-400 text-sm">
-            <span>Powered by</span>
+            <span>{t('footer.poweredBy')}</span>
             <Heart className="inline h-4 w-4 text-blue-400 mx-2" />
             <span className="font-semibold text-blue-400">Taklif</span>
           </div>

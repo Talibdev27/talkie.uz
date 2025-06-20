@@ -326,6 +326,10 @@ const resources = {
       // Advertisement
       'ad.createWebsite': 'Create your own wedding website',
       'ad.orderInvitation': 'Order a website invitation',
+      
+      // Footer
+      'footer.poweredBy': 'Powered by',
+      
       'share.copyError': 'Failed to copy link. Please try again.',
 
       // Photo Upload
