@@ -41,6 +41,7 @@ const resources = {
       'wedding.countdown': 'Countdown',
       'wedding.when': 'When',
       'wedding.where': 'Where',
+      'wedding.venue': 'Wedding Venue',
       'wedding.ceremonyTime': 'Ceremony begins at 4:00 PM',
       'wedding.clickToViewLocation': 'Click below to view location',
       'wedding.viewOnMap': 'View on Map',
@@ -48,6 +49,39 @@ const resources = {
       'wedding.messagesFromLovedOnes': 'Messages from our loved ones',
       'wedding.thankYouGuests': 'Thank you for being part of our special day',
       'wedding.createdWith': 'Created with',
+      
+      // Navigation
+      'nav.home': 'Home',
+      'nav.rsvp': 'RSVP',
+      'nav.details': 'Details',
+      'nav.guestbook': 'Guest Book',
+      
+      // Sections
+      'sections.dearGuests': 'Dear Guests',
+      'sections.weddingDetails': 'Wedding Details',
+      'sections.guestBook': 'Guest Book',
+      
+      // Countdown
+      'countdown.days': 'DAYS',
+      'countdown.hours': 'HOURS',
+      'countdown.minutes': 'MINUTES',
+      
+      // Details
+      'details.when': 'When',
+      'details.where': 'Where',
+      'details.showOnMap': 'Show on Map',
+      'details.ceremonyBegins': 'Wedding ceremony begins',
+      'details.dateTBD': 'Date TBD',
+      
+      // RSVP
+      'rsvp.title': 'Please confirm your attendance',
+      'rsvp.subtitle': 'We can\'t wait to celebrate with you!',
+      
+      // Guest Book
+      'guestBook.subtitle': 'Leave us a message to make our day even more special',
+      'guestBook.leaveMessage': 'Leave a Message',
+      'guestBook.messages': 'Messages from Loved Ones',
+      'guestBook.noMessages': 'No messages yet. Be the first!',
       'wedding.using': 'using LoveStory',
       'wedding.capturingJourney': 'Capturing our journey together',
       'wedding.cantWaitToCelebrate': 'We can\'t wait to celebrate with you!',
@@ -522,6 +556,8 @@ const resources = {
       'common.loading': 'Loading...',
       'common.error': 'Error',
       'common.success': 'Success',
+      'common.comingSoon': 'Coming Soon'ss',
+      'common.comingSoon': 'Coming Soon'ss': 'Success',
 
       // Create Wedding Page
       'createWedding.title': 'Create Your Wedding Website',
@@ -798,6 +834,7 @@ const resources = {
       'wedding.countdown': 'Hisoblash',
       'wedding.when': 'Qachon',
       'wedding.where': 'Qayerda',
+      'wedding.venue': 'To\'y joyi',
       'wedding.ceremonyTime': 'Marosim soat 4:00 PM da boshlanadi',
       'wedding.ceremonyBegins': 'Marosim boshlanadi',
       'wedding.clickToViewLocation': 'Joyni ko\'rish uchun pastga bosing',
@@ -811,9 +848,39 @@ const resources = {
       'wedding.cantWaitToCelebrate': 'Siz bilan quvonchli kunimizni nishonlashni sabrsizlik bilan kutyapmiz!',
       'wedding.weddingDayIsHere': 'To\'y kuni keldi!',
       'wedding.beautifulMemories': 'Go\'zal xotiralar kutmoqda',
-      'wedding.countdown.days': 'KUN',
-      'wedding.countdown.hours': 'SOAT',
-      'wedding.countdown.minutes': 'DAQIQA',
+      
+      // Navigation
+      'nav.home': 'Bosh sahifa',
+      'nav.rsvp': 'Tasdiqlash',
+      'nav.details': 'Tafsilotlar',
+      'nav.guestbook': 'Mehmonlar kitobi',
+      
+      // Sections
+      'sections.dearGuests': 'Hurmatli mehmonlar',
+      'sections.weddingDetails': 'To\'y tafsilotlari',
+      'sections.guestBook': 'Mehmonlar kitobi',
+      
+      // Countdown
+      'countdown.days': 'KUN',
+      'countdown.hours': 'SOAT',
+      'countdown.minutes': 'DAQIQA',
+      
+      // Details
+      'details.when': 'Qachon',
+      'details.where': 'Qayerda',
+      'details.showOnMap': 'Xaritada ko\'rsatish',
+      'details.ceremonyBegins': 'Nikoh marosimi boshlanadi',
+      'details.dateTBD': 'Sana belgilanadi',
+      
+      // RSVP
+      'rsvp.title': 'Ishtirokingizni tasdiqlang',
+      'rsvp.subtitle': 'Siz bilan bayram qilishni intiqorlik bilan kutmoqdamiz!',
+      
+      // Guest Book
+      'guestBook.subtitle': 'Bizning kunimizni yanada o\'ziga xos qilish uchun xabar qoldiring',
+      'guestBook.leaveMessage': 'Xabar qoldiring',
+      'guestBook.messages': 'Yaqinlardan xabarlar',
+      'guestBook.noMessages': 'Hali xabarlar yo\'q. Birinchi bo\'ling!',
       'wedding.countdown.seconds': 'SONIYA',
       'wedding.withLove': 'Sevgi bilan,',
 
@@ -989,6 +1056,7 @@ const resources = {
       'common.loading': 'Yuklanmoqda...',
       'common.error': 'Xato',
       'common.success': 'Muvaffaqiyat',
+      'common.comingSoon': 'Tez orada''Muvaffaqiyat',
 
       // Create Wedding Page
       'createWedding.step': 'Qadam',
@@ -1447,6 +1515,7 @@ const resources = {
       'common.loading': 'Загрузка...',
       'common.error': 'Ошибка',
       'common.success': 'Успех',
+      'common.comingSoon': 'Скоро'ss': 'Успех',
 
       // Create Wedding Page
       'createWedding.step': 'Шаг',
