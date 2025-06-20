@@ -52,10 +52,10 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
   });
 
   const submitRSVP = useMutation({
-    mutationFn: (data: RSVPFormData) => apiRequest('/api/guests', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
+    mutationFn: async (data: RSVPFormData) => {
+      const response = await apiRequest('POST', '/api/guests', data);
+      return response.json();
+    },
     onSuccess: () => {
       toast({
         title: t('rsvp.thankYou'),
