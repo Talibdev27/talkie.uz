@@ -134,7 +134,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </h1>
             
             <p className="text-lg text-gray-600 mb-2 italic font-light">
-              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy г.') : 'Date TBD'}
+              {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy') : t('details.dateTBD')}
             </p>
 
             <div className="flex items-center justify-center mb-8 text-gray-600">
