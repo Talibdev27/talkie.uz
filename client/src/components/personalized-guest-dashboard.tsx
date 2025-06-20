@@ -51,58 +51,11 @@ export function PersonalizedGuestDashboard({
     enabled: !!wedding?.id,
   });
 
-  // WebSocket connection for real-time updates
+  // WebSocket disabled for stability
   useEffect(() => {
-    if (!wedding?.id) return;
-
-    // Disable WebSocket connections in development to avoid port conflicts
-    
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const socket = new WebSocket(wsUrl);
-
-    socket.onopen = () => {
-      setIsConnected(true);
-      socket.send(JSON.stringify({
-        type: 'join_wedding',
-        weddingId: wedding.id
-      }));
-    };
-
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        
-        if (data.type === 'guest_added' || data.type === 'rsvp_updated') {
-          // Invalidate and refetch guest data
-          queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${wedding.id}`] });
-          
-          toast({
-            title: data.type === 'guest_added' ? "New Guest Added!" : "RSVP Updated!",
-            description: `${data.guest.name || 'A guest'} ${
-              data.type === 'guest_added' 
-                ? 'has been added to the wedding'
-                : `has ${data.guest.rsvpStatus} the invitation`
-            }`,
-          });
-        }
-      } catch (error) {
-        console.error('WebSocket message error:', error);
-      }
-    };
-
-    socket.onclose = () => setIsConnected(false);
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setIsConnected(false);
-    };
-
-    setWs(socket);
-
-    return () => {
-      socket.close();
-    };
-  }, [wedding?.id, queryClient, toast]);
+    // WebSocket functionality disabled to prevent connection errors
+    setIsConnected(false);
+  }, [wedding?.id]);
 
   // Guest book mutation
   const guestBookMutation = useMutation({
