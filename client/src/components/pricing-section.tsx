@@ -27,7 +27,12 @@ export function PricingSection() {
       price: 299000,
       currency: 'UZS',
       period: t('pricing.perYear'),
-      features: t('pricing.basicFeatures', { returnObjects: true }) as string[],
+      features: [
+        'Basic website template',
+        'Up to 50 guests',
+        'RSVP management',
+        'Photo gallery (10 photos)'
+      ],
       buttonText: t('pricing.chooseBasic'),
     },
     {
@@ -36,7 +41,14 @@ export function PricingSection() {
       price: 599000,
       currency: 'UZS',
       period: t('pricing.perYear'),
-      features: t('pricing.premiumFeatures', { returnObjects: true }) as string[],
+      features: [
+        'All Basic features',
+        'Unlimited guests',
+        'Premium templates',
+        'Unlimited photos',
+        'Custom domain',
+        'Background music'
+      ],
       popular: true,
       buttonText: t('pricing.choosePremium'),
     },
@@ -46,7 +58,13 @@ export function PricingSection() {
       price: 999000,
       currency: 'UZS',
       period: t('pricing.perYear'),
-      features: t('pricing.deluxeFeatures', { returnObjects: true }) as string[],
+      features: [
+        'All Premium features',
+        'Advanced customization',
+        'Priority support',
+        'Guest messaging',
+        'Analytics dashboard'
+      ],
       buttonText: t('pricing.chooseDeluxe'),
     },
   ];
@@ -92,7 +110,7 @@ export function PricingSection() {
 
               <CardContent>
                 <ul className="space-y-3">
-                  {plan.features.map((feature, index) => (
+                  {(plan.features || []).map((feature, index) => (
                     <li key={index} className="flex items-start">
                       <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{feature}</span>
