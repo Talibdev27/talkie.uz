@@ -55,10 +55,7 @@ export function PersonalizedGuestDashboard({
   useEffect(() => {
     if (!wedding?.id) return;
 
-    // Skip WebSocket in development due to port configuration issues
-    if (process.env.NODE_ENV === 'development') {
-      return;
-    }
+    // Disable WebSocket connections in development to avoid port conflicts
     
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
