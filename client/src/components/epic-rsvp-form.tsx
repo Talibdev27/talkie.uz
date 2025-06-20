@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +32,7 @@ interface EpicRSVPFormProps {
 }
 
 export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -56,16 +58,16 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
     }),
     onSuccess: () => {
       toast({
-        title: 'RSVP Submitted!',
-        description: 'Thank you for your response. We look forward to celebrating with you!',
+        title: t('rsvp.thankYou'),
+        description: t('rsvp.thankYouMessage'),
       });
       setIsSubmitted(true);
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to submit RSVP. Please try again.',
+        title: t('common.error'),
+        description: error.message || t('rsvp.errorMessage'),
         variant: 'destructive',
       });
     },
@@ -81,8 +83,8 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
         <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-white text-2xl">✓</span>
         </div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Thank You!</h3>
-        <p className="text-gray-600">Your RSVP has been submitted successfully.</p>
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('rsvp.thankYou')}</h3>
+        <p className="text-gray-600">{t('rsvp.thankYouMessage')}</p>
       </div>
     );
   }
@@ -95,10 +97,10 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gray-700 font-medium">Имя гостя</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">{t('rsvp.guestName')}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="Введите ваше полное имя" 
+                  placeholder={t('rsvp.enterFullName')} 
                   {...field} 
                   className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -113,11 +115,11 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gray-700 font-medium">Email адрес</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">{t('rsvp.email')}</FormLabel>
               <FormControl>
                 <Input 
                   type="email" 
-                  placeholder="ваш.email@example.com" 
+                  placeholder={t('rsvp.enterEmail')} 
                   {...field} 
                   className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -132,7 +134,7 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
           name="rsvpStatus"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gray-700 font-medium">Будете ли вы присутствовать?</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">{t('rsvp.willYouAttend')}</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
@@ -141,19 +143,15 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="confirmed" id="confirmed" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="confirmed" className="text-gray-700">Да, я буду там</Label>
+                    <Label htmlFor="confirmed" className="text-gray-700">{t('rsvp.yesAttending')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="declined" id="declined" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="declined" className="text-gray-700">Извините, не смогу прийти</Label>
+                    <Label htmlFor="declined" className="text-gray-700">{t('rsvp.notAttending')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="maybe" id="maybe" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="maybe" className="text-gray-700">Возможно</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pending" id="pending" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="pending" className="text-gray-700">Приведете ли вы сопровождающего?</Label>
+                    <Label htmlFor="maybe" className="text-gray-700">{t('rsvp.maybe')}</Label>
                   </div>
                 </RadioGroup>
               </FormControl>
@@ -167,10 +165,10 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gray-700 font-medium">Сообщения для пары</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">{t('rsvp.message')}</FormLabel>
               <FormControl>
                 <Textarea 
-                  placeholder="Поделитесь вашими пожеланиями или вопросами..." 
+                  placeholder={t('rsvp.shareMessage')} 
                   {...field} 
                   className="border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
                 />
@@ -185,7 +183,7 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
           className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           disabled={submitRSVP.isPending}
         >
-          {submitRSVP.isPending ? 'Отправить подтверждение...' : 'Отправить подтверждение'}
+          {submitRSVP.isPending ? t('common.loading') : t('rsvp.submit')}
         </Button>
       </form>
     </Form>

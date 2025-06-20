@@ -108,6 +108,7 @@ const resources = {
       'rsvp.enterFullName': 'Enter your full name',
       'rsvp.enterEmail': 'your.email@example.com',
       'rsvp.shareMessage': 'Share your excitement or well wishes...',
+      'rsvp.errorMessage': 'Failed to submit RSVP. Please try again.',
 
       // Guest Manager Dashboard
       'guestManager.weddingManagement': 'Wedding Management',
@@ -902,6 +903,7 @@ const resources = {
       'rsvp.enterFullName': 'To\'liq ismingizni kiriting',
       'rsvp.enterEmail': 'sizning.email@example.com',
       'rsvp.shareMessage': 'Xursandchiligingiz yoki tilaklaringizni ulashing...',
+      'rsvp.errorMessage': 'RSVP yuborishda xatolik. Qaytadan urinib ko\'ring.',
 
       // Guest Manager Dashboard
       'guestManager.weddingManagement': 'To\'y boshqaruvi',
@@ -1118,8 +1120,7 @@ const resources = {
       'guestList.enterPhone': 'Telefon raqamini kiriting',
       'guestList.category': 'Kategoriya',
 
-      // Guest Book
-      'guestBook.leaveMessage': 'Xabar qoldiring',
+      // Guest Book  
       'guestBook.shareThoughts': '{{couple}} uchun o\'z fikrlaringizni baham ko\'ring',
       'guestBook.yourName': 'Ismingiz',
       'guestBook.namePlaceholder': 'To\'liq ismingizni kiriting',
