@@ -29,6 +29,12 @@ export default function WeddingManage() {
   
   const [editMode, setEditMode] = useState(false);
   const [weddingData, setWeddingData] = useState<Wedding | null>(null);
+  
+  // Guest management state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedGuests, setSelectedGuests] = useState<number[]>([]);
+  const [allSelected, setAllSelected] = useState(false);
 
   // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   // Check if user is logged in and owns this wedding
