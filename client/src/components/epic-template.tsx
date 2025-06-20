@@ -145,9 +145,9 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             {/* Countdown */}
             <div className="flex justify-center gap-5 mb-8">
               {[
-                { value: timeLeft.days, label: 'DAYS' },
-                { value: timeLeft.hours, label: 'HOURS' },
-                { value: timeLeft.minutes, label: 'MINUTES' }
+                { value: timeLeft.days, label: t('countdown.days') },
+                { value: timeLeft.hours, label: t('countdown.hours') },
+                { value: timeLeft.minutes, label: t('countdown.minutes') }
               ].map((item, index) => (
                 <div key={index} className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-[15px] p-5 min-w-[80px] shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-[15px]"></div>
@@ -159,7 +159,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
             <div className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300">
               <MapPin className="inline w-4 h-4 mr-2" />
-              {wedding?.venue || 'Wedding Venue'}
+              {wedding?.venue || t('wedding.venue')}
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       {/* Dear Guests Section */}
       <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-light mb-8 text-gray-800">Дорогие гости</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-8 text-gray-800">{t('sections.dearGuests')}</h2>
           
           {wedding?.dearGuestMessage && (
             <div className="max-w-3xl mx-auto">
