@@ -171,9 +171,11 @@ export default function Landing() {
                 <a href="#pricing" className="block px-3 py-2 text-charcoal hover:text-romantic-gold">
                   {t('nav.pricing')}
                 </a>
-                <Button variant="ghost" className="w-full justify-start text-charcoal hover:text-romantic-gold">
-                  {t('nav.signIn')}
-                </Button>
+                <Link href="/login" className="block">
+                  <Button variant="ghost" className="w-full justify-start text-charcoal hover:text-romantic-gold">
+                    {t('nav.signIn')}
+                  </Button>
+                </Link>
                 <Link href="/get-started" className="block">
                   <Button className="w-full wedding-button">
                     {t('nav.getStarted')}
