@@ -556,8 +556,7 @@ const resources = {
       'common.loading': 'Loading...',
       'common.error': 'Error',
       'common.success': 'Success',
-      'common.comingSoon': 'Coming Soon'ss',
-      'common.comingSoon': 'Coming Soon'ss': 'Success',
+      'common.comingSoon': 'Coming Soon',
 
       // Create Wedding Page
       'createWedding.title': 'Create Your Wedding Website',
@@ -1056,7 +1055,7 @@ const resources = {
       'common.loading': 'Yuklanmoqda...',
       'common.error': 'Xato',
       'common.success': 'Muvaffaqiyat',
-      'common.comingSoon': 'Tez orada''Muvaffaqiyat',
+      'common.comingSoon': 'Tez orada',
 
       // Create Wedding Page
       'createWedding.step': 'Qadam',
@@ -1515,7 +1514,7 @@ const resources = {
       'common.loading': 'Загрузка...',
       'common.error': 'Ошибка',
       'common.success': 'Успех',
-      'common.comingSoon': 'Скоро'ss': 'Успех',
+      'common.comingSoon': 'Скоро',
 
       // Create Wedding Page
       'createWedding.step': 'Шаг',
