@@ -252,7 +252,8 @@ export default function AdminDashboard() {
         template: 'standard',
         story: '',
         dearGuestMessage: '',
-        couplePhotoUrl: ''
+        couplePhotoUrl: '',
+        defaultLanguage: 'uz'
       });
     },
     onError: (error: any) => {

@@ -106,7 +106,7 @@ const resources = {
       "rsvp.submitting": "Submitting...",
       "rsvp.success": "Thank you for your response!",
       "rsvp.error": "Something went wrong. Please try again.",
-
+      
       // Guest Book
       "sections.guestBook": "Guest Book",
       "guestBook.subtitle": "Leave a message to make our day even more special.",
@@ -243,7 +243,7 @@ const resources = {
       "footer.contactUs": "Связаться с нами",
       "footer.privacyPolicy": "Политика конфиденциальности",
       "footer.termsOfService": "Условия предоставления услуг",
-      
+
       // Wedding Site
       "nav.home": "Главная",
       "nav.rsvp": "RSVP",
@@ -275,7 +275,7 @@ const resources = {
       "rsvp.submitting": "Отправка...",
       "rsvp.success": "Спасибо за ваш ответ!",
       "rsvp.error": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
-
+      
       // Guest Book
       "sections.guestBook": "Гостевая Книга",
       "guestBook.subtitle": "Оставьте сообщение, чтобы сделать наш день еще более особенным.",
@@ -412,7 +412,7 @@ const resources = {
       "footer.contactUs": "Biz bilan bog'lanish",
       "footer.privacyPolicy": "Maxfiylik Siyosati",
       "footer.termsOfService": "Xizmat Ko'rsatish Shartlari",
-      
+
       // Wedding Site
       "nav.home": "Bosh sahifa",
       "nav.rsvp": "RSVP",
@@ -455,7 +455,7 @@ const resources = {
       "guestBook.form.messagePlaceholder": "Juftlikka xabar yozing...",
       "guestBook.form.submit": "Xabarni Qo'shish",
       "guestBook.form.fillAllFields": "Iltimos, ismingizni va xabaringizni kiriting.",
-      
+
       // Management
       "manage.weddingDetails": "To'y Tafsilotlari",
       "manage.guestManagement": "Mehmonlarni Boshqarish",
@@ -521,6 +521,6 @@ i18n
     interpolation: {
       escapeValue: false,
     }
-  });
+});
 
 export default i18n;
