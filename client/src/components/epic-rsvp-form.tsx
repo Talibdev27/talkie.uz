@@ -112,25 +112,6 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
 
         <FormField
           control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-gray-700 font-medium">{t('rsvp.email')}</FormLabel>
-              <FormControl>
-                <Input 
-                  type="email" 
-                  placeholder={t('rsvp.enterEmail')} 
-                  {...field} 
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="rsvpStatus"
           render={({ field }) => (
             <FormItem>
@@ -142,16 +123,20 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                   className="flex flex-col space-y-3"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="confirmed" id="confirmed" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="confirmed" className="text-gray-700">{t('rsvp.yesAttending')}</Label>
+                    <RadioGroupItem value="attending" id="attending" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="attending" className="text-gray-700">{t('rsvp.attendingOption')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="declined" id="declined" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="declined" className="text-gray-700">{t('rsvp.notAttending')}</Label>
+                    <RadioGroupItem value="attending_with_guest" id="attending_with_guest" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="attending_with_guest" className="text-gray-700">{t('rsvp.attendingWithGuestOption')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="maybe" id="maybe" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="maybe" className="text-gray-700">{t('rsvp.maybe')}</Label>
+                    <RadioGroupItem value="not_attending" id="not_attending" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="not_attending" className="text-gray-700">{t('rsvp.notAttendingOption')}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="pending" id="pending" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="pending" className="text-gray-700">{t('rsvp.pendingOption')}</Label>
                   </div>
                 </RadioGroup>
               </FormControl>
@@ -170,6 +155,7 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                 <Textarea 
                   placeholder={t('rsvp.shareMessage')} 
                   {...field} 
+                  value={field.value || ''}
                   className="border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
                 />
               </FormControl>

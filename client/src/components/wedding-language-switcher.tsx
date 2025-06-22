@@ -5,7 +5,7 @@ import { Globe } from 'lucide-react';
 
 interface WeddingLanguageSwitcherProps {
   availableLanguages: string[];
-  defaultLanguage: string;
+  defaultLanguage?: string;
   className?: string;
 }
 

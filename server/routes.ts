@@ -1734,35 +1734,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Real photo upload endpoint with multer
   app.post("/api/photos/upload", upload.single('photo'), async (req, res) => {
     try {
+      const { weddingId, photoType, caption } = req.body;
+
       if (!req.file) {
-        return res.status(400).json({ message: "No photo file provided" });
+        return res.status(400).json({ message: 'No photo file provided.' });
       }
-
-      const { weddingId, caption, isHero, photoType } = req.body;
-
       if (!weddingId) {
-        return res.status(400).json({ message: "Wedding ID is required" });
+        return res.status(400).json({ message: 'Wedding ID is required.' });
       }
 
-      // Create photo record with actual file URL
-      const photoData = {
-        weddingId: parseInt(weddingId),
-        url: `/uploads/${req.file.filename}`,
+      const parsedWeddingId = parseInt(weddingId, 10);
+      if (isNaN(parsedWeddingId)) {
+        return res.status(400).json({ message: 'Invalid Wedding ID format.' });
+      }
+
+      const photoUrl = `/uploads/${req.file.filename}`;
+
+      // Create the photo entry in the photos table
+      const newPhoto = await storage.createPhoto({
+        weddingId: parsedWeddingId,
+        url: photoUrl,
         caption: caption || null,
-        isHero: isHero === 'true',
-        photoType: photoType || 'memory' // Default to memory if not specified
-      };
-
-      const photo = await storage.createPhoto(photoData);
-      res.status(201).json(photo);
-    } catch (error) {
-      console.error("Photo upload error:", error);
-      if (error instanceof multer.MulterError) {
-        if (error.code === 'LIMIT_FILE_SIZE') {
-          return res.status(400).json({ message: "File too large. Maximum size is 5MB." });
-        }
+        photoType: photoType || 'memory',
+      });
+      
+      // If it's a couple photo, also update the main wedding record's couplePhotoUrl
+      if (photoType === 'couple') {
+        await storage.updateWedding(parsedWeddingId, {
+          couplePhotoUrl: photoUrl
+        });
       }
-      res.status(500).json({ message: "Failed to upload photo" });
+
+      res.status(201).json(newPhoto);
+    } catch (error) {
+      console.error('Photo upload error:', error);
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ message: "File too large. Maximum size is 5MB." });
+      }
+      res.status(500).json({ message: 'Failed to upload photo.' });
     }
   });
 

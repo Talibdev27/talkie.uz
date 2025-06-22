@@ -162,28 +162,27 @@ export default function WeddingSite() {
 
   // For Standard template, determine hero image based on user preference
   const getStandardHeroImage = () => {
-    if (currentTemplate === 'standard') {
-      // First check if user uploaded a custom couple photo
-      if (wedding.couplePhotoUrl) {
-        return wedding.couplePhotoUrl;
-      }
-      // Then check for specific background template selection
-      const backgroundTemplates = {
-        template1: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-        template2: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-        template3: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-        template4: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-        template5: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
-        template6: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080"
-      };
-      
-      if (wedding.backgroundTemplate && backgroundTemplates[wedding.backgroundTemplate as keyof typeof backgroundTemplates]) {
-        return backgroundTemplates[wedding.backgroundTemplate as keyof typeof backgroundTemplates];
-      }
-      // Fall back to default template background
-      return backgroundTemplates.template1;
+    // For "standard" template, always prioritize the couple's photo if it exists
+    if (currentTemplate === 'standard' && wedding.couplePhotoUrl) {
+      return wedding.couplePhotoUrl;
     }
-    return config.heroImage;
+  
+    // Fallback for other templates or if no photo is available for standard
+    const backgroundTemplates = {
+      template1: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      template2: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      template3: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      template4: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      template5: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080",
+      template6: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080"
+    };
+      
+    if (wedding.backgroundTemplate && backgroundTemplates[wedding.backgroundTemplate as keyof typeof backgroundTemplates]) {
+      return backgroundTemplates[wedding.backgroundTemplate as keyof typeof backgroundTemplates];
+    }
+    
+    // Fall back to template's default hero or a global default
+    return config.heroImage || backgroundTemplates.template1;
   };
 
   // Check if using couple photo for enhanced overlay
@@ -201,8 +200,8 @@ export default function WeddingSite() {
       {/* Language switcher - Always show with 3 languages */}
       <div className="fixed top-4 right-4 z-50">
         <WeddingLanguageSwitcher 
-          availableLanguages={['en', 'ru', 'uz']} 
-          defaultLanguage={'en'}
+          availableLanguages={wedding.availableLanguages || ['en', 'ru', 'uz']}
+          defaultLanguage={wedding.defaultLanguage}
         />
       </div>
 

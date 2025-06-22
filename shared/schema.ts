@@ -27,6 +27,7 @@ export const weddings = pgTable("weddings", {
   venue: text("venue").notNull(),
   venueAddress: text("venue_address").notNull(),
   venueCoordinates: jsonb("venue_coordinates").$type<{ lat: number; lng: number }>(),
+  mapPinUrl: text("map_pin_url"),
   story: text("story"),
   welcomeMessage: text("welcome_message"),
   dearGuestMessage: text("dear_guest_message"),

@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import {
   Form,
@@ -96,10 +95,14 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
   }
 
   return (
-    <Card className={`max-w-md mx-auto ${className}`}>
-      <CardContent className="pt-6">
+    <Card className={`max-w-lg mx-auto ${className} shadow-2xl rounded-2xl`}>
+      <CardHeader className="text-center bg-gray-50 p-8 rounded-t-2xl">
+        <CardTitle className="font-playfair text-4xl text-gray-800">{t('rsvp.title')}</CardTitle>
+        <p className="text-gray-600 font-cormorant text-lg">{t('rsvp.subtitle')}</p>
+      </CardHeader>
+      <CardContent className="p-8">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
               name="name"
@@ -113,73 +116,50 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('rsvp.email')}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="email" 
-                      placeholder={t('rsvp.enterEmail')} 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="rsvpStatus"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('rsvp.willYouAttend')}</FormLabel>
+                  <FormLabel className="text-lg font-semibold text-gray-700">{t('rsvp.willYouAttend')}</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="flex flex-col space-y-2"
+                      className="flex flex-col space-y-4 pt-2"
                     >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="confirmed" id="confirmed" />
-                        <Label htmlFor="confirmed">{t('rsvp.yesAttending')}</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="declined" id="declined" />
-                        <Label htmlFor="declined">{t('rsvp.notAttending')}</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="maybe" id="maybe" />
-                        <Label htmlFor="maybe">{t('rsvp.maybe')}</Label>
-                      </div>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormControl>
+                          <RadioGroupItem value="attending" id="attending" />
+                        </FormControl>
+                        <Label htmlFor="attending" className="text-base font-medium text-gray-700">{t('rsvp.attendingOption')}</Label>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormControl>
+                          <RadioGroupItem value="attending_with_guest" id="attending_with_guest" />
+                        </FormControl>
+                        <Label htmlFor="attending_with_guest" className="text-base font-medium text-gray-700">{t('rsvp.attendingWithGuestOption')}</Label>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormControl>
+                          <RadioGroupItem value="not_attending" id="not_attending" />
+                        </FormControl>
+                        <Label htmlFor="not_attending" className="text-base font-medium text-gray-700">{t('rsvp.notAttendingOption')}</Label>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormControl>
+                          <RadioGroupItem value="pending" id="pending" />
+                        </FormControl>
+                        <Label htmlFor="pending" className="text-base font-medium text-gray-700">{t('rsvp.pendingOption')}</Label>
+                      </FormItem>
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="plusOne"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>{t('rsvp.plusOne')}</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+/>
+            
+            /
 
             <FormField
               control={form.control}
@@ -192,6 +172,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                       placeholder={t('rsvp.shareMessage')}
                       className="resize-none"
                       {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />

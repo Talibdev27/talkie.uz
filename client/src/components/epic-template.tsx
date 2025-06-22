@@ -167,7 +167,21 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               ))}
             </div>
 
-            <div className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300">
+            <div 
+              onClick={() => {
+                const mapUrl = wedding?.mapPinUrl || wedding?.venueAddress;
+                if (mapUrl) {
+                  // If it's already a full URL, open it directly
+                  if (mapUrl.startsWith('http')) {
+                    window.open(mapUrl, '_blank');
+                  } else {
+                    // Otherwise, create a Google Maps search URL
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapUrl)}`, '_blank');
+                  }
+                }
+              }}
+              className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            >
               <MapPin className="inline w-4 h-4 mr-2" />
               {wedding?.venue || t('wedding.venue')}
             </div>
@@ -243,9 +257,26 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('details.where')}</h3>
               <p className="text-gray-700 text-lg mb-2">{wedding?.venue || t('wedding.venue')}</p>
               <p className="text-gray-600 mb-4">{wedding?.venueAddress}</p>
-              <button className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
-                {t('details.showOnMap')}
-              </button>
+              <div className="flex justify-center">
+                <button 
+                  onClick={() => {
+                    const mapUrl = wedding?.mapPinUrl || wedding?.venueAddress;
+                    if (mapUrl) {
+                      // If it's already a full URL, open it directly
+                      if (mapUrl.startsWith('http')) {
+                        window.open(mapUrl, '_blank');
+                      } else {
+                        // Otherwise, create a Google Maps search URL
+                        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapUrl)}`, '_blank');
+                      }
+                    }
+                  }}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                  disabled={!wedding?.mapPinUrl && !wedding?.venueAddress}
+                >
+                  {t('details.showOnMap')}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -256,10 +287,9 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               {t('share.subtitle')}
             </p>
             <div className="max-w-lg mx-auto">
-              <EnhancedSocialShare 
-                weddingUrl={`${window.location.origin}/wedding/${wedding.uniqueUrl}`}
-                coupleNames={`${wedding.bride} & ${wedding.groom}`}
-                weddingDate={wedding.weddingDate ? format(new Date(wedding.weddingDate), 'MMMM d, yyyy', { locale: getDateLocale() }) : ''}
+              <EnhancedSocialShare
+                weddingUrl={wedding.uniqueUrl}
+                coupleName={`${wedding.bride} & ${wedding.groom}`}
               />
             </div>
           </div>

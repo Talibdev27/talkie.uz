@@ -45,21 +45,24 @@ export default function AdminWeddingEdit() {
   }, [setLocation]);
 
   // Fetch wedding details
-  const { data: wedding, isLoading: weddingLoading } = useQuery({
+  const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
     queryKey: [`/api/weddings/url/${weddingUrl}`],
     enabled: isAdmin && !!weddingUrl,
+    queryFn: () => apiRequest('GET', `/api/weddings/url/${weddingUrl}`).then(res => res.json())
   });
 
   // Fetch guests for this wedding
-  const { data: guests, isLoading: guestsLoading } = useQuery({
+  const { data: guests, isLoading: guestsLoading } = useQuery<Guest[]>({
     queryKey: ['/api/admin/guests', wedding?.id],
     enabled: isAdmin && !!wedding?.id,
+    queryFn: () => apiRequest('GET', `/api/admin/guests?weddingId=${wedding?.id}`).then(res => res.json())
   });
 
   // Fetch photos for this wedding
-  const { data: photos, isLoading: photosLoading } = useQuery({
+  const { data: photos, isLoading: photosLoading } = useQuery<any[]>({
     queryKey: [`/api/photos/wedding/${wedding?.id}`],
     enabled: isAdmin && !!wedding?.id,
+    queryFn: () => apiRequest('GET', `/api/photos/wedding/${wedding?.id}`).then(res => res.json())
   });
 
   // Update wedding mutation
@@ -335,13 +338,13 @@ export default function AdminWeddingEdit() {
                       {editMode ? (
                         <Input
                           type="date"
-                          value={weddingData?.weddingDate?.split('T')[0] || ''}
+                          value={weddingData?.weddingDate ? new Date(weddingData.weddingDate).toISOString().split('T')[0] : ''}
                           onChange={(e) => handleInputChange('weddingDate', e.target.value)}
                           className="wedding-input"
                         />
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
-                          {new Date(wedding.weddingDate).toLocaleDateString()}
+                          {wedding.weddingDate ? new Date(wedding.weddingDate).toLocaleDateString() : 'No date set'}
                         </p>
                       )}
                     </div>
@@ -399,6 +402,27 @@ export default function AdminWeddingEdit() {
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Map Pin URL (Optional)
+                      </label>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Custom map link for the "Show on Map" button. If empty, will use venue address.
+                      </p>
+                      {editMode ? (
+                        <Input
+                          value={weddingData?.mapPinUrl || ''}
+                          onChange={(e) => handleInputChange('mapPinUrl', e.target.value)}
+                          className="wedding-input"
+                          placeholder="https://maps.app.goo.gl/example or Google Maps URL"
+                        />
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">
+                          {wedding.mapPinUrl || 'Not set - using venue address'}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
                         Template
                       </label>
                       {editMode ? (
@@ -427,27 +451,12 @@ export default function AdminWeddingEdit() {
                           onChange={(e) => handleInputChange('defaultLanguage', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                          <option value="uz">O'zbekcha</option>
                           <option value="en">English</option>
-                          <option value="ru">Русский</option>
+                          <option value="ru">Russian</option>
+                          <option value="uz">O'zbekcha</option>
                         </select>
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg capitalize">{wedding.defaultLanguage}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                        Venue Address
-                      </label>
-                      {editMode ? (
-                        <Input
-                          value={weddingData?.venueAddress || ''}
-                          onChange={(e) => handleInputChange('venueAddress', e.target.value)}
-                          className="wedding-input"
-                        />
-                      ) : (
-                        <p className="p-3 bg-gray-50 rounded-lg">{wedding.venueAddress}</p>
                       )}
                     </div>
 
@@ -535,38 +544,6 @@ export default function AdminWeddingEdit() {
                     )}
                   </div>
                 </div>
-
-                {/* Guest Welcome Message Section */}
-                <div className="mt-8">
-                  <h3 className="text-lg font-semibold text-[#2C3338] mb-4 flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-[#D4B08C]" />
-                    Guest Welcome Message
-                  </h3>
-                  <div>
-                    <label className="block text-sm font-medium text-[#2C3338] mb-2">
-                      Welcome Message for Guests (Optional)
-                    </label>
-                    <p className="text-sm text-gray-600 mb-3">
-                      Add a special welcome message for your guests. This will appear as a formal invitation section on your wedding website.
-                    </p>
-                    {editMode ? (
-                      <Textarea
-                        value={weddingData?.welcomeMessage || ''}
-                        onChange={(e) => handleInputChange('welcomeMessage', e.target.value)}
-                        className="wedding-input min-h-[120px]"
-                        placeholder="Dear Guests! We are honored to invite you to celebrate as esteemed guests at the wedding of [Bride] and [Groom]. On this joyous day, filled with kindness in our hearts, join us alongside loved ones!"
-                      />
-                    ) : (
-                      <div className="p-4 bg-gray-50 rounded-lg min-h-[120px]">
-                        {wedding.welcomeMessage ? (
-                          <p className="text-gray-800 leading-relaxed whitespace-pre-line">{wedding.welcomeMessage}</p>
-                        ) : (
-                          <p className="text-gray-500 italic">No welcome message added yet.</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -587,17 +564,36 @@ export default function AdminWeddingEdit() {
                   </div>
                 ) : guests && guests.length > 0 ? (
                   <div className="space-y-3">
-                    {guests.map((guest: Guest) => (
-                      <div key={guest.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <p className="font-medium text-[#2C3338]">{guest.name}</p>
-                          <p className="text-sm text-[#2C3338]/70">{guest.email}</p>
-                        </div>
-                        <Badge variant={guest.rsvp === 'confirmed' ? 'default' : 'secondary'}>
-                          {guest.rsvp || 'pending'}
-                        </Badge>
-                      </div>
-                    ))}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <th className="p-3 text-left">Name</th>
+                      <th className="p-3 text-left">Email</th>
+                      <th className="p-3 text-left">Status</th>
+                      <th className="p-3 text-left">Message</th>
+                      <th className="p-3 text-left">Responded At</th>
+                    </div>
+                    <tbody>
+                      {guests.map(guest => (
+                        <tr key={guest.id} className="border-b border-gray-200">
+                          <td className="p-3">{guest.name}</td>
+                          <td className="p-3">{guest.email || '-'}</td>
+                          <td className="p-3">
+                            <Badge 
+                              variant={
+                                guest.rsvpStatus === 'confirmed' ? 'default' :
+                                guest.rsvpStatus === 'declined' ? 'destructive' : 'secondary'
+                              }
+                              className="capitalize"
+                            >
+                              {guest.rsvpStatus}
+                            </Badge>
+                          </td>
+                          <td className="p-3">{guest.message || '-'}</td>
+                          <td className="p-3">
+                            {guest.respondedAt ? new Date(guest.respondedAt).toLocaleString() : '-'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
                   </div>
                 ) : (
                   <div className="text-center py-8 text-[#2C3338]/70">

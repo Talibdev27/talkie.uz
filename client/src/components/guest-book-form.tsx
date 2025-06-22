@@ -6,12 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface GuestBookFormProps {
   weddingId: number;
 }
 
 export function GuestBookForm({ weddingId }: GuestBookFormProps) {
+  const { t } = useTranslation();
   const [guestName, setGuestName] = useState('');
   const [message, setMessage] = useState('');
   const { toast } = useToast();
@@ -49,8 +51,8 @@ export function GuestBookForm({ weddingId }: GuestBookFormProps) {
     e.preventDefault();
     if (!guestName.trim() || !message.trim()) {
       toast({
-        title: 'Missing Information',
-        description: 'Please enter your name and message.',
+        title: t('common.error'),
+        description: t('guestBook.form.fillAllFields'),
         variant: 'destructive',
       });
       return;
@@ -64,7 +66,7 @@ export function GuestBookForm({ weddingId }: GuestBookFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Input
-              placeholder="Your name"
+              placeholder={t('guestBook.form.namePlaceholder')}
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
               required
@@ -72,7 +74,7 @@ export function GuestBookForm({ weddingId }: GuestBookFormProps) {
           </div>
           <div>
             <Textarea
-              placeholder="Write your message for the couple..."
+              placeholder={t('guestBook.form.messagePlaceholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
@@ -84,7 +86,7 @@ export function GuestBookForm({ weddingId }: GuestBookFormProps) {
             className="w-full bg-blue-600 hover:bg-blue-700"
             disabled={createEntryMutation.isPending}
           >
-            {createEntryMutation.isPending ? 'Adding...' : 'Add Message'}
+            {createEntryMutation.isPending ? t('common.loading') : t('guestBook.form.submit')}
           </Button>
         </form>
       </CardContent>
