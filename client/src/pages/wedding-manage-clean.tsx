@@ -16,6 +16,7 @@ import { ArrowLeft, Save, Eye, Edit, Camera, Heart, Settings, Calendar, MapPin, 
 import { LanguageToggle } from '@/components/language-toggle';
 import { PersonalizedGuestDashboard } from '@/components/personalized-guest-dashboard';
 import { EnhancedRSVPManager } from '@/components/enhanced-rsvp-manager';
+import { MobileGuestManager } from '@/components/mobile-guest-manager';
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
@@ -330,7 +331,12 @@ export default function WeddingManage() {
                 </CardContent>
               </Card>
             ) : (
-              <EnhancedRSVPManager wedding={wedding} guests={guests || []} />
+              wedding && (
+                <MobileGuestManager 
+                  weddingId={wedding.id}
+                  weddingTitle={`${wedding.bride} & ${wedding.groom}`}
+                />
+              )
             )}
           </TabsContent>
 

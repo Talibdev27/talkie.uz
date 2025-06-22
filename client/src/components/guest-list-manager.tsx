@@ -26,7 +26,7 @@ interface GuestListManagerProps {
   className?: string;
 }
 
-const guestSchema = insertGuestSchema.omit({ id: true, weddingId: true, createdAt: true, respondedAt: true });
+const guestSchema = insertGuestSchema.omit({ weddingId: true });
 type GuestFormData = z.infer<typeof guestSchema>;
 
 export function GuestListManager({ weddingId, className = '' }: GuestListManagerProps) {
@@ -67,19 +67,21 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
   const addGuestMutation = useMutation({
     mutationFn: (data: GuestFormData) => {
       const guestData: InsertGuest = {
-        ...data,
+        name: data.name,
         weddingId,
         email: data.email || null,
         phone: data.phone || null,
+        rsvpStatus: data.rsvpStatus,
+        plusOne: data.plusOne,
         plusOneName: data.plusOneName || null,
+        additionalGuests: data.additionalGuests,
+        category: data.category,
+        side: data.side,
         dietaryRestrictions: data.dietaryRestrictions || null,
         address: data.address || null,
         notes: data.notes || null,
       };
-      return apiRequest('/api/guests', {
-        method: 'POST',
-        body: JSON.stringify(guestData),
-      });
+      return apiRequest('POST', '/api/guests', guestData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
@@ -95,10 +97,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
 
   // Update guest mutation
   const updateGuestMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Guest> }) => apiRequest(`/api/guests/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    }),
+    mutationFn: ({ id, data }: { id: number; data: Partial<Guest> }) => apiRequest('PATCH', `/api/guests/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
       toast({
@@ -110,9 +109,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
 
   // Delete guest mutation
   const deleteGuestMutation = useMutation({
-    mutationFn: (guestId: number) => apiRequest(`/api/guests/${guestId}`, {
-      method: 'DELETE',
-    }),
+    mutationFn: (guestId: number) => apiRequest('DELETE', `/api/guests/${guestId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
       toast({
@@ -195,152 +192,208 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
     };
 
     return (
-      <Badge variant={variants[status]}>
+      <Badge variant={variants[status]} className="text-xs font-semibold px-3 py-1 rounded-full">
         {labels[status]}
       </Badge>
     );
   };
 
   const getStatusIcon = (status: Guest['rsvpStatus']) => {
-    switch (status) {
-      case 'confirmed': return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'declined': return <XCircle className="h-4 w-4 text-red-600" />;
-      default: return <Clock className="h-4 w-4 text-yellow-600" />;
-    }
+    const icons = {
+      confirmed: <CheckCircle className="h-4 w-4 text-green-500" />,
+      declined: <XCircle className="h-4 w-4 text-red-500" />,
+      pending: <Clock className="h-4 w-4 text-yellow-500" />,
+      maybe: <Clock className="h-4 w-4 text-blue-500" />,
+    };
+
+    return icons[status];
   };
 
   if (isLoading) {
     return (
-      <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D4B08C] mx-auto mb-4"></div>
-        <p className="text-[#2C3338]/70">Loading guests...</p>
+      <div className={`space-y-4 ${className}`}>
+        <div className="animate-pulse">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
+                <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
+  const responseRate = stats.total > 0 ? Math.round(((stats.confirmed + stats.declined + stats.maybe) / stats.total) * 100) : 0;
+
   return (
-    <div className={className}>
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {t('guestList.totalGuests')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-green-600">
-              {t('guestList.confirmed')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.confirmed}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-red-600">
-              {t('guestList.declined')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats.declined}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-yellow-600">
-              {t('guestList.pending')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-blue-600">
-              {t('guestList.maybe')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.maybe}</div>
-          </CardContent>
-        </Card>
+    <div className={`space-y-4 sm:space-y-6 ${className}`}>
+      {/* Mobile-First Stats Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
+          <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">{stats.confirmed}</div>
+          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.confirmed')}</div>
+        </div>
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
+          <div className="text-2xl sm:text-3xl font-bold text-yellow-600 mb-2">{stats.pending}</div>
+          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.pending')}</div>
+        </div>
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
+          <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">{stats.maybe}</div>
+          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.maybe')}</div>
+        </div>
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
+          <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">{stats.declined}</div>
+          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.declined')}</div>
+        </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      {/* Progress Section */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
+        <div className="flex justify-between items-center mb-4">
+          <span className="font-semibold text-gray-900">{t('guestList.responseRate')}</span>
+          <span className="text-green-600 font-bold">{responseRate}%</span>
+        </div>
+        <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div 
+            className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full transition-all duration-500"
+            style={{ width: `${responseRate}%` }}
+          ></div>
+        </div>
+        <div className="mt-3 text-sm text-gray-600">
+          {stats.confirmed + stats.declined + stats.maybe} out of {stats.total} guests responded
+        </div>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
+        <div className="space-y-4">
           <Input
+            type="text"
             placeholder={t('guestList.searchGuests')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-8"
+            className="w-full h-12 px-5 text-base border-2 border-gray-200 rounded-xl focus:border-blue-500 bg-gray-50 focus:bg-white transition-all"
           />
+          
+          {/* Filter Tabs - Mobile Scrollable */}
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {[
+              { key: 'all', label: t('guestList.all') },
+              { key: 'confirmed', label: t('guestList.confirmed') },
+              { key: 'pending', label: t('guestList.pending') },
+              { key: 'maybe', label: t('guestList.maybe') },
+              { key: 'declined', label: t('guestList.declined') }
+            ].map((filter) => (
+              <button
+                key={filter.key}
+                onClick={() => setStatusFilter(filter.key)}
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                  statusFilter === filter.key
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-blue-300'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </div>
-        
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full md:w-40">
-            <SelectValue placeholder={t('guestList.filterByStatus')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t('guestList.allStatuses')}</SelectItem>
-            <SelectItem value="confirmed">{t('guestList.confirmed')}</SelectItem>
-            <SelectItem value="declined">{t('guestList.declined')}</SelectItem>
-            <SelectItem value="pending">{t('guestList.pending')}</SelectItem>
-            <SelectItem value="maybe">{t('guestList.maybe')}</SelectItem>
-          </SelectContent>
-        </Select>
-        
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-40">
-            <SelectValue placeholder={t('guestList.filterByCategory')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t('guestList.allCategories')}</SelectItem>
-            <SelectItem value="family">{t('guestList.family')}</SelectItem>
-            <SelectItem value="friends">{t('guestList.friends')}</SelectItem>
-            <SelectItem value="colleagues">{t('guestList.colleagues')}</SelectItem>
-            <SelectItem value="other">{t('guestList.other')}</SelectItem>
-          </SelectContent>
-        </Select>
+      </div>
 
+      {/* Guest List */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
+        <div className="space-y-3">
+          {filteredGuests.length === 0 ? (
+            <div className="text-center py-12">
+              <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('guestList.noGuests')}</h3>
+              <p className="text-gray-600 mb-4">{t('guestList.noGuestsDesc')}</p>
+            </div>
+          ) : (
+            filteredGuests.map((guest: Guest) => (
+              <div key={guest.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2">
+                    {getStatusIcon(guest.rsvpStatus)}
+                    <h4 className="font-semibold text-gray-900 truncate">{guest.name}</h4>
+                  </div>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    {guest.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-3 w-3" />
+                        <span>{guest.phone}</span>
+                      </div>
+                    )}
+                    {guest.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-3 w-3" />
+                        <span className="truncate">{guest.email}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  {getStatusBadge(guest.rsvpStatus)}
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEdit(guest)}
+                      className="h-9 w-9 p-0"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => deleteGuestMutation.mutate(guest.id)}
+                      className="h-9 w-9 p-0 text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Floating Action Button */}
+      <div className="fixed bottom-6 right-6 z-50">
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="wedding-button">
-              <Plus className="h-4 w-4 mr-2" />
-              {t('guestList.addGuest')}
+            <Button 
+              size="lg"
+              className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-3xl transition-all duration-200 active:scale-95"
+              onClick={() => {
+                setEditingGuest(null);
+                form.reset();
+              }}
+            >
+              <Plus className="h-6 w-6" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingGuest ? t('guestList.editGuest') : t('guestList.addNewGuest')}
+                {editingGuest ? t('guestList.editGuest') : t('guestList.addGuest')}
               </DialogTitle>
             </DialogHeader>
-            
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('guestList.guestName')}</FormLabel>
+                      <FormItem className="sm:col-span-2">
+                        <FormLabel>{t('guestList.name')}</FormLabel>
                         <FormControl>
-                          <Input placeholder={t('guestList.enterGuestName')} {...field} />
+                          <Input {...field} className="h-12" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -354,7 +407,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
                       <FormItem>
                         <FormLabel>{t('guestList.email')}</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder={t('guestList.enterEmail')} {...field} />
+                          <Input {...field} type="email" className="h-12" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -368,8 +421,32 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
                       <FormItem>
                         <FormLabel>{t('guestList.phone')}</FormLabel>
                         <FormControl>
-                          <Input placeholder={t('guestList.enterPhone')} {...field} />
+                          <Input {...field} className="h-12" />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="rsvpStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('guestList.status')}</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-12">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="pending">{t('guestList.pending')}</SelectItem>
+                            <SelectItem value="confirmed">{t('guestList.confirmed')}</SelectItem>
+                            <SelectItem value="maybe">{t('guestList.maybe')}</SelectItem>
+                            <SelectItem value="declined">{t('guestList.declined')}</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -383,8 +460,8 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
                         <FormLabel>{t('guestList.category')}</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder={t('guestList.selectCategory')} />
+                            <SelectTrigger className="h-12">
+                              <SelectValue />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -400,30 +477,57 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
                   />
                 </div>
 
-                <div className="flex gap-2 pt-4">
+                <div className="flex items-center space-x-2">
+                  <FormField
+                    control={form.control}
+                    name="plusOne"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>{t('guestList.plusOne')}</FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {form.watch('plusOne') && (
+                  <FormField
+                    control={form.control}
+                    name="plusOneName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('guestList.plusOneName')}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="h-12" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => {
-                      setIsAddDialogOpen(false);
-                      setEditingGuest(null);
-                      form.reset();
-                    }}
-                    className="flex-1"
+                    onClick={() => setIsAddDialogOpen(false)}
+                    className="flex-1 h-12"
                   >
                     {t('common.cancel')}
                   </Button>
-                  <Button
-                    type="submit"
+                  <Button 
+                    type="submit" 
                     disabled={addGuestMutation.isPending || updateGuestMutation.isPending}
-                    className="wedding-button flex-1"
+                    className="flex-1 h-12"
                   >
-                    {(addGuestMutation.isPending || updateGuestMutation.isPending) 
-                      ? t('common.saving') 
-                      : editingGuest 
-                        ? t('common.save') 
-                        : t('guestList.addGuest')
-                    }
+                    {editingGuest ? t('guestList.updateGuest') : t('guestList.addGuest')}
                   </Button>
                 </div>
               </form>
@@ -431,60 +535,6 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
           </DialogContent>
         </Dialog>
       </div>
-
-      {/* Guest List */}
-      <div className="space-y-4">
-        {filteredGuests.map((guest) => (
-          <Card key={guest.id} className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(guest.rsvpStatus)}
-                  <div>
-                    <div className="font-medium">{guest.name}</div>
-                    <div className="text-sm text-gray-500 flex items-center gap-4">
-                      {guest.email && (
-                        <span className="flex items-center gap-1">
-                          <Mail className="h-3 w-3" />
-                          {guest.email}
-                        </span>
-                      )}
-                      {guest.phone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="h-3 w-3" />
-                          {guest.phone}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                {guest.plusOne && (
-                  <Badge variant="outline">+1</Badge>
-                )}
-                {getStatusBadge(guest.rsvpStatus)}
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => handleEdit(guest)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      {filteredGuests.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          {searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
-            ? t('guestList.noGuestsFound') 
-            : t('guestList.noGuestsYet')
-          }
-        </div>
-      )}
     </div>
   );
 }
