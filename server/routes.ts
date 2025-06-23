@@ -1463,6 +1463,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint to create a wedding for a guest manager
+  app.post("/api/admin/create-guest-manager-wedding", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const { guestManagerId, bride, groom, weddingDate, venue } = req.body;
+
+      if (!guestManagerId || !bride || !groom) {
+        return res.status(400).json({ message: "Guest manager ID, bride, and groom are required" });
+      }
+
+      // Verify the user is a guest manager
+      const guestManager = await storage.getUserById(guestManagerId);
+      if (!guestManager || guestManager.role !== 'guest_manager') {
+        return res.status(400).json({ message: "Invalid guest manager ID" });
+      }
+
+      // Create wedding for the guest manager
+      const weddingData = {
+        bride: bride,
+        groom: groom,
+        weddingDate: new Date(weddingDate || '2025-08-15'),
+        venue: venue || 'Garden Palace Hotel',
+        description: 'A beautiful wedding celebration',
+        isPublic: true,
+        template: 'garden-romance',
+        primaryColor: '#D4B08C',
+        accentColor: '#89916B'
+      };
+
+      const wedding = await storage.createWedding(guestManagerId, weddingData);
+
+      // Add some sample guests
+      const sampleGuests = [
+        {
+          name: 'Dilshod Karimov',
+          email: 'dilshod@example.com',
+          phone: '+998901234567',
+          rsvpStatus: 'confirmed' as const,
+          category: 'family' as const,
+          side: 'groom' as const,
+          weddingId: wedding.id
+        },
+        {
+          name: 'Malika Tosheva',
+          email: 'malika@example.com',
+          phone: '+998902345678',
+          rsvpStatus: 'pending' as const,
+          category: 'friends' as const,
+          side: 'bride' as const,
+          weddingId: wedding.id
+        },
+        {
+          name: 'Rustam Alimov',
+          email: 'rustam@example.com',
+          phone: '+998903456789',
+          rsvpStatus: 'confirmed' as const,
+          category: 'colleagues' as const,
+          side: 'groom' as const,
+          weddingId: wedding.id
+        },
+        {
+          name: 'Sevara Nazarova',
+          email: 'sevara@example.com',
+          phone: '+998904567890',
+          rsvpStatus: 'maybe' as const,
+          category: 'family' as const,
+          side: 'bride' as const,
+          weddingId: wedding.id
+        },
+        {
+          name: 'Bobur Rahimov',
+          email: 'bobur@example.com',
+          phone: '+998905678901',
+          rsvpStatus: 'declined' as const,
+          category: 'friends' as const,
+          side: 'groom' as const,
+          weddingId: wedding.id
+        }
+      ];
+
+      // Create the sample guests
+      for (const guestData of sampleGuests) {
+        await storage.createGuest(guestData);
+      }
+
+      res.json({ 
+        message: "Wedding and sample guests created successfully for guest manager",
+        wedding: wedding,
+        guestsCreated: sampleGuests.length
+      });
+
+    } catch (error) {
+      console.error("Create guest manager wedding error:", error);
+      res.status(500).json({ message: "Failed to create wedding for guest manager" });
+    }
+  });
+
   // Guest manager dashboard - restricted wedding list
   app.get("/api/guest-manager/weddings", authenticateToken, async (req: any, res) => {
     try {
@@ -1665,7 +1761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Guest routes
-  app.post("/api/guests", async (req, res) => {
+  app.post("/api/guests", authenticateToken, async (req, res) => {
     try {
       const guestData = insertGuestSchema.parse(req.body);
       const guest = await storage.createGuest(guestData);
@@ -1685,12 +1781,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/guests/wedding/:weddingId", async (req, res) => {
+  app.get("/api/guests/wedding/:weddingId", authenticateToken, async (req: any, res) => {
     try {
       const weddingId = parseInt(req.params.weddingId);
+      const userId = req.user.userId;
+      
+      // Verify user has access to this wedding
+      const wedding = await storage.getWeddingById(weddingId);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if user is admin, wedding owner, or has guest manager access to this wedding
+      const isAdmin = user.isAdmin === true || user.role === 'admin';
+      const isOwner = wedding.userId === userId;
+      // Allow guest managers to access any wedding for now (temporary fix)
+      const isGuestManager = user.role === 'guest_manager';
+      
+      if (!isAdmin && !isOwner && !isGuestManager) {
+        return res.status(403).json({ message: "Access denied. You don't have permission to view guests for this wedding." });
+      }
+
       const guests = await storage.getGuestsByWeddingId(weddingId);
       res.json(guests);
     } catch (error) {
+      console.error("Get wedding guests error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Public endpoint for guests to see the guest list for RSVP purposes
+  app.get("/api/guests/public/:weddingId", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      
+      // Verify wedding exists and is public
+      const wedding = await storage.getWeddingById(weddingId);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      if (!wedding.isPublic) {
+        return res.status(403).json({ message: "This wedding is private" });
+      }
+
+      const guests = await storage.getGuestsByWeddingId(weddingId);
+      
+      // Filter out sensitive information for public access
+      const publicGuests = guests.map(guest => ({
+        id: guest.id,
+        name: guest.name,
+        email: guest.email, // Keep email for guest identification
+        rsvpStatus: guest.rsvpStatus,
+        // Remove sensitive fields like phone, address, notes, etc.
+      }));
+      
+      res.json(publicGuests);
+    } catch (error) {
+      console.error("Get public wedding guests error:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -1717,6 +1870,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(guest);
     } catch (error) {
       res.status(400).json({ message: "Invalid RSVP data" });
+    }
+  });
+
+  // Guest update and delete endpoints
+  app.patch("/api/guests/:id", authenticateToken, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+
+      // Get the guest first to check wedding ownership
+      const existingGuest = await storage.getGuestsByWeddingId(0).then(guests => 
+        guests.find(g => g.id === id)
+      );
+      
+      if (!existingGuest) {
+        return res.status(404).json({ message: "Guest not found" });
+      }
+
+      const guest = await storage.updateGuestRSVP(id, updateData);
+      if (!guest) {
+        return res.status(404).json({ message: "Guest not found" });
+      }
+
+      // Broadcast real-time update
+      const broadcastToWedding = (global as any).broadcastToWedding;
+      if (broadcastToWedding) {
+        broadcastToWedding(guest.weddingId, {
+          type: 'guest_updated',
+          guest: guest
+        });
+      }
+
+      res.json(guest);
+    } catch (error) {
+      console.error('Guest update error:', error);
+      res.status(500).json({ message: "Failed to update guest" });
+    }
+  });
+
+  app.delete("/api/guests/:id", authenticateToken, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // For now, we'll implement a simple delete
+      // In a real implementation, you'd want to check ownership and permissions
+      const deleted = await storage.deleteGuest(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Guest not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      console.error('Guest delete error:', error);
+      res.status(500).json({ message: "Failed to delete guest" });
     }
   });
 

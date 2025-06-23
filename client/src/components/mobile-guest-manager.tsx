@@ -10,6 +10,7 @@ import {
   Plus, Search, Edit, Trash2, Mail, Phone,
   CheckCircle, XCircle, Clock, UserPlus
 } from 'lucide-react';
+import { AddGuestDialog } from '@/components/add-guest-dialog';
 import type { Guest } from '@shared/schema';
 
 interface MobileGuestManagerProps {
@@ -27,7 +28,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
   // Fetch guests
   const { data: guests = [], isLoading } = useQuery<Guest[]>({
-    queryKey: ['/api/guests/wedding', weddingId],
+    queryKey: [`/api/guests/wedding/${weddingId}`],
     enabled: !!weddingId,
   });
 
@@ -39,7 +40,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
         respondedAt: new Date(),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
       toast({
         title: t('guestList.guestUpdated'),
         description: t('guestList.guestUpdatedSuccess'),
@@ -51,7 +52,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
   const deleteGuestMutation = useMutation({
     mutationFn: (guestId: number) => apiRequest('DELETE', `/api/guests/${guestId}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
       toast({
         title: t('guestList.guestDeleted'),
         description: t('guestList.guestDeletedSuccess'),
@@ -65,6 +66,8 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
   // Filter guests
   const filteredGuests = guests.filter((guest: Guest) => {
+    if (!guest || !guest.name) return false; // Safety check
+    
     const matchesSearch = guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          guest.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          guest.phone?.includes(searchTerm);
@@ -106,7 +109,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
       },
     };
 
-    const config = statusConfig[status];
+    const config = statusConfig[status] || statusConfig.pending; // Fallback to pending if status is invalid
     return (
       <Badge 
         variant={config.variant}
@@ -125,7 +128,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
       maybe: <Clock className="h-4 w-4 text-blue-500" />,
     };
 
-    return icons[status];
+    return icons[status] || icons.pending; // Fallback to pending icon if status is invalid
   };
 
   if (isLoading) {
@@ -178,7 +181,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
       {/* Progress Section */}
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
         <div className="flex justify-between items-center mb-4">
-          <span className="font-semibold text-gray-900">Response Rate</span>
+          <span className="font-semibold text-gray-900">{t('guestList.responseRate')}</span>
           <span className="text-green-600 font-bold">{responseRate}%</span>
         </div>
         <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -199,7 +202,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
             <Search className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search guests..."
+              placeholder={t('guestList.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full h-12 pl-12 pr-5 text-base border-2 border-gray-200 rounded-xl focus:border-blue-500 bg-gray-50 focus:bg-white transition-all"
@@ -237,7 +240,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
           {filteredGuests.length === 0 ? (
             <div className="text-center py-12">
               <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No guests found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('guestList.noGuests')}</h3>
               <p className="text-gray-600 mb-4">
                 {searchTerm || statusFilter !== 'all' 
                   ? 'Try adjusting your search or filters' 
@@ -313,19 +316,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
       {/* Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-50">
-        <Button 
-          size="lg"
-          className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-3xl transition-all duration-200 active:scale-95"
-          onClick={() => {
-            toast({
-              title: "Add Guest",
-              description: "Guest addition feature will be implemented soon!",
-            });
-          }}
-          title="Add new guest"
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
+        <AddGuestDialog weddingId={weddingId} />
       </div>
     </div>
   );

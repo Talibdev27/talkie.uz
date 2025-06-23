@@ -63,7 +63,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
         title: t('rsvp.thankYou'),
         description: "We've received your RSVP!",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
     },
     onError: () => {
       toast({
@@ -124,33 +124,36 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                   <FormLabel className="text-lg font-semibold text-gray-700">{t('rsvp.willYouAttend')}</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value === 'confirmed_with_guest' ? 'confirmed' : value);
+                        form.setValue('plusOne', value === 'confirmed_with_guest');
+                      }}
                       defaultValue={field.value}
                       className="flex flex-col space-y-4 pt-2"
                     >
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
-                          <RadioGroupItem value="attending" id="attending" />
+                          <RadioGroupItem value="confirmed" id="confirmed" />
                         </FormControl>
-                        <Label htmlFor="attending" className="text-base font-medium text-gray-700">{t('rsvp.attendingOption')}</Label>
+                        <Label htmlFor="confirmed" className="text-base font-medium text-gray-700">Yes, I'll be there!</Label>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
-                          <RadioGroupItem value="attending_with_guest" id="attending_with_guest" />
+                          <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" />
                         </FormControl>
-                        <Label htmlFor="attending_with_guest" className="text-base font-medium text-gray-700">{t('rsvp.attendingWithGuestOption')}</Label>
+                        <Label htmlFor="confirmed_with_guest" className="text-base font-medium text-gray-700">Yes, with a guest</Label>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
-                          <RadioGroupItem value="not_attending" id="not_attending" />
+                          <RadioGroupItem value="declined" id="declined" />
                         </FormControl>
-                        <Label htmlFor="not_attending" className="text-base font-medium text-gray-700">{t('rsvp.notAttendingOption')}</Label>
+                        <Label htmlFor="declined" className="text-base font-medium text-gray-700">Sorry, can't make it</Label>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
-                          <RadioGroupItem value="pending" id="pending" />
+                          <RadioGroupItem value="maybe" id="maybe" />
                         </FormControl>
-                        <Label htmlFor="pending" className="text-base font-medium text-gray-700">{t('rsvp.pendingOption')}</Label>
+                        <Label htmlFor="maybe" className="text-base font-medium text-gray-700">I'm not sure yet</Label>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>

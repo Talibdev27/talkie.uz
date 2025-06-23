@@ -18,6 +18,7 @@ import { PersonalizedGuestDashboard } from '@/components/personalized-guest-dash
 import { EnhancedRSVPManager } from '@/components/enhanced-rsvp-manager';
 import { MobileGuestManager } from '@/components/mobile-guest-manager';
 import { GuestBookManager } from '@/components/guest-book-manager';
+import { CouplePhotoUpload } from '@/components/couple-photo-upload';
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
@@ -386,6 +387,24 @@ export default function WeddingManage() {
                     rows={4}
                     className="wedding-input"
                     placeholder={t('manage.storyPlaceholder')}
+                  />
+                </div>
+
+                {/* Couple Photo Upload Section */}
+                <div className="space-y-2">
+                  <Label className="text-base font-medium flex items-center gap-2">
+                    <Heart className="h-4 w-4 text-red-500" />
+                    Couple Photo
+                  </Label>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Upload a beautiful photo of you both that will appear in your wedding site's hero section
+                  </p>
+                  <CouplePhotoUpload 
+                    weddingId={wedding.id}
+                    currentPhotoUrl={wedding.couplePhotoUrl || undefined}
+                    onSuccess={() => {
+                      queryClient.invalidateQueries({ queryKey: [`/api/weddings/url/${weddingUrl}`] });
+                    }}
                   />
                 </div>
 

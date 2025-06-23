@@ -10,7 +10,7 @@ import { PhotoGallery } from '@/components/photo-gallery';
 import { PhotoUpload } from '@/components/photo-upload';
 import { SmartImageUpload } from '@/components/smart-image-upload';
 import { GuestManagementDashboard } from '@/components/guest-management-dashboard';
-import { RSVPForm } from '@/components/rsvp-form';
+import { EnhancedRSVPForm } from '@/components/enhanced-rsvp-form';
 import { WeddingLanguageSwitcher } from '@/components/wedding-language-switcher';
 import { EnhancedSocialShare } from '@/components/enhanced-social-share';
 import { WeddingPageLoading } from '@/components/ui/loading';
@@ -504,7 +504,7 @@ export default function WeddingSite() {
             </p>
           </div>
           
-          <RSVPForm weddingId={wedding.id} />
+                          <EnhancedRSVPForm weddingId={wedding.id} />
         </div>
       </section>
 

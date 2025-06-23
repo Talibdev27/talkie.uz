@@ -62,7 +62,7 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
         description: t('rsvp.thankYouMessage'),
       });
       setIsSubmitted(true);
-      queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
     },
     onError: (error: any) => {
       toast({
@@ -118,25 +118,28 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
               <FormLabel className="text-gray-700 font-medium">{t('rsvp.willYouAttend')}</FormLabel>
               <FormControl>
                 <RadioGroup
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value === 'confirmed_with_guest' ? 'confirmed' : value);
+                    form.setValue('plusOne', value === 'confirmed_with_guest');
+                  }}
                   defaultValue={field.value}
                   className="flex flex-col space-y-3"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="attending" id="attending" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="attending" className="text-gray-700">{t('rsvp.attendingOption')}</Label>
+                    <RadioGroupItem value="confirmed" id="confirmed" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="confirmed" className="text-gray-700">Yes, I'll be there!</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="attending_with_guest" id="attending_with_guest" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="attending_with_guest" className="text-gray-700">{t('rsvp.attendingWithGuestOption')}</Label>
+                    <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="confirmed_with_guest" className="text-gray-700">Yes, with a guest</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="not_attending" id="not_attending" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="not_attending" className="text-gray-700">{t('rsvp.notAttendingOption')}</Label>
+                    <RadioGroupItem value="declined" id="declined" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="declined" className="text-gray-700">Sorry, can't make it</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pending" id="pending" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="pending" className="text-gray-700">{t('rsvp.pendingOption')}</Label>
+                    <RadioGroupItem value="maybe" id="maybe" className="border-blue-500 text-blue-600" />
+                    <Label htmlFor="maybe" className="text-gray-700">I'm not sure yet</Label>
                   </div>
                 </RadioGroup>
               </FormControl>

@@ -168,7 +168,29 @@ const resources = {
       "guestManager.manageGuests": "Manage Guests",
       "guestManager.noAssignedWeddings": "No Assigned Weddings",
       "guestManager.noAssignedWeddingsDesc": "You haven't been assigned to manage any weddings yet.",
-      "guestManager.contactAdmin": "Please contact your administrator for access."
+      "guestManager.contactAdmin": "Please contact your administrator for access.",
+
+      // Guest List
+      "guestList.confirmed": "Confirmed",
+      "guestList.pending": "Pending",
+      "guestList.maybe": "Maybe",
+      "guestList.declined": "Declined",
+      "guestList.responseRate": "Response Rate",
+      "guestList.totalGuests": "Total Guests",
+      "guestList.searchPlaceholder": "Search guests...",
+      "guestList.searchGuests": "Search guests...",
+      "guestList.noGuests": "No guests found",
+      "guestList.addGuest": "Add Guest",
+      "guestList.guestUpdated": "Guest Updated",
+      "guestList.guestUpdatedSuccess": "Guest information has been updated successfully",
+      "guestList.guestDeleted": "Guest Deleted",
+      "guestList.guestDeletedSuccess": "Guest has been deleted successfully",
+      "guestList.guestAdded": "Guest Added",
+      "guestList.guestAddedSuccess": "Guest has been added successfully",
+      "GUESTLIST.CONFIRMED": "Confirmed",
+      "GUESTLIST.PENDING": "Pending",
+      "GUESTLIST.MAYBE": "Maybe",
+      "GUESTLIST.DECLINED": "Declined"
     }
   },
   ru: {
@@ -337,7 +359,29 @@ const resources = {
       "guestManager.manageGuests": "Управлять Гостями",
       "guestManager.noAssignedWeddings": "Нет Назначенных Свадеб",
       "guestManager.noAssignedWeddingsDesc": "Вам еще не назначено управление свадьбами.",
-      "guestManager.contactAdmin": "Пожалуйста, свяжитесь с администратором для получения доступа."
+      "guestManager.contactAdmin": "Пожалуйста, свяжитесь с администратором для получения доступа.",
+
+      // Guest List
+      "guestList.confirmed": "Подтверждено",
+      "guestList.pending": "Ожидание",
+      "guestList.maybe": "Возможно",
+      "guestList.declined": "Отклонено",
+      "guestList.responseRate": "Процент ответов",
+      "guestList.totalGuests": "Всего гостей",
+      "guestList.searchPlaceholder": "Поиск гостей...",
+      "guestList.searchGuests": "Поиск гостей...",
+      "guestList.noGuests": "Гости не найдены",
+      "guestList.addGuest": "Добавить гостя",
+      "guestList.guestUpdated": "Гость обновлен",
+      "guestList.guestUpdatedSuccess": "Информация о госте успешно обновлена",
+      "guestList.guestDeleted": "Гость удален",
+      "guestList.guestDeletedSuccess": "Гость успешно удален",
+      "guestList.guestAdded": "Гость добавлен",
+      "guestList.guestAddedSuccess": "Гость успешно добавлен",
+      "GUESTLIST.CONFIRMED": "Подтверждено",
+      "GUESTLIST.PENDING": "Ожидание",
+      "GUESTLIST.MAYBE": "Возможно",
+      "GUESTLIST.DECLINED": "Отклонено"
     }
   },
   uz: {
@@ -506,7 +550,29 @@ const resources = {
       "guestManager.manageGuests": "Mehmonlarni Boshqarish",
       "guestManager.noAssignedWeddings": "Tayinlangan To'ylar Yo'q",
       "guestManager.noAssignedWeddingsDesc": "Sizga hali hech qanday to'yni boshqarish tayinlanmagan.",
-      "guestManager.contactAdmin": "Kirish uchun administratoringiz bilan bog'laning."
+      "guestManager.contactAdmin": "Kirish uchun administratoringiz bilan bog'laning.",
+
+      // Guest List
+      "guestList.confirmed": "Tasdiqlangan",
+      "guestList.pending": "Kutilmoqda",
+      "guestList.maybe": "Ehtimol",
+      "guestList.declined": "Rad etilgan",
+      "guestList.responseRate": "Javob berish foizi",
+      "guestList.totalGuests": "Jami mehmonlar",
+      "guestList.searchPlaceholder": "Mehmonlarni qidirish...",
+      "guestList.searchGuests": "Mehmonlarni qidirish...",
+      "guestList.noGuests": "Mehmonlar topilmadi",
+      "guestList.addGuest": "Mehmon qo'shish",
+      "guestList.guestUpdated": "Mehmon yangilandi",
+      "guestList.guestUpdatedSuccess": "Mehmon ma'lumotlari muvaffaqiyatli yangilandi",
+      "guestList.guestDeleted": "Mehmon o'chirildi",
+      "guestList.guestDeletedSuccess": "Mehmon muvaffaqiyatli o'chirildi",
+      "guestList.guestAdded": "Mehmon qo'shildi",
+      "guestList.guestAddedSuccess": "Mehmon muvaffaqiyatli qo'shildi",
+      "GUESTLIST.CONFIRMED": "Tasdiqlangan",
+      "GUESTLIST.PENDING": "Kutilmoqda",
+      "GUESTLIST.MAYBE": "Ehtimol",
+      "GUESTLIST.DECLINED": "Rad etilgan"
     }
   }
 };

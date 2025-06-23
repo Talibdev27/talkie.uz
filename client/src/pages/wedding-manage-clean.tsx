@@ -17,6 +17,7 @@ import { LanguageToggle } from '@/components/language-toggle';
 import { PersonalizedGuestDashboard } from '@/components/personalized-guest-dashboard';
 import { EnhancedRSVPManager } from '@/components/enhanced-rsvp-manager';
 import { MobileGuestManager } from '@/components/mobile-guest-manager';
+import { CouplePhotoUpload } from '@/components/couple-photo-upload';
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
@@ -124,8 +125,14 @@ export default function WeddingManage() {
     );
   }
 
-  // Check if current user owns this wedding
-  if (currentUser && wedding.userId !== currentUser.id) {
+  // Check if current user owns this wedding or is a guest manager
+  const canAccess = currentUser && (
+    wedding.userId === currentUser.id || 
+    currentUser.role === 'guest_manager' ||
+    currentUser.isAdmin
+  );
+  
+  if (currentUser && !canAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -299,6 +306,24 @@ export default function WeddingManage() {
                       className="wedding-input"
                     />
                   </div>
+                </div>
+
+                {/* Couple Photo Upload Section */}
+                <div className="space-y-2">
+                  <Label className="text-base font-medium flex items-center gap-2">
+                    <Heart className="h-4 w-4 text-red-500" />
+                    Couple Photo
+                  </Label>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Upload a beautiful photo of you both that will appear in your wedding site's hero section
+                  </p>
+                  <CouplePhotoUpload 
+                    weddingId={wedding.id}
+                    currentPhotoUrl={wedding.couplePhotoUrl || undefined}
+                    onSuccess={() => {
+                      queryClient.invalidateQueries({ queryKey: [`/api/weddings/url/${weddingUrl}`] });
+                    }}
+                  />
                 </div>
 
                 <div className="flex items-center gap-2">
