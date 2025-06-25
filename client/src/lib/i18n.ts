@@ -121,6 +121,10 @@ const resources = {
       // Management
       "manage.weddingDetails": "Wedding Details",
       "manage.guestManagement": "Guest Management",
+      "manage.backToDashboard": "Back to Dashboard",
+      "manage.weddingManagement": "Wedding Management",
+      "manage.welcome": "Welcome",
+      "manage.viewSite": "View Site",
 
       // Common
       "common.loading": "Loading...",
@@ -187,6 +191,7 @@ const resources = {
       "guestList.guestDeletedSuccess": "Guest has been deleted successfully",
       "guestList.guestAdded": "Guest Added",
       "guestList.guestAddedSuccess": "Guest has been added successfully",
+      "guestList.comments": "Comments",
       "GUESTLIST.CONFIRMED": "Confirmed",
       "GUESTLIST.PENDING": "Pending",
       "GUESTLIST.MAYBE": "Maybe",
