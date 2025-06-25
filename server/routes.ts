@@ -376,12 +376,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug endpoint to check environment variables
+  app.get("/api/debug/env", (req, res) => {
+    res.json({
+      hasAdminUsername: !!process.env.ADMIN_USERNAME,
+      hasAdminPassword: !!process.env.ADMIN_PASSWORD,
+      adminUsernameLength: process.env.ADMIN_USERNAME?.length || 0,
+      adminPasswordLength: process.env.ADMIN_PASSWORD?.length || 0
+    });
+  });
+
   // Admin login endpoint
   app.post("/api/admin/login", async (req, res) => {
     try {
       const { username, password } = req.body;
 
-
+      console.log("Admin login attempt:");
+      console.log("Received username:", JSON.stringify(username));
+      console.log("Received password:", JSON.stringify(password));
+      console.log("Expected username:", JSON.stringify(process.env.ADMIN_USERNAME));
+      console.log("Expected password:", JSON.stringify(process.env.ADMIN_PASSWORD));
+      console.log("Username match:", username === process.env.ADMIN_USERNAME);
+      console.log("Password match:", password === process.env.ADMIN_PASSWORD);
 
       // Check credentials against environment variables
       if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
