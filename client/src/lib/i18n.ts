@@ -613,12 +613,23 @@ const resources = {
   }
 };
 
+// Get language from localStorage or default to Uzbek
+const getInitialLanguage = () => {
+  if (typeof window !== 'undefined') {
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && ['uz', 'en', 'ru'].includes(savedLanguage)) {
+      return savedLanguage;
+    }
+  }
+  return 'uz'; // Default to Uzbek
+};
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en',
-    fallbackLng: 'en',
+    lng: getInitialLanguage(),
+    fallbackLng: 'uz',
     debug: true,
     interpolation: {
       escapeValue: false,
