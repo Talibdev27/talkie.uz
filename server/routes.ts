@@ -399,8 +399,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Username match:", username === process.env.ADMIN_USERNAME);
       console.log("Password match:", password === process.env.ADMIN_PASSWORD);
 
-      // Check credentials against environment variables
-      if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
+      // Check credentials against environment variables (trim to handle whitespace)
+      const expectedUsername = process.env.ADMIN_USERNAME?.trim();
+      const expectedPassword = process.env.ADMIN_PASSWORD?.trim();
+      
+      if (username === expectedUsername && password === expectedPassword) {
         // Create or get admin user
         let adminUser = await storage.getUserByEmail('admin@wedding-platform.com');
         
