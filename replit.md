@@ -134,8 +134,15 @@ This is a comprehensive wedding planning platform that enables couples to create
 - Secure file upload validation
 - CORS and CSP headers configured
 
+## Recent Changes
+- June 25, 2025: Successfully migrated from Replit Agent to standard Replit environment
+- June 25, 2025: Fixed admin authentication system with proper environment variable handling
+- June 25, 2025: Created PostgreSQL database and applied schema migrations
+- June 25, 2025: Resolved host blocking issues with custom Vite configuration
+- June 25, 2025: Admin login now working with credentials: Username: Talibdev, Password: Dilnoza2003
+
 ## Changelog
-- June 25, 2025. Initial setup
+- June 25, 2025: Initial setup and migration completion
 
 ## User Preferences
 
