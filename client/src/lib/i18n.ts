@@ -107,6 +107,7 @@ const resources = {
       "rsvp.success": "Thank you for your response!",
       "rsvp.error": "Something went wrong. Please try again.",
       "rsvp.confirmedEmoji": "✅ Yes, I'll be there!",
+      "rsvp.confirmedWithGuest": "👥 Yes, with a guest",
       "rsvp.confirmedWithGuestEmoji": "👥 Yes, with a guest",
       "rsvp.declinedEmoji": "❌ Sorry, can't make it",
       "rsvp.maybeEmoji": "🤔 I'm not sure yet",
@@ -137,6 +138,7 @@ const resources = {
       // Footer
       "footer.poweredBy": "Powered by",
       "wedding.thankYouGuests": "Thank you for celebrating with us!",
+      "wedding.weddingDayIsHere": "The Wedding Day is Here!",
       "ad.orderInvitation": "Create your own beautiful wedding website",
       "ad.createWebsite": "Create your own beautiful wedding website",
 
@@ -308,6 +310,7 @@ const resources = {
       "rsvp.success": "Спасибо за ваш ответ!",
       "rsvp.error": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
       "rsvp.confirmedEmoji": "✅ Да, я приду!",
+      "rsvp.confirmedWithGuest": "👥 Да, с гостем",
       "rsvp.confirmedWithGuestEmoji": "👥 Да, с гостем",
       "rsvp.declinedEmoji": "❌ К сожалению, не смогу",
       "rsvp.maybeEmoji": "🤔 Пока не уверен(а)",
@@ -338,6 +341,7 @@ const resources = {
       // Footer
       "footer.poweredBy": "Создано на",
       "wedding.thankYouGuests": "Спасибо, что разделили с нами этот день!",
+      "wedding.weddingDayIsHere": "День свадьбы настал!",
       "ad.orderInvitation": "Создайте свой красивый свадебный сайт",
       "ad.createWebsite": "Создайте свой красивый свадебный сайт",
 
@@ -509,6 +513,7 @@ const resources = {
       "rsvp.success": "Javobingiz uchun rahmat!",
       "rsvp.error": "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
       "rsvp.confirmedEmoji": "✅ Ha, albatta boraman!",
+      "rsvp.confirmedWithGuest": "👥 Ha, mehmon bilan boraman",
       "rsvp.confirmedWithGuestEmoji": "👥 Ha, mehmon bilan boraman",
       "rsvp.declinedEmoji": "❌ Afsus, kela olmayman",
       "rsvp.maybeEmoji": "🤔 Hali aniq emas",
@@ -539,6 +544,7 @@ const resources = {
       // Footer
       "footer.poweredBy": "tomonidan yaratildi",
       "wedding.thankYouGuests": "Biz bilan nishonlaganingiz uchun tashakkur!",
+      "wedding.weddingDayIsHere": "To'y kuni keldi!",
       "ad.orderInvitation": "O'zingizning go'zal to'y veb-saytingizni yarating",
       "ad.createWebsite": "O'zingizning go'zal to'y veb-saytingizni yarating",
 
