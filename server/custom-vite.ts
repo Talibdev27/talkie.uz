@@ -19,8 +19,7 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupCustomVite(app: Express, server: Server) {
-  // Create a custom Vite configuration that allows all hosts
-  const customViteConfig = {
+  const vite = await createViteServer({
     plugins: [
       (await import("@vitejs/plugin-react")).default(),
       (await import("@replit/vite-plugin-runtime-error-modal")).default(),
@@ -41,10 +40,10 @@ export async function setupCustomVite(app: Express, server: Server) {
       middlewareMode: true,
       hmr: { server },
       host: "0.0.0.0",
-      allowedHosts: "all",
+      allowedHosts: true,
     },
-    appType: "custom" as const,
-    configFile: false,
+    appType: "custom",
+
     customLogger: {
       ...viteLogger,
       error: (msg: string, options: any) => {
@@ -52,9 +51,7 @@ export async function setupCustomVite(app: Express, server: Server) {
         process.exit(1);
       },
     },
-  };
-
-  const vite = await createViteServer(customViteConfig);
+  });
 
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {

@@ -3,6 +3,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { setupCustomVite } from "./custom-vite";
 
 const app = express();
 
@@ -118,7 +119,7 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    await setupVite(app, server);
+    await setupCustomVite(app, server);
   } else {
     serveStatic(app);
   }
