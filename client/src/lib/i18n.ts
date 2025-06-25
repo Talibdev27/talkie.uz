@@ -106,6 +106,10 @@ const resources = {
       "rsvp.submitting": "Submitting...",
       "rsvp.success": "Thank you for your response!",
       "rsvp.error": "Something went wrong. Please try again.",
+      "rsvp.confirmedEmoji": "✅ Yes, I'll be there!",
+      "rsvp.confirmedWithGuestEmoji": "👥 Yes, with a guest",
+      "rsvp.declinedEmoji": "❌ Sorry, can't make it",
+      "rsvp.maybeEmoji": "🤔 I'm not sure yet",
       
       // Guest Book
       "sections.guestBook": "Guest Book",
@@ -134,6 +138,7 @@ const resources = {
       "footer.poweredBy": "Powered by",
       "wedding.thankYouGuests": "Thank you for celebrating with us!",
       "ad.orderInvitation": "Create your own beautiful wedding website",
+      "ad.createWebsite": "Create your own beautiful wedding website",
 
       // Details
       "sections.weddingDetails": "Wedding Details",
@@ -302,6 +307,10 @@ const resources = {
       "rsvp.submitting": "Отправка...",
       "rsvp.success": "Спасибо за ваш ответ!",
       "rsvp.error": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
+      "rsvp.confirmedEmoji": "✅ Да, я приду!",
+      "rsvp.confirmedWithGuestEmoji": "👥 Да, с гостем",
+      "rsvp.declinedEmoji": "❌ К сожалению, не смогу",
+      "rsvp.maybeEmoji": "🤔 Пока не уверен(а)",
       
       // Guest Book
       "sections.guestBook": "Гостевая Книга",
@@ -330,6 +339,7 @@ const resources = {
       "footer.poweredBy": "Создано на",
       "wedding.thankYouGuests": "Спасибо, что разделили с нами этот день!",
       "ad.orderInvitation": "Создайте свой красивый свадебный сайт",
+      "ad.createWebsite": "Создайте свой красивый свадебный сайт",
 
       // Details
       "sections.weddingDetails": "Детали свадьбы",
@@ -498,10 +508,10 @@ const resources = {
       "rsvp.submitting": "Yuborilmoqda...",
       "rsvp.success": "Javobingiz uchun rahmat!",
       "rsvp.error": "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
-      "rsvp.confirmedEmoji": "Tasdiqlangan",
-      "rsvp.confirmedWithGuest": "Mehmon bilan tasdiqlangan",
-      "rsvp.declinedEmoji": "Rad etilgan", 
-      "rsvp.maybeEmoji": "Ehtimol",
+      "rsvp.confirmedEmoji": "✅ Ha, albatta boraman!",
+      "rsvp.confirmedWithGuestEmoji": "👥 Ha, mehmon bilan boraman",
+      "rsvp.declinedEmoji": "❌ Afsus, kela olmayman",
+      "rsvp.maybeEmoji": "🤔 Hali aniq emas",
       
       // Guest Book
       "sections.guestBook": "Mehmonlar Kitobi",
@@ -530,6 +540,7 @@ const resources = {
       "footer.poweredBy": "tomonidan yaratildi",
       "wedding.thankYouGuests": "Biz bilan nishonlaganingiz uchun tashakkur!",
       "ad.orderInvitation": "O'zingizning go'zal to'y veb-saytingizni yarating",
+      "ad.createWebsite": "O'zingizning go'zal to'y veb-saytingizni yarating",
 
       // Details
       "sections.weddingDetails": "To'y tafsilotlari",
