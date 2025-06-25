@@ -312,6 +312,10 @@ const resources = {
       // Management
       "manage.weddingDetails": "Детали Свадьбы",
       "manage.guestManagement": "Управление Гостями",
+      "manage.backToDashboard": "Назад к Панели",
+      "manage.weddingManagement": "Управление Свадьбой",
+      "manage.welcome": "Добро пожаловать",
+      "manage.viewSite": "Посмотреть Сайт",
 
       // Common
       "common.loading": "Загрузка...",
@@ -378,6 +382,7 @@ const resources = {
       "guestList.guestDeletedSuccess": "Гость успешно удален",
       "guestList.guestAdded": "Гость добавлен",
       "guestList.guestAddedSuccess": "Гость успешно добавлен",
+      "guestList.comments": "Комментарии",
       "GUESTLIST.CONFIRMED": "Подтверждено",
       "GUESTLIST.PENDING": "Ожидание",
       "GUESTLIST.MAYBE": "Возможно",
@@ -488,6 +493,10 @@ const resources = {
       "rsvp.submitting": "Yuborilmoqda...",
       "rsvp.success": "Javobingiz uchun rahmat!",
       "rsvp.error": "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
+      "rsvp.confirmedEmoji": "Tasdiqlangan",
+      "rsvp.confirmedWithGuest": "Mehmon bilan tasdiqlangan",
+      "rsvp.declinedEmoji": "Rad etilgan", 
+      "rsvp.maybeEmoji": "Ehtimol",
       
       // Guest Book
       "sections.guestBook": "Mehmonlar Kitobi",
@@ -503,6 +512,10 @@ const resources = {
       // Management
       "manage.weddingDetails": "To'y Tafsilotlari",
       "manage.guestManagement": "Mehmonlarni Boshqarish",
+      "manage.backToDashboard": "Panelga Qaytish",
+      "manage.weddingManagement": "To'y Boshqaruvi",
+      "manage.welcome": "Xush kelibsiz",
+      "manage.viewSite": "Saytni Ko'rish",
 
       // Common
       "common.loading": "Yuklanmoqda...",
@@ -569,6 +582,7 @@ const resources = {
       "guestList.guestDeletedSuccess": "Mehmon muvaffaqiyatli o'chirildi",
       "guestList.guestAdded": "Mehmon qo'shildi",
       "guestList.guestAddedSuccess": "Mehmon muvaffaqiyatli qo'shildi",
+      "guestList.comments": "Izohlar",
       "GUESTLIST.CONFIRMED": "Tasdiqlangan",
       "GUESTLIST.PENDING": "Kutilmoqda",
       "GUESTLIST.MAYBE": "Ehtimol",
