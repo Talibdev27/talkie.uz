@@ -6,6 +6,23 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// CORS middleware for Replit domain
+app.use((req, res, next) => {
+  const replitDomain = process.env.REPLIT_DEV_DOMAIN || process.env.REPLIT_DOMAINS;
+  if (replitDomain) {
+    res.header('Access-Control-Allow-Origin', `https://${replitDomain}`);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
