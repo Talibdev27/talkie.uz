@@ -62,6 +62,51 @@ export function calculateTimeUntil(targetDate: Date | string) {
   return { days, hours, minutes, seconds, isExpired: false };
 }
 
+/**
+ * Calculate time until wedding with timezone awareness
+ */
+export function calculateWeddingCountdown(
+  weddingDate: Date | string, 
+  weddingTime: string = '16:00', 
+  weddingTimezone: string = 'Asia/Tashkent'
+) {
+  const date = typeof weddingDate === 'string' ? new Date(weddingDate) : weddingDate;
+  
+  // Parse wedding time (e.g., "4:00 PM", "16:00")
+  let [time, modifier] = weddingTime.split(' ');
+  let [hours, minutes] = time.split(':').map(Number);
+  
+  if (modifier) {
+    if (modifier.toLowerCase() === 'pm' && hours !== 12) {
+      hours += 12;
+    }
+    if (modifier.toLowerCase() === 'am' && hours === 12) {
+      hours = 0;
+    }
+  }
+  
+  // Create wedding datetime in local timezone first
+  const weddingLocalDateTime = new Date(date);
+  weddingLocalDateTime.setHours(hours, minutes || 0, 0, 0);
+  
+  // Get current time
+  const now = new Date();
+  
+  // Calculate difference
+  const difference = weddingLocalDateTime.getTime() - now.getTime();
+
+  if (difference <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
+  }
+
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+  const hrs = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((difference % (1000 * 60)) / 1000);
+
+  return { days, hours: hrs, minutes: mins, seconds: secs, isExpired: false };
+}
+
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';

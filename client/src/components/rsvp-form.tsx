@@ -54,21 +54,32 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
 
   const submitRSVP = useMutation({
     mutationFn: async (data: RSVPFormData) => {
-      const response = await apiRequest('POST', '/api/guests', data);
+      const response = await fetch(`/api/weddings/${weddingId}/rsvp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit RSVP');
+      }
+      
       return response.json();
     },
     onSuccess: () => {
       setIsSubmitted(true);
       toast({
         title: t('rsvp.thankYou'),
-        description: "We've received your RSVP!",
+        description: t('rsvp.thankYouMessage'),
       });
       queryClient.invalidateQueries({ queryKey: [`/api/guests/wedding/${weddingId}`] });
     },
     onError: () => {
       toast({
         title: t('common.error'),
-        description: "Something went wrong. Please try again.",
+        description: t('rsvp.errorMessage'),
         variant: "destructive",
       });
     },
@@ -87,7 +98,7 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
             {t('rsvp.thankYou')}
           </h3>
           <p className="text-charcoal opacity-70">
-            We can't wait to celebrate with you!
+            {t('rsvp.thankYouMessage')}
           </p>
         </CardContent>
       </Card>
@@ -135,25 +146,25 @@ export function RSVPForm({ weddingId, className = '' }: RSVPFormProps) {
                         <FormControl>
                           <RadioGroupItem value="confirmed" id="confirmed" />
                         </FormControl>
-                        <Label htmlFor="confirmed" className="text-base font-medium text-gray-700">Yes, I'll be there!</Label>
+                        <Label htmlFor="confirmed" className="text-base font-medium text-gray-700">{t('rsvp.confirmedEmoji')}</Label>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
                           <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" />
                         </FormControl>
-                        <Label htmlFor="confirmed_with_guest" className="text-base font-medium text-gray-700">Yes, with a guest</Label>
+                        <Label htmlFor="confirmed_with_guest" className="text-base font-medium text-gray-700">{t('rsvp.confirmedWithGuest')}</Label>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
                           <RadioGroupItem value="declined" id="declined" />
                         </FormControl>
-                        <Label htmlFor="declined" className="text-base font-medium text-gray-700">Sorry, can't make it</Label>
+                        <Label htmlFor="declined" className="text-base font-medium text-gray-700">{t('rsvp.declinedEmoji')}</Label>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3">
                         <FormControl>
                           <RadioGroupItem value="maybe" id="maybe" />
                         </FormControl>
-                        <Label htmlFor="maybe" className="text-base font-medium text-gray-700">I'm not sure yet</Label>
+                        <Label htmlFor="maybe" className="text-base font-medium text-gray-700">{t('rsvp.maybeEmoji')}</Label>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { calculateTimeUntil } from '@/lib/utils';
+import { calculateWeddingCountdown } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,12 +14,22 @@ import { useToast } from "@/hooks/use-toast";
 
 interface MilestoneCountdownProps {
   targetDate: Date | string;
+  weddingTime?: string;
+  timezone?: string;
   weddingId?: number;
   className?: string;
 }
 
-export function MilestoneCountdown({ targetDate, weddingId, className = '' }: MilestoneCountdownProps) {
-  const [timeLeft, setTimeLeft] = useState(() => calculateTimeUntil(targetDate));
+export function MilestoneCountdown({ 
+  targetDate, 
+  weddingTime = '16:00',
+  timezone = 'Asia/Tashkent',
+  weddingId, 
+  className = '' 
+}: MilestoneCountdownProps) {
+  const [timeLeft, setTimeLeft] = useState(() => 
+    calculateWeddingCountdown(targetDate, weddingTime, timezone)
+  );
   const [newMilestoneOpen, setNewMilestoneOpen] = useState(false);
   const [celebrationVisible, setCelebrationVisible] = useState(false);
   const [celebrationMessage, setCelebrationMessage] = useState('');
@@ -28,11 +38,11 @@ export function MilestoneCountdown({ targetDate, weddingId, className = '' }: Mi
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeUntil(targetDate));
+      setTimeLeft(calculateWeddingCountdown(targetDate, weddingTime, timezone));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [targetDate, weddingTime, timezone]);
 
   // Mock milestones data for now
   const [milestones, setMilestones] = useState([

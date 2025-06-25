@@ -1,23 +1,32 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { calculateTimeUntil } from '@/lib/utils';
+import { calculateWeddingCountdown } from '@/lib/utils';
 
 interface CountdownTimerProps {
   targetDate: Date | string;
+  weddingTime?: string;
+  timezone?: string;
   className?: string;
 }
 
-export function CountdownTimer({ targetDate, className = '' }: CountdownTimerProps) {
+export function CountdownTimer({ 
+  targetDate, 
+  weddingTime = '16:00',
+  timezone = 'Asia/Tashkent',
+  className = '' 
+}: CountdownTimerProps) {
   const { t } = useTranslation();
-  const [timeLeft, setTimeLeft] = useState(calculateTimeUntil(targetDate));
+  const [timeLeft, setTimeLeft] = useState(() => 
+    calculateWeddingCountdown(targetDate, weddingTime, timezone)
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeUntil(targetDate));
+      setTimeLeft(calculateWeddingCountdown(targetDate, weddingTime, timezone));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [targetDate, weddingTime, timezone]);
 
   if (timeLeft.isExpired) {
     return (

@@ -1848,6 +1848,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public RSVP endpoint for new guests (no authentication required)
+  app.post("/api/weddings/:weddingId/rsvp", async (req, res) => {
+    try {
+      const weddingId = parseInt(req.params.weddingId);
+      
+      // Verify wedding exists and is public
+      const wedding = await storage.getWeddingById(weddingId);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+
+      if (!wedding.isPublic) {
+        return res.status(403).json({ message: "This wedding is private" });
+      }
+
+      // Parse and create guest data
+      const guestData = insertGuestSchema.parse({
+        ...req.body,
+        weddingId: weddingId
+      });
+      
+      const guest = await storage.createGuest(guestData);
+      
+      // Broadcast real-time update
+      const broadcastToWedding = (global as any).broadcastToWedding;
+      if (broadcastToWedding) {
+        broadcastToWedding(guest.weddingId, {
+          type: 'guest_added',
+          guest: guest
+        });
+      }
+      
+      res.status(201).json(guest);
+    } catch (error) {
+      console.error('Public RSVP creation error:', error);
+      res.status(400).json({ message: "Invalid RSVP data" });
+    }
+  });
+
   app.put("/api/guests/:id/rsvp", async (req, res) => {
     try {
       const id = parseInt(req.params.id);

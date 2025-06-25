@@ -24,6 +24,7 @@ export const weddings = pgTable("weddings", {
   groom: text("groom").notNull(),
   weddingDate: timestamp("wedding_date").notNull(),
   weddingTime: text("wedding_time").notNull().default("4:00 PM"),
+  timezone: text("timezone").notNull().default("Asia/Tashkent"),
   venue: text("venue").notNull(),
   venueAddress: text("venue_address").notNull(),
   venueCoordinates: jsonb("venue_coordinates").$type<{ lat: number; lng: number }>(),

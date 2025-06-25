@@ -102,7 +102,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
         <CardContent className="pt-6 text-center">
           <div className="text-6xl mb-4">💝</div>
           <h3 className="text-xl font-playfair font-semibold text-charcoal mb-2">
-            Thank You!
+            {t('rsvp.thankYou')}
           </h3>
           <p className="text-charcoal opacity-70">
             We've received your RSVP and can't wait to celebrate with you!
@@ -115,7 +115,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
   return (
     <Card className={`max-w-lg mx-auto ${className} shadow-2xl rounded-2xl`}>
       <CardHeader className="text-center bg-gray-50 p-8 rounded-t-2xl">
-        <CardTitle className="font-playfair text-4xl text-gray-800">RSVP</CardTitle>
+        <CardTitle className="font-playfair text-4xl text-gray-800">{t('rsvp.title')}</CardTitle>
         <p className="text-gray-600 font-cormorant text-lg">Let us know if you can make it!</p>
       </CardHeader>
       <CardContent className="p-8">

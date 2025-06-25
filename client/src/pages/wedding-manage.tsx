@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'wouter';
@@ -19,10 +19,11 @@ import { EnhancedRSVPManager } from '@/components/enhanced-rsvp-manager';
 import { MobileGuestManager } from '@/components/mobile-guest-manager';
 import { GuestBookManager } from '@/components/guest-book-manager';
 import { CouplePhotoUpload } from '@/components/couple-photo-upload';
+
 import type { Wedding, Photo, Guest } from '@shared/schema';
 
 export default function WeddingManage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const params = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -50,6 +51,16 @@ export default function WeddingManage() {
     queryKey: [`/api/weddings/url/${weddingUrl}`],
     enabled: !!weddingUrl,
   });
+
+  // Force language based on wedding language settings
+  useEffect(() => {
+    if (wedding?.defaultLanguage) {
+      i18n.changeLanguage(wedding.defaultLanguage);
+    } else {
+      // Default to Uzbek for guest management
+      i18n.changeLanguage('uz');
+    }
+  }, [wedding?.defaultLanguage, i18n]);
 
   // Fetch photos for this wedding
   const { data: photos = [], isLoading: photosLoading } = useQuery<Photo[]>({
@@ -198,26 +209,42 @@ export default function WeddingManage() {
     );
   }
 
+  // SECURITY CHECK: Prevent unauthorized access 
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6 text-center">
+            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">{t('auth.loginRequired')}</h2>
+            <p className="text-[#2C3338]/70 mb-4">{t('auth.pleaseLogin')}</p>
+            <Button onClick={() => setLocation('/login')} className="wedding-button">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {t('auth.goToLogin')}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (!hasAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F8F1F1] to-white flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">Access Denied</h2>
-            <p className="text-[#2C3338]/70 mb-4">You don't have permission to manage this wedding.</p>
+            <h2 className="text-xl font-semibold text-[#2C3338] mb-2">{t('manage.accessDenied')}</h2>
+            <p className="text-[#2C3338]/70 mb-4">{t('manage.noPermission')}</p>
             <Button onClick={() => {
-              if (!currentUser) {
-                setLocation('/login');
-              } else if (currentUser.role === 'guest_manager') {
-                setLocation('/guest-manager');
+              if (currentUser.role === 'guest_manager') {
+                setLocation('/');
               } else if (localStorage.getItem('isAdmin') === 'true') {
-                setLocation('/admin/dashboard');
+                setLocation('/system/dashboard');
               } else {
                 setLocation('/dashboard');
               }
             }} className="wedding-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              {t('nav.backToDashboard')}
             </Button>
           </CardContent>
         </Card>
@@ -525,6 +552,8 @@ export default function WeddingManage() {
           </TabsContent>
           )}
         </Tabs>
+        
+
       </div>
     </div>
   );

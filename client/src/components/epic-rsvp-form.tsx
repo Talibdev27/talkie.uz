@@ -47,13 +47,24 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
       rsvpStatus: 'pending',
       additionalGuests: 0,
       dietaryRestrictions: '',
-      notes: '',
+      message: '',
     },
   });
 
   const submitRSVP = useMutation({
     mutationFn: async (data: RSVPFormData) => {
-      const response = await apiRequest('POST', '/api/guests', data);
+      const response = await fetch(`/api/weddings/${weddingId}/rsvp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit RSVP');
+      }
+      
       return response.json();
     },
     onSuccess: () => {
@@ -127,19 +138,19 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="confirmed" id="confirmed" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="confirmed" className="text-gray-700">Yes, I'll be there!</Label>
+                    <Label htmlFor="confirmed" className="text-gray-700">{t('rsvp.confirmedEmoji')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="confirmed_with_guest" className="text-gray-700">Yes, with a guest</Label>
+                    <Label htmlFor="confirmed_with_guest" className="text-gray-700">{t('rsvp.confirmedWithGuest')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="declined" id="declined" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="declined" className="text-gray-700">Sorry, can't make it</Label>
+                    <Label htmlFor="declined" className="text-gray-700">{t('rsvp.declinedEmoji')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="maybe" id="maybe" className="border-blue-500 text-blue-600" />
-                    <Label htmlFor="maybe" className="text-gray-700">I'm not sure yet</Label>
+                    <Label htmlFor="maybe" className="text-gray-700">{t('rsvp.maybeEmoji')}</Label>
                   </div>
                 </RadioGroup>
               </FormControl>
@@ -150,7 +161,7 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
 
         <FormField
           control={form.control}
-          name="notes"
+          name="message"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-gray-700 font-medium">{t('rsvp.message')}</FormLabel>

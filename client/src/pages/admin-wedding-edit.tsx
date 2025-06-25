@@ -21,7 +21,7 @@ import {
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useState, useEffect } from "react";
-import type { User, Wedding, Guest } from "@shared/schema";
+import type { User, Wedding, Guest, Photo } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -59,7 +59,7 @@ export default function AdminWeddingEdit() {
   });
 
   // Fetch photos for this wedding
-  const { data: photos, isLoading: photosLoading } = useQuery<any[]>({
+  const { data: photos, isLoading: photosLoading } = useQuery<Photo[]>({
     queryKey: [`/api/photos/wedding/${wedding?.id}`],
     enabled: isAdmin && !!wedding?.id,
     queryFn: () => apiRequest('GET', `/api/photos/wedding/${wedding?.id}`).then(res => res.json())
@@ -363,6 +363,65 @@ export default function AdminWeddingEdit() {
                       ) : (
                         <p className="p-3 bg-gray-50 rounded-lg">
                           {wedding.weddingTime || '4:00 PM'}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                        Wedding Timezone
+                      </label>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Set the timezone for your wedding location. All countdown timers will be based on this timezone.
+                      </p>
+                      {editMode ? (
+                        <select
+                          value={weddingData?.timezone || 'Asia/Tashkent'}
+                          onChange={(e) => handleInputChange('timezone', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <optgroup label="Central Asia">
+                            <option value="Asia/Tashkent">Uzbekistan (Tashkent) - UTC+5</option>
+                            <option value="Asia/Almaty">Kazakhstan (Almaty) - UTC+6</option>
+                            <option value="Asia/Bishkek">Kyrgyzstan (Bishkek) - UTC+6</option>
+                            <option value="Asia/Dushanbe">Tajikistan (Dushanbe) - UTC+5</option>
+                            <option value="Asia/Ashgabat">Turkmenistan (Ashgabat) - UTC+5</option>
+                          </optgroup>
+                          <optgroup label="Middle East">
+                            <option value="Asia/Dubai">UAE (Dubai) - UTC+4</option>
+                            <option value="Asia/Istanbul">Turkey (Istanbul) - UTC+3</option>
+                            <option value="Asia/Tehran">Iran (Tehran) - UTC+3:30</option>
+                          </optgroup>
+                          <optgroup label="Russia">
+                            <option value="Europe/Moscow">Russia (Moscow) - UTC+3</option>
+                            <option value="Asia/Yekaterinburg">Russia (Yekaterinburg) - UTC+5</option>
+                            <option value="Asia/Novosibirsk">Russia (Novosibirsk) - UTC+7</option>
+                          </optgroup>
+                          <optgroup label="Europe">
+                            <option value="Europe/London">UK (London) - UTC+0</option>
+                            <option value="Europe/Paris">France (Paris) - UTC+1</option>
+                            <option value="Europe/Berlin">Germany (Berlin) - UTC+1</option>
+                            <option value="Europe/Rome">Italy (Rome) - UTC+1</option>
+                            <option value="Europe/Madrid">Spain (Madrid) - UTC+1</option>
+                          </optgroup>
+                          <optgroup label="North America">
+                            <option value="America/New_York">USA (New York) - UTC-5</option>
+                            <option value="America/Chicago">USA (Chicago) - UTC-6</option>
+                            <option value="America/Denver">USA (Denver) - UTC-7</option>
+                            <option value="America/Los_Angeles">USA (Los Angeles) - UTC-8</option>
+                            <option value="America/Toronto">Canada (Toronto) - UTC-5</option>
+                          </optgroup>
+                          <optgroup label="Asia">
+                            <option value="Asia/Tokyo">Japan (Tokyo) - UTC+9</option>
+                            <option value="Asia/Seoul">South Korea (Seoul) - UTC+9</option>
+                            <option value="Asia/Shanghai">China (Shanghai) - UTC+8</option>
+                            <option value="Asia/Singapore">Singapore - UTC+8</option>
+                            <option value="Asia/Kolkata">India (Delhi) - UTC+5:30</option>
+                          </optgroup>
+                        </select>
+                      ) : (
+                        <p className="p-3 bg-gray-50 rounded-lg">
+                          {wedding.timezone || 'Asia/Tashkent (Uzbekistan)'}
                         </p>
                       )}
                     </div>

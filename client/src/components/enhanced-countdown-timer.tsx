@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heart } from 'lucide-react';
+import { calculateWeddingCountdown } from '@/lib/utils';
 
 interface EnhancedCountdownTimerProps {
   targetDate: Date | string;
+  weddingTime?: string;
+  timezone?: string;
   className?: string;
   variant?: 'default' | 'wedding-day' | 'compact';
 }
 
 export function EnhancedCountdownTimer({ 
   targetDate, 
+  weddingTime = '16:00',
+  timezone = 'Asia/Tashkent',
   className = '', 
   variant = 'default' 
 }: EnhancedCountdownTimerProps) {
@@ -30,26 +35,14 @@ export function EnhancedCountdownTimer({
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const target = typeof targetDate === 'string' ? new Date(targetDate) : targetDate;
-      const now = new Date();
-      const difference = target.getTime() - now.getTime();
-
-      if (difference <= 0) {
-        return {
-          days: 0,
-          hours: 0,
-          minutes: 0,
-          seconds: 0,
-          isWeddingDay: true
-        };
-      }
-
+      const result = calculateWeddingCountdown(targetDate, weddingTime, timezone);
+      
       return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((difference % (1000 * 60)) / 1000),
-        isWeddingDay: false
+        days: result.days,
+        hours: result.hours,
+        minutes: result.minutes,
+        seconds: result.seconds,
+        isWeddingDay: result.isExpired
       };
     };
 
@@ -62,7 +55,7 @@ export function EnhancedCountdownTimer({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [targetDate, weddingTime, timezone]);
 
   if (timeLeft.isWeddingDay) {
     return (

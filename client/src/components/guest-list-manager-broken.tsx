@@ -115,7 +115,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
   });
 
   // Fetch guests
-  const { data: guests = [], isLoading } = useQuery({
+  const { data: guests = [], isLoading } = useQuery<Guest[]>({
     queryKey: ['/api/guests/wedding', weddingId],
     enabled: !!weddingId,
   });
@@ -133,10 +133,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
         address: data.address || null,
         notes: data.notes || null,
       };
-      return apiRequest('/api/guests', {
-        method: 'POST',
-        body: JSON.stringify(guestData),
-      });
+      return apiRequest('POST', '/api/guests', guestData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
@@ -153,10 +150,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
   // Update guest mutation
   const updateGuestMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Guest> }) => {
-      return apiRequest(`/api/guests/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      });
+      return apiRequest('PATCH', `/api/guests/${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests/wedding', weddingId] });
@@ -170,9 +164,7 @@ export function GuestListManager({ weddingId, className = '' }: GuestListManager
   // Delete guest mutation
   const deleteGuestMutation = useMutation({
     mutationFn: async (guestId: number) => {
-      return apiRequest(`/api/guests/${guestId}`, {
-        method: 'DELETE',
-      });
+      return apiRequest('DELETE', `/api/guests/${guestId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/guests', weddingId] });

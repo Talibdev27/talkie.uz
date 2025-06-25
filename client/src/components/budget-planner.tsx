@@ -28,12 +28,12 @@ export function BudgetPlanner({ weddingId, className = '' }: BudgetPlannerProps)
   const queryClient = useQueryClient();
 
   // Fetch budget categories
-  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery<BudgetCategory[]>({
     queryKey: ['/api/budget/categories', weddingId],
   });
 
   // Fetch budget items
-  const { data: items = [], isLoading: itemsLoading } = useQuery({
+  const { data: items = [], isLoading: itemsLoading } = useQuery<BudgetItem[]>({
     queryKey: ['/api/budget/items', weddingId],
   });
 

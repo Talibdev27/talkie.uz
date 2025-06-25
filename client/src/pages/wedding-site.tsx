@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'wouter';
+import { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -44,6 +45,14 @@ export default function WeddingSite() {
     queryFn: () => fetch(`/api/photos/wedding/${wedding?.id}`).then(res => res.json()),
     enabled: !!wedding?.id,
   });
+
+  // Set language based on wedding's default language
+  useEffect(() => {
+    if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
+      console.log('Wedding site: Setting language to', wedding.defaultLanguage);
+      i18n.changeLanguage(wedding.defaultLanguage);
+    }
+  }, [wedding?.defaultLanguage, i18n]);
 
   if (isLoading) {
     return <WeddingPageLoading message={t('common.loading')} />;
@@ -232,7 +241,13 @@ export default function WeddingSite() {
               <span className={isUsingCouplePhoto ? 'text-base' : 'text-lg'}>{wedding.weddingTime}</span>
             </div>
             
-            <EnhancedCountdownTimer targetDate={wedding.weddingDate} variant="compact" className={isUsingCouplePhoto ? 'mb-4' : 'mb-6'} />
+            <EnhancedCountdownTimer 
+              targetDate={wedding.weddingDate} 
+              weddingTime={wedding.weddingTime}
+              timezone={wedding.timezone}
+              variant="compact" 
+              className={isUsingCouplePhoto ? 'mb-4' : 'mb-6'} 
+            />
             
             {/* Location with Dialog */}
             <div className="flex justify-center">

@@ -15,7 +15,7 @@ import {
   TrendingUp, Heart, MapPin, Mail, Shield, Search,
   Eye, Trash2, Edit, BarChart3, Globe, LogOut, Images
 } from "lucide-react";
-import type { Wedding, User } from "@shared/schema";
+import type { Wedding, User, Guest, Photo } from "@shared/schema";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
-  const { data: allRSVPs = [], isLoading: rsvpLoading } = useQuery<any[]>({
+  const { data: allRSVPs = [], isLoading: rsvpLoading } = useQuery<Guest[]>({
     queryKey: ['/api/admin/rsvp'],
     queryFn: () => {
       const token = localStorage.getItem('adminToken');
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
     enabled: isAdmin,
   });
 
-  const { data: allPhotos = [], isLoading: photosLoading } = useQuery<any[]>({
+  const { data: allPhotos = [], isLoading: photosLoading } = useQuery<Photo[]>({
     queryKey: ['/api/admin/photos'],
     queryFn: () => {
       const token = localStorage.getItem('adminToken');
